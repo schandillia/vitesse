@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xml:space="preserve"
+   id="svg1"
+   width="1600"
+   height="1200"
+   viewBox="0 0 423.33333 317.5"
+   version="1.1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1"><style
+       id="style1">.st0{fill:#231f20}</style></defs><rect
+     style="fill:#e9ddaf;stroke-width:7.10996"
+     id="rect1"
+     width="423.33334"
+     height="317.5"
+     x="0"
+     y="0" /><g
+     id="layer1"
+     transform="matrix(0.79558653,0,0,0.79558653,53.587499,0.87603517)"><g
+       id="g1"
+       style="fill:#7d5e3e;fill-opacity:1"
+       transform="matrix(1.0013,0,0,1,-0.26527,0)"><path
+         id="polygon1"
+         d="M 6.55,108.49 H 61.84 L 84,130 V 101.85 L 71.44,89.65 H 40.09 V 75.22 L 84,28.15 V 0 L 6.55,83.03 Z"
+         class="st0"
+         style="fill:#7d5e3e;fill-opacity:1"
+         transform="matrix(2.56214,0,0,3.05288,-16.25283,0)" /><path
+         id="polygon1-2"
+         d="M 84,28.15 V 0 L 6.55,83.03 v 25.46 H 61.84 L 84,130 V 101.85 L 71.44,89.65 H 40.09 V 75.22 Z"
+         class="st0"
+         style="fill:#7d5e3e;fill-opacity:1"
+         transform="matrix(-2.56214,0,0,3.05288,413.657,0)" /></g></g></svg>

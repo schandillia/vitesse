@@ -1,65 +1,248 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-background text-foreground p-10 space-y-16 max-w-4xl mx-auto">
+
+      {/* ── Typography ── */}
+      <section className="space-y-4">
+        <Button asChild><a href="/signup">Sign Up</a></Button>
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Typography</p>
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl font-serif">
+          The quick brown fox
+        </h1>
+        <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">
+          Jumps over the lazy dog
+        </h2>
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          Section heading, level three
+        </h3>
+        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+          Section heading, level four
+        </h4>
+        <p className="leading-7 text-base max-w-prose">
+          This is body text. It uses your theme's foreground color and Open Sans.
+          Long paragraphs should feel comfortable and readable at this size and
+          line height.
+        </p>
+        <p className="text-sm text-muted-foreground max-w-prose">
+          Small muted text — useful for captions, helper text, timestamps, and
+          secondary descriptions that shouldn't compete with primary content.
+        </p>
+        <p className="text-xs text-muted-foreground font-mono">
+          Monospaced · IBM Plex Mono · xs size · for code, metadata, labels
+        </p>
+        <blockquote className="border-l-4 border-primary pl-6 italic text-muted-foreground font-serif text-lg">
+          "Design is not just what it looks like and feels like. Design is how
+          it works."
+        </blockquote>
+        <div className="flex flex-wrap gap-2 items-baseline">
+          <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">xs</span>
+          <span className="text-sm bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">sm</span>
+          <span className="text-base bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">base</span>
+          <span className="text-lg bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">lg</span>
+          <span className="text-xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">xl</span>
+          <span className="text-2xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">2xl</span>
+          <span className="text-3xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">3xl</span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </section>
+
+      <hr className="border-border" />
+
+      {/* ── Buttons ── */}
+      <section className="space-y-6">
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Buttons</p>
+
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">Variants</p>
+          <div className="flex flex-wrap gap-3">
+            <Button variant="default">Default</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button variant="outline">Outline</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="link">Link</Button>
+            <Button variant="destructive">Destructive</Button>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">Sizes</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="sm">Small</Button>
+            <Button size="default">Default</Button>
+            <Button size="lg">Large</Button>
+            <Button size="icon" aria-label="icon button">✦</Button>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">States</p>
+          <div className="flex flex-wrap gap-3">
+            <Button>Normal</Button>
+            <Button disabled>Disabled</Button>
+          </div>
+        </div>
+      </section>
+
+      <hr className="border-border" />
+
+      {/* ── Inputs ── */}
+      <section className="space-y-6">
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Input</p>
+        <div className="grid sm:grid-cols-2 gap-4 max-w-2xl">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">Default</label>
+            <Input placeholder="Enter some text…" />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">With value</label>
+            <Input defaultValue="amit@example.com" />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">Password</label>
+            <Input type="password" defaultValue="hunter2" />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">Disabled</label>
+            <Input placeholder="Can't touch this" disabled />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <label className="text-sm font-medium">File</label>
+            <Input type="file" />
+          </div>
+        </div>
+      </section>
+
+      <hr className="border-border" />
+
+      {/* ── Textarea ── */}
+      <section className="space-y-6">
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Textarea</p>
+        <div className="grid sm:grid-cols-2 gap-4 max-w-2xl">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">Default</label>
+            <Textarea placeholder="Write something…" />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">Disabled</label>
+            <Textarea placeholder="Read only" disabled />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <label className="text-sm font-medium">With value</label>
+            <Textarea
+              defaultValue="This textarea has some pre-filled content to show how text looks inside the component with your current theme."
+              rows={4}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
+      </section>
+
+      <hr className="border-border" />
+
+      {/* ── Cards ── */}
+      <section className="space-y-6">
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Cards</p>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          {/* Basic */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Basic card</CardTitle>
+              <CardDescription>Just a header and content, no footer.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Cards group related content and actions. They can contain
+                anything from text to forms to charts.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* With footer */}
+          <Card>
+            <CardHeader>
+              <CardTitle>With footer</CardTitle>
+              <CardDescription>Includes a call to action below.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Footer area is great for primary actions or navigation links
+                related to the card's content.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full">Get started</Button>
+            </CardFooter>
+          </Card>
+
+          {/* Stat card */}
+          <Card>
+            <CardHeader>
+              <CardDescription>Monthly revenue</CardDescription>
+              <CardTitle className="text-3xl font-bold">$48,295</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground">
+                +12.4% compared to last month
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" size="sm">View report</Button>
+            </CardFooter>
+          </Card>
+
+          {/* Form card */}
+          <Card className="sm:col-span-2">
+            <CardHeader>
+              <CardTitle>Sign in</CardTitle>
+              <CardDescription>Enter your credentials to continue.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Email</label>
+                <Input type="email" placeholder="you@example.com" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium">Password</label>
+                <Input type="password" placeholder="••••••••" />
+              </div>
+            </CardContent>
+            <CardFooter className="flex gap-3">
+              <Button className="flex-1">Sign in</Button>
+              <Button variant="outline" className="flex-1">Create account</Button>
+            </CardFooter>
+          </Card>
+
+          {/* Destructive card */}
+          <Card className="border-destructive">
+            <CardHeader>
+              <CardTitle className="text-destructive">Danger zone</CardTitle>
+              <CardDescription>This action cannot be undone.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Permanently deletes your account and all associated data.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button variant="destructive" className="w-full">Delete account</Button>
+            </CardFooter>
+          </Card>
+
+        </div>
+      </section>
+
     </div>
   );
 }
