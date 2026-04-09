@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Card,
   CardContent,
@@ -8,16 +8,19 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground p-10 space-y-16 max-w-4xl mx-auto">
-
       {/* ── Typography ── */}
       <section className="space-y-4">
-        <Button asChild><a href="/signup">Sign Up</a></Button>
-        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Typography</p>
+        <Button asChild>
+          <a href="/signup">Sign Up</a>
+        </Button>
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+          Typography
+        </p>
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl font-serif">
           The quick brown fox
         </h1>
@@ -31,9 +34,9 @@ export default function Home() {
           Section heading, level four
         </h4>
         <p className="leading-7 text-base max-w-prose">
-          This is body text. It uses your theme's foreground color and Open Sans.
-          Long paragraphs should feel comfortable and readable at this size and
-          line height.
+          This is body text. It uses your theme's foreground color and Open
+          Sans. Long paragraphs should feel comfortable and readable at this
+          size and line height.
         </p>
         <p className="text-sm text-muted-foreground max-w-prose">
           Small muted text — useful for captions, helper text, timestamps, and
@@ -47,13 +50,27 @@ export default function Home() {
           it works."
         </blockquote>
         <div className="flex flex-wrap gap-2 items-baseline">
-          <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">xs</span>
-          <span className="text-sm bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">sm</span>
-          <span className="text-base bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">base</span>
-          <span className="text-lg bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">lg</span>
-          <span className="text-xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">xl</span>
-          <span className="text-2xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">2xl</span>
-          <span className="text-3xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">3xl</span>
+          <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">
+            xs
+          </span>
+          <span className="text-sm bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">
+            sm
+          </span>
+          <span className="text-base bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">
+            base
+          </span>
+          <span className="text-lg bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">
+            lg
+          </span>
+          <span className="text-xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">
+            xl
+          </span>
+          <span className="text-2xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">
+            2xl
+          </span>
+          <span className="text-3xl bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-mono">
+            3xl
+          </span>
         </div>
       </section>
 
@@ -61,7 +78,9 @@ export default function Home() {
 
       {/* ── Buttons ── */}
       <section className="space-y-6">
-        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Buttons</p>
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+          Buttons
+        </p>
 
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">Variants</p>
@@ -81,7 +100,9 @@ export default function Home() {
             <Button size="sm">Small</Button>
             <Button size="default">Default</Button>
             <Button size="lg">Large</Button>
-            <Button size="icon" aria-label="icon button">✦</Button>
+            <Button size="icon" aria-label="icon button">
+              ✦
+            </Button>
           </div>
         </div>
 
@@ -98,7 +119,9 @@ export default function Home() {
 
       {/* ── Inputs ── */}
       <section className="space-y-6">
-        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Input</p>
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+          Input
+        </p>
         <div className="grid sm:grid-cols-2 gap-4 max-w-2xl">
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Default</label>
@@ -127,7 +150,9 @@ export default function Home() {
 
       {/* ── Textarea ── */}
       <section className="space-y-6">
-        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Textarea</p>
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+          Textarea
+        </p>
         <div className="grid sm:grid-cols-2 gap-4 max-w-2xl">
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Default</label>
@@ -151,15 +176,18 @@ export default function Home() {
 
       {/* ── Cards ── */}
       <section className="space-y-6">
-        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">Cards</p>
+        <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+          Cards
+        </p>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
           {/* Basic */}
           <Card>
             <CardHeader>
               <CardTitle>Basic card</CardTitle>
-              <CardDescription>Just a header and content, no footer.</CardDescription>
+              <CardDescription>
+                Just a header and content, no footer.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
@@ -173,7 +201,9 @@ export default function Home() {
           <Card>
             <CardHeader>
               <CardTitle>With footer</CardTitle>
-              <CardDescription>Includes a call to action below.</CardDescription>
+              <CardDescription>
+                Includes a call to action below.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
@@ -198,7 +228,9 @@ export default function Home() {
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="outline" size="sm">View report</Button>
+              <Button variant="outline" size="sm">
+                View report
+              </Button>
             </CardFooter>
           </Card>
 
@@ -206,7 +238,9 @@ export default function Home() {
           <Card className="sm:col-span-2">
             <CardHeader>
               <CardTitle>Sign in</CardTitle>
-              <CardDescription>Enter your credentials to continue.</CardDescription>
+              <CardDescription>
+                Enter your credentials to continue.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-1.5">
@@ -220,7 +254,9 @@ export default function Home() {
             </CardContent>
             <CardFooter className="flex gap-3">
               <Button className="flex-1">Sign in</Button>
-              <Button variant="outline" className="flex-1">Create account</Button>
+              <Button variant="outline" className="flex-1">
+                Create account
+              </Button>
             </CardFooter>
           </Card>
 
@@ -236,13 +272,13 @@ export default function Home() {
               </p>
             </CardContent>
             <CardFooter>
-              <Button variant="destructive" className="w-full">Delete account</Button>
+              <Button variant="destructive" className="w-full">
+                Delete account
+              </Button>
             </CardFooter>
           </Card>
-
         </div>
       </section>
-
     </div>
-  );
+  )
 }

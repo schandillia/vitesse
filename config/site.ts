@@ -2,8 +2,13 @@ export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
   name: "Vitesse",
-  description: "A high-performance Next.js SaaS boilerplate powered by Postgres, Redis, and BetterAuth.",
+  description:
+    "A high-performance Next.js SaaS boilerplate powered by Postgres, Redis, and BetterAuth.",
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  domain: "vitesse.com",
+  emails: {
+    noReply: "onboarding@resend.dev",
+  },
   mainNav: [
     {
       title: "Dashboard",

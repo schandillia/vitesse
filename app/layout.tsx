@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/site"
 
 export const metadata: Metadata = {
   title: {
@@ -8,19 +8,16 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      className="h-full antialiased"
-    >
+    <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
-  );
+  )
 }

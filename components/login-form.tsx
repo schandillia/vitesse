@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -9,11 +11,20 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { siteConfig } from "@/config/site"
+import { authClient } from "@/lib/auth-client"
+import { useState } from "react"
 
-export function AuthForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    await authClient.signIn.magicLink({
+      email,
+      callbackURL: "/dashboard",
+    })
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -25,7 +36,7 @@ export function AuthForm({
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
           </div>
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">
@@ -35,7 +46,7 @@ export function AuthForm({
                   Enter your email below to receive a secure login link.
                 </p>
               </div>
-              
+
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
@@ -43,6 +54,8 @@ export function AuthForm({
                   type="email"
                   placeholder="example@vitesse.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </Field>
 
@@ -83,8 +96,9 @@ export function AuthForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="/terms">Terms of Service</a>{" "}
-        and <a href="/privacy">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <a href="/terms">Terms of Service</a> and{" "}
+        <a href="/privacy">Privacy Policy</a>.
       </FieldDescription>
     </div>
   )
