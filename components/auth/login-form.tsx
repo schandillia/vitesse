@@ -15,8 +15,8 @@ import { signIn } from "@/lib/auth-client"
 import { useState } from "react"
 
 import { FaGoogle, FaApple, FaFingerprint } from "react-icons/fa"
-import LoginButton from "./login-button"
 import { LoadingSwap } from "@/components/ui/loading-swap"
+import SocialLoginButton from "@/components/auth/social-login-button"
 
 const socialProviders = [
   { icon: <FaApple className="size-6" />, label: "Continue with Apple" },
@@ -35,16 +35,26 @@ export function LoginForm({
   const [email, setEmail] = useState("")
   const [sent, setSent] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
-    await signIn.magicLink({
+    setError(null)
+    const { error } = await signIn.magicLink({
       email,
       callbackURL: "/dashboard",
     })
     setIsLoading(false)
-    setSent(true)
+    if (error) {
+      if (error.status === 429) {
+        setError("Too many attempts. Please try after some time.")
+      } else {
+        setError("Something went wrong. Please check your email and try again.")
+      }
+    } else {
+      setSent(true)
+    }
   }
 
   return (
@@ -89,16 +99,20 @@ export function LoginForm({
                     placeholder="example@vitesse.com"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setError(null)
+                    }}
                   />
                 </Field>
 
                 <Field>
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full" disabled={isLoading}>
                     <LoadingSwap isLoading={isLoading}>
                       Send Login Link
                     </LoadingSwap>
                   </Button>
+                  {error && <p className="text-sm text-destructive">{error}</p>}
                 </Field>
 
                 <div className="relative flex items-center gap-3 text-sm text-muted-foreground">
@@ -109,7 +123,7 @@ export function LoginForm({
 
                 <Field className="grid grid-cols-3 gap-4">
                   {socialProviders.map((provider) => (
-                    <LoginButton key={provider.label} {...provider} />
+                    <SocialLoginButton key={provider.label} {...provider} />
                   ))}
                 </Field>
               </FieldGroup>
