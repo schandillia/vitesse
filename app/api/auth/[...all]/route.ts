@@ -41,22 +41,23 @@ export async function POST(request: Request) {
   const clonedRequest = request.clone()
   const decision = await checkArcjet(request)
 
+  function getEmailErrorMessage(emailTypes: string[]): string {
+    if (emailTypes.includes("INVALID")) return "Invalid email address."
+    if (emailTypes.includes("NO_MX_RECORDS")) return "Email domain not valid."
+    if (emailTypes.includes("DISPOSABLE"))
+      return "Disposable email addresses are not allowed."
+    return "Unknown error."
+  }
+
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
-      return new Response(null, { status: 429 })
+      return new Response("Too many attempts. Please try after some time.", {
+        status: 429,
+      })
     } else if (decision.reason.isEmail()) {
-      let message: string
-
-      if (decision.reason.emailTypes.includes("INVALID")) {
-        message = "Invalid email address."
-      } else if (decision.reason.emailTypes.includes("NO_MX_RECORDS")) {
-        message = "Email domain not valid."
-      } else if (decision.reason.emailTypes.includes("DISPOSABLE")) {
-        message = "Disposable email addresses are not allowed."
-      } else {
-        message = "Unknown error."
-      }
-      return Response.json(message, { status: 400 })
+      return Response.json(getEmailErrorMessage(decision.reason.emailTypes), {
+        status: 400,
+      })
     } else {
       return new Response(null, { status: 403 })
     }

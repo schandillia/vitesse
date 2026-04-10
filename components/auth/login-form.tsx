@@ -46,15 +46,9 @@ export function LoginForm({
       callbackURL: "/dashboard",
     })
     setIsLoading(false)
-    if (error) {
-      if (error.status === 429) {
-        setError("Too many attempts. Please try after some time.")
-      } else {
-        setError("Something went wrong. Please check your email and try again.")
-      }
-    } else {
-      setSent(true)
-    }
+    if (error)
+      setError(error.message ?? "Something went wrong. Please try again.")
+    else setSent(true)
   }
 
   return (
