@@ -7,13 +7,21 @@ import { passkey } from "@better-auth/passkey"
 import { Resend } from "resend"
 import { renderMagicLinkEmail } from "@/emails/magic-link"
 import { siteConfig } from "@/config/site"
+import { nextCookies } from "better-auth/next-js"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5, // 5 minutes
+    },
+  },
   plugins: [
+    nextCookies(),
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         await resend.emails.send({
