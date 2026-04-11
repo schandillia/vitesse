@@ -8,8 +8,11 @@ import {
   DEFAULT_LOGIN_REDIRECT,
 } from "@/routes"
 
+const createUrl = (path: string, url: URL) => new URL(path, url)
+
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { nextUrl } = request
+  const { pathname, search } = nextUrl
 
   if (pathname.startsWith(apiRoutes)) {
     return NextResponse.next()
@@ -24,17 +27,31 @@ export async function proxy(request: NextRequest) {
 
   if (authRoutes.has(pathname)) {
     if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, request.url))
+      return NextResponse.redirect(createUrl(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
     return NextResponse.next()
   }
 
+  // Redirect unauthenticated users safely
   if (!isLoggedIn) {
-    const callbackUrl = encodeURIComponent(pathname)
+    const callbackUrl = `${pathname}${search}`
+
+    const safeCallbackUrl = callbackUrl.startsWith("/")
+      ? callbackUrl
+      : DEFAULT_LOGIN_REDIRECT
+
+    const encodedCallbackUrl = encodeURIComponent(safeCallbackUrl)
+
     return NextResponse.redirect(
-      new URL(`/login?callbackUrl=${callbackUrl}`, request.url)
+      createUrl(`/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
     )
   }
 
   return NextResponse.next()
+}
+
+export const config = {
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|assets/|fonts/|audio/effects/|.*\\.(?:svg|png|jpg|jpeg|webp|mp3|ico|json|txt|wav)$).*)",
+  ],
 }

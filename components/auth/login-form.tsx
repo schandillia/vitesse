@@ -11,8 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { siteConfig } from "@/config/site"
 import { authClient, signIn } from "@/lib/auth-client"
-import { useState } from "react"
-
+import { useState, useRef } from "react"
 import { FaGoogle, FaApple, FaFingerprint } from "react-icons/fa"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import SocialLoginButton from "@/components/auth/social-login-button"
@@ -30,22 +29,40 @@ export function LoginForm({
   const [sent, setSent] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const isLoadingRef = useRef(false)
 
   async function withLoading(fn: () => Promise<void>) {
+    if (isLoadingRef.current) return
+    isLoadingRef.current = true
     setIsLoading(true)
     setError(null)
-    await fn()
-    setIsLoading(false)
+    try {
+      await fn()
+    } finally {
+      isLoadingRef.current = false
+      setIsLoading(false)
+    }
   }
 
-  async function handleSocialLogin(provider: "google" | "apple") {
-    await withLoading(async () => {
-      const { error } = await authClient.signIn.social({
-        provider,
-        callbackURL,
+  function handleError(err?: { message?: string } | null) {
+    setError(err?.message ?? "Something went wrong. Please try again.")
+  }
+
+  function handleSocialLogin(provider: "google" | "apple") {
+    return () =>
+      withLoading(async () => {
+        const { error } = await authClient.signIn.social({
+          provider,
+          callbackURL,
+        })
+        if (error) handleError(error)
       })
-      if (error)
-        setError(error.message ?? "Something went wrong. Please try again.")
+  }
+
+  function handlePasskey() {
+    withLoading(async () => {
+      const { error } = await signIn.passkey()
+      if (error) handleError(error)
     })
   }
 
@@ -53,8 +70,7 @@ export function LoginForm({
     e.preventDefault()
     await withLoading(async () => {
       const { error } = await signIn.magicLink({ email, callbackURL })
-      if (error)
-        setError(error.message ?? "Something went wrong. Please try again.")
+      if (error) handleError(error)
       else setSent(true)
     })
   }
@@ -63,22 +79,25 @@ export function LoginForm({
     {
       icon: <FaApple className="size-6" />,
       label: "Continue with Apple",
-      onClick: () => handleSocialLogin("google"), // temporary: replace with "apple" later
+      onClick: handleSocialLogin("google"), // temporary: replace with "apple" later
     },
     {
       icon: <FaGoogle className="size-5" />,
       label: "Continue with Google",
-      onClick: () => handleSocialLogin("google"),
+      onClick: handleSocialLogin("google"),
     },
     {
       icon: <FaFingerprint className="size-5" />,
       label: "Continue with Passkey",
-      onClick: () => signIn.passkey(),
+      onClick: handlePasskey,
     },
   ]
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <span className="sr-only" aria-live="polite">
+        {isLoading ? "Signing in, please wait." : ""}
+      </span>
       {sent ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 md:p-8 text-center">
           <h2 className="text-2xl font-bold">Check your email</h2>
@@ -109,6 +128,7 @@ export function LoginForm({
                 type="email"
                 placeholder="example@vitesse.com"
                 required
+                disabled={isLoading}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value)
@@ -121,7 +141,11 @@ export function LoginForm({
               <Button type="submit" className="w-full" disabled={isLoading}>
                 <LoadingSwap isLoading={isLoading}>Send Login Link</LoadingSwap>
               </Button>
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && (
+                <p className="text-sm text-destructive" aria-live="polite">
+                  {error}
+                </p>
+              )}
             </Field>
 
             <div className="relative flex items-center gap-3 text-sm text-muted-foreground">
@@ -132,7 +156,11 @@ export function LoginForm({
 
             <Field className="grid grid-cols-3 gap-4">
               {socialProviders.map((provider) => (
-                <SocialLoginButton key={provider.label} {...provider} />
+                <SocialLoginButton
+                  key={provider.label}
+                  {...provider}
+                  disabled={isLoading}
+                />
               ))}
             </Field>
           </FieldGroup>

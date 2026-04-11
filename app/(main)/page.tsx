@@ -15,13 +15,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground p-10 space-y-16 max-w-4xl mx-auto">
       {/* ── Typography ── */}
-      <section className="space-y-4">
-        <Link href="/about" className="font-bold mr-5">
-          About
-        </Link>
-        <Link href="/login" className="font-bold">
-          Login
-        </Link>
+      <section className="font-bold space-y-4">
+        <div className="space-x-4">
+          <Link href="/about">About</Link>
+          <Link href="/login">Login</Link>
+          <Link href="/dashboard">Dashboard</Link>
+        </div>
         <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
           Typography
         </p>

@@ -7,7 +7,19 @@ export const metadata: Metadata = {
   description: "Sign in to your account.",
 }
 
-export default function AuthPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>
+}) {
+  const params = await searchParams
+  const rawCallbackUrl = params?.callbackUrl
+
+  const callbackURL =
+    rawCallbackUrl && rawCallbackUrl.startsWith("/")
+      ? rawCallbackUrl
+      : "/dashboard"
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-4xl">
@@ -21,7 +33,7 @@ export default function AuthPage() {
                 className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
               />
             </div>
-            <LoginForm callbackURL="/dashboard" />
+            <LoginForm callbackURL={callbackURL} />
           </CardContent>
         </Card>
       </div>
