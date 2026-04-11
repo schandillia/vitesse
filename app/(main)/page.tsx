@@ -9,15 +9,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import Link from "next/link"
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground p-10 space-y-16 max-w-4xl mx-auto">
       {/* ── Typography ── */}
       <section className="space-y-4">
-        <Button asChild>
-          <a href="/signup">Sign Up</a>
-        </Button>
+        <Link href="/about" className="font-bold mr-5">
+          About
+        </Link>
+        <Link href="/login" className="font-bold">
+          Login
+        </Link>
         <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
           Typography
         </p>
