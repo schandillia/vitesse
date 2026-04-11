@@ -9,6 +9,7 @@ export const siteConfig = {
   callbackAfterLogin: "/dashboard",
   emails: {
     noReply: "onboarding@resend.dev",
+    support: "support@vitesse.com",
   },
   mainNav: [
     {
