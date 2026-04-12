@@ -1,6 +1,5 @@
-import { Navbar } from "@/components/layout/navbar"
-import { LoginModalProvider } from "@/components/auth/login-modal-provider"
-import { Footer } from "@/components/layout/footer"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/layout/app-sidebar"
 
 export default function ProtectedLayout({
   children,
@@ -8,12 +7,12 @@ export default function ProtectedLayout({
   children: React.ReactNode
 }) {
   return (
-    <LoginModalProvider>
-      <Navbar />
-      <main className="flex-1 text-foreground py-10 space-y-16 w-full max-w-6xl mx-auto">
-        {children}
-      </main>
-      <Footer />
-    </LoginModalProvider>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        {/* Top bar */}
+        <div className="flex flex-1 flex-col gap-6 p-6">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
