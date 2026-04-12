@@ -26,13 +26,13 @@ export function Navbar() {
             {siteConfig.name}
           </span>
         </Link>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 font-bold">
           <nav className="hidden md:flex items-center gap-6">
             {navLinks.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 decoration-2 transition-colors"
               >
                 {label}
               </Link>

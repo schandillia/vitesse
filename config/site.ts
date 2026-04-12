@@ -5,6 +5,7 @@ export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
   name: "Vitesse",
+  copyrightStartYear: 2023,
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   domain: "vitesse.com",
   callbackAfterLogin: "/dashboard",
