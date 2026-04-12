@@ -31,7 +31,7 @@ export function Footer() {
             <span key={link.href} className="flex items-center gap-4">
               <Link
                 href={link.href}
-                className="hover:text-foreground transition-colors hover:underline underline-offset-4 decoration-2"
+                className="hover:text-foreground transition-colors hover:underline underline-offset-4"
               >
                 {link.label}
               </Link>
