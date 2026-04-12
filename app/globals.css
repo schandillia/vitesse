@@ -171,7 +171,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: Inter, ui-sans-serif, sans-serif, system-ui;
+  --font-sans: Nunito, ui-sans-serif, sans-serif, system-ui;
   --font-mono: IBM Plex Mono, monospace;
   --font-serif: Lora, serif;
 

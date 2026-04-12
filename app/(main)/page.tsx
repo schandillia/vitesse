@@ -21,6 +21,7 @@ export default function Home() {
           <Link href="/login">Login</Link>
           <Link href="/dashboard">Dashboard</Link>
         </div>
+        <h1 className="text-pink-500">Nunito Blue Test</h1>
         <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
           Typography
         </p>
