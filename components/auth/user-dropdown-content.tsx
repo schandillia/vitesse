@@ -35,18 +35,24 @@ export function UserDropdownContent({
 
       <DropdownMenuSeparator />
 
-      <DropdownMenuItem asChild>
+      <DropdownMenuItem
+        asChild
+        className="rounded-4xl focus:bg-sidebar-accent/20 cursor-pointer"
+      >
         <Link href="/dashboard">Dashboard</Link>
       </DropdownMenuItem>
 
-      <DropdownMenuItem asChild>
+      <DropdownMenuItem
+        asChild
+        className="rounded-4xl focus:bg-sidebar-accent/20 cursor-pointer"
+      >
         <Link href="/settings">Settings</Link>
       </DropdownMenuItem>
 
       <DropdownMenuSeparator />
 
       <DropdownMenuItem
-        className="text-destructive focus:text-destructive"
+        className="rounded-4xl focus:bg-sidebar-accent/20 cursor-pointer text-destructive focus:text-destructive"
         onClick={onSignOut}
       >
         Sign out

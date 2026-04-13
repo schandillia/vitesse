@@ -71,7 +71,7 @@ export function AppSidebar() {
                     asChild
                     isActive={pathname === href}
                     tooltip={label}
-                    className="rounded-4xl h-10 data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent data-[active=false]:hover:text-sidebar-accent-foreground"
+                    className="rounded-4xl h-10 data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent/20 data-[active=false]:hover:text-sidebar-accent-foreground"
                   >
                     <Link href={href}>
                       <Icon />
@@ -94,7 +94,7 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
                     size="lg"
-                    className="data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent data-[active=false]:hover:text-sidebar-accent-foreground"
+                    className="rounded-4xl data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent/20 data-[active=false]:hover:text-sidebar-accent-foreground"
                   >
                     <Avatar className="size-6">
                       <AvatarImage
