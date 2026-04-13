@@ -6,7 +6,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import { siteConfig } from "@/config/site"
 import { LayoutDashboardIcon, LogOutIcon, SettingsIcon } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { UserInfo } from "@/components/auth/user-info"
@@ -50,7 +49,6 @@ export function UserDropdownContent({
           <div className="px-2 py-1.5">
             <UserInfo user={user} />
           </div>
-
           <DropdownMenuSeparator />
         </>
       )}

@@ -39,7 +39,8 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       {/* Header — brand */}
-      <SidebarHeader className="flex flex-row items-center justify-between px-2 py-1.5">
+      <SidebarHeader className="flex flex-row items-center justify-between px-2 py-1.5 group-data-[collapsible=icon]:justify-center">
+        {" "}
         <Link href="/" className="flex items-center gap-2">
           <img src="/brand-logo.svg" alt={siteConfig.name} className="size-6" />
           <span className="font-brand font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
