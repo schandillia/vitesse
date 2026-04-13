@@ -2,25 +2,13 @@
 
 import { useLoginModal } from "@/components/auth/login-modal-provider"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useUserMenu } from "@/components/auth/hooks/use-user-menu"
 import { UserDropdownContent } from "@/components/auth/user-dropdown-content"
-
-function getInitials(name: string | null | undefined, email: string): string {
-  if (name) {
-    return name
-      .split(" ")
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-  }
-  return email[0].toUpperCase()
-}
+import { UserAvatar } from "@/components/auth/user-avatar"
 
 export function UserButton() {
   const { openModal } = useLoginModal()
@@ -37,13 +25,7 @@ export function UserButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="size-8 cursor-pointer">
-          <AvatarImage
-            src={user.image ?? undefined}
-            alt={user.name || user.email}
-          />
-          <AvatarFallback>{getInitials(user.name, user.email)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar user={user} className="cursor-pointer" />
       </DropdownMenuTrigger>
       <UserDropdownContent
         user={user}

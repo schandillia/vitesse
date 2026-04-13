@@ -14,7 +14,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { siteConfig } from "@/config/site"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -24,24 +23,13 @@ import Link from "next/link"
 import { useUserMenu } from "@/components/auth/hooks/use-user-menu"
 import { usePathname } from "next/navigation"
 import { UserDropdownContent } from "@/components/auth/user-dropdown-content"
+import { UserAvatar } from "@/components/auth/user-avatar"
 
 const navItems = [
   { href: "/profile", label: "Profile", icon: User },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/settings", label: "Settings", icon: Settings },
 ]
-
-function getInitials(name: string | null | undefined, email: string): string {
-  if (name) {
-    return name
-      .split(" ")
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-  }
-  return email[0].toUpperCase()
-}
 
 export function AppSidebar() {
   const { user, handleSignOut } = useUserMenu()
@@ -96,24 +84,14 @@ export function AppSidebar() {
                     size="lg"
                     className="cursor-pointer rounded-4xl data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent/20 data-[active=false]:hover:text-sidebar-accent-foreground focus-visible:ring-1 focus-visible:ring-sidebar-accent/30"
                   >
-                    <Avatar className="size-6">
-                      <AvatarImage
-                        src={user.image ?? undefined}
-                        alt={user.name || user.email}
-                      />
-                      <AvatarFallback className="text-xs">
-                        {getInitials(user.name, user.email)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col text-left leading-tight">
+                    <UserAvatar user={user} />
+                    <div className="flex flex-col min-w-0 text-left leading-tight">
                       <span className="text-sm font-medium truncate">
-                        {user.name || user.email}
+                        {user.name || siteConfig.genericUser}
                       </span>
-                      {user.name && (
-                        <span className="text-xs text-muted-foreground truncate">
-                          {user.email}
-                        </span>
-                      )}
+                      <span className="text-xs text-muted-foreground truncate">
+                        {user.email}
+                      </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4 shrink-0" />
                   </SidebarMenuButton>
