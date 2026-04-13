@@ -14,7 +14,9 @@ import { authClient, signIn } from "@/lib/auth-client"
 import { useState, useRef } from "react"
 import { FaGoogle, FaApple, FaFingerprint } from "react-icons/fa"
 import { LoadingSwap } from "@/components/ui/loading-swap"
-import SocialLoginButton from "@/components/auth/social-login-button"
+import { MagicLinkSent } from "@/components/auth/magic-link-sent"
+import { LoginFormHeader } from "@/components/auth/login-form-header"
+import { OneClickLogin } from "@/components/auth/one-click-login"
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   callbackURL?: string
@@ -27,20 +29,27 @@ export function LoginForm({
 }: LoginFormProps) {
   const [email, setEmail] = useState("")
   const [sent, setSent] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [loadingAction, setLoadingAction] = useState<"magic" | "other" | null>(
+    null
+  )
   const [error, setError] = useState<string | null>(null)
   const isLoadingRef = useRef(false)
 
-  async function withLoading(fn: () => Promise<void>) {
+  async function withLoading(
+    action: "magic" | "other",
+    fn: () => Promise<void>
+  ) {
     if (isLoadingRef.current) return
     isLoadingRef.current = true
-    setIsLoading(true)
+
+    setLoadingAction(action)
     setError(null)
+
     try {
       await fn()
     } finally {
       isLoadingRef.current = false
-      setIsLoading(false)
+      setLoadingAction(null)
     }
   }
 
@@ -50,7 +59,7 @@ export function LoginForm({
 
   function handleSocialLogin(provider: "google" | "apple") {
     return () =>
-      withLoading(async () => {
+      withLoading("other", async () => {
         const { error } = await authClient.signIn.social({
           provider,
           callbackURL,
@@ -60,7 +69,7 @@ export function LoginForm({
   }
 
   function handlePasskey() {
-    withLoading(async () => {
+    withLoading("other", async () => {
       const { error } = await signIn.passkey()
       if (error) handleError(error)
     })
@@ -68,7 +77,8 @@ export function LoginForm({
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
-    await withLoading(async () => {
+
+    await withLoading("magic", async () => {
       const { error } = await signIn.magicLink({ email, callbackURL })
       if (error) handleError(error)
       else setSent(true)
@@ -79,7 +89,7 @@ export function LoginForm({
     {
       icon: <FaApple className="size-6" />,
       label: "Continue with Apple",
-      onClick: handleSocialLogin("google"), // temporary: replace with "apple" later
+      onClick: handleSocialLogin("apple"),
     },
     {
       icon: <FaGoogle className="size-5" />,
@@ -93,34 +103,21 @@ export function LoginForm({
     },
   ]
 
+  const isDisabled = loadingAction !== null
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      {/* Accessibility */}
       <span className="sr-only" aria-live="polite">
-        {isLoading ? "Signing in, please wait." : ""}
+        {loadingAction ? "Signing in, please wait." : ""}
       </span>
+
       {sent ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 md:p-8 text-center">
-          <h2 className="text-2xl font-bold">Check your email</h2>
-          <p className="text-sm text-muted-foreground">
-            We sent a login link to <strong>{email}</strong>. Click the link in
-            the email to sign in.
-          </p>
-          <Button variant="link" onClick={() => setSent(false)}>
-            Use a different email
-          </Button>
-        </div>
+        <MagicLinkSent email={email} onReset={() => setSent(false)} />
       ) : (
         <form className="p-6 md:p-8" onSubmit={handleSubmit}>
           <FieldGroup>
-            <div className="flex flex-col items-center gap-2 text-center">
-              <h1 className="text-2xl font-bold">
-                Welcome to {siteConfig.name}
-              </h1>
-              <p className="text-sm text-balance text-muted-foreground">
-                Enter your email below to receive a secure login link.
-              </p>
-            </div>
-
+            <LoginFormHeader />
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
@@ -128,7 +125,7 @@ export function LoginForm({
                 type="email"
                 placeholder="example@vitesse.com"
                 required
-                disabled={isLoading}
+                disabled={isDisabled}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value)
@@ -138,9 +135,12 @@ export function LoginForm({
             </Field>
 
             <Field>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                <LoadingSwap isLoading={isLoading}>Send Login Link</LoadingSwap>
+              <Button type="submit" className="w-full" disabled={isDisabled}>
+                <LoadingSwap isLoading={loadingAction === "magic"}>
+                  Send Login Link
+                </LoadingSwap>
               </Button>
+
               {error && (
                 <p className="text-sm text-destructive" aria-live="polite">
                   {error}
@@ -154,18 +154,11 @@ export function LoginForm({
               <div className="h-px flex-1 bg-border" />
             </div>
 
-            <Field className="grid grid-cols-3 gap-4">
-              {socialProviders.map((provider) => (
-                <SocialLoginButton
-                  key={provider.label}
-                  {...provider}
-                  disabled={isLoading}
-                />
-              ))}
-            </Field>
+            <OneClickLogin providers={socialProviders} disabled={isDisabled} />
           </FieldGroup>
         </form>
       )}
+
       {!sent && (
         <FieldDescription className="px-6 pb-6 text-sm text-center">
           By clicking continue, you agree to our{" "}

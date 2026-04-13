@@ -30,9 +30,10 @@ export default async function LoginPage({
             <div className="relative hidden min-h-[350px] bg-muted md:block">
               <img
                 src="/login-image.svg"
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                alt={`Illustration for ${siteConfig.name} login`}
+                className="absolute inset-0 h-full w-full object-cover"
               />
+              <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
             </div>
             <LoginForm callbackURL={callbackURL} />
           </CardContent>

@@ -14,26 +14,16 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { siteConfig } from "@/config/site"
-import { useSession } from "@/lib/auth-client"
-import { authClient } from "@/lib/auth-client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  LayoutDashboard,
-  Settings,
-  ChevronsUpDown,
-  LogOut,
-  User,
-} from "lucide-react"
+import { LayoutDashboard, Settings, ChevronsUpDown, User } from "lucide-react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { publicRoutes } from "@/routes"
+import { useUserMenu } from "@/components/auth/hooks/use-user-menu"
+import { usePathname } from "next/navigation"
+import { UserDropdownContent } from "@/components/auth/user-dropdown-content"
 
 const navItems = [
   { href: "/profile", label: "Profile", icon: User },
@@ -54,19 +44,8 @@ function getInitials(name: string | null | undefined, email: string): string {
 }
 
 export function AppSidebar() {
-  const { data: session } = useSession()
+  const { user, handleSignOut } = useUserMenu()
   const pathname = usePathname()
-  const router = useRouter()
-
-  async function handleSignOut() {
-    await authClient.signOut()
-    if (publicRoutes.has(pathname)) {
-      router.refresh()
-    } else {
-      router.push("/")
-      router.refresh()
-    }
-  }
 
   return (
     <Sidebar collapsible="icon">
@@ -110,7 +89,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            {session && (
+            {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
@@ -119,39 +98,32 @@ export function AppSidebar() {
                   >
                     <Avatar className="size-6">
                       <AvatarImage
-                        src={session.user.image ?? undefined}
-                        alt={session.user.name || session.user.email}
+                        src={user.image ?? undefined}
+                        alt={user.name || user.email}
                       />
                       <AvatarFallback className="text-xs">
-                        {getInitials(session.user.name, session.user.email)}
+                        {getInitials(user.name, user.email)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col text-left leading-tight">
                       <span className="text-sm font-medium truncate">
-                        {session.user.name || session.user.email}
+                        {user.name || user.email}
                       </span>
-                      {session.user.name && (
+                      {user.name && (
                         <span className="text-xs text-muted-foreground truncate">
-                          {session.user.email}
+                          {user.email}
                         </span>
                       )}
                     </div>
                     <ChevronsUpDown className="ml-auto size-4 shrink-0" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent side="top" align="start" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings">Settings</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={handleSignOut}
-                  >
-                    <LogOut className="mr-2 size-4" />
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
+                <UserDropdownContent
+                  user={user}
+                  onSignOut={handleSignOut}
+                  align="start"
+                  side="top"
+                />
               </DropdownMenu>
             )}
           </SidebarMenuItem>
