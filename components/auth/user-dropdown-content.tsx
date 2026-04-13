@@ -8,6 +8,7 @@ import {
 import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { LayoutDashboardIcon, LogOutIcon, SettingsIcon } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 interface User {
   name: string
@@ -37,6 +38,9 @@ export function UserDropdownContent({
   const align = isSidebar ? "start" : "end"
   const side = isSidebar ? "top" : "bottom"
 
+  const pathname = usePathname()
+  const filteredItems = menuItems.filter((item) => item.href !== pathname)
+
   return (
     <DropdownMenuContent align={align} side={side} className="w-48">
       {/* Show only in navbar */}
@@ -55,7 +59,7 @@ export function UserDropdownContent({
         </>
       )}
 
-      {menuItems.map((item) => {
+      {filteredItems.map((item) => {
         const Icon = item.icon
         return (
           <DropdownMenuItem key={item.href} asChild className={baseItemClass}>
