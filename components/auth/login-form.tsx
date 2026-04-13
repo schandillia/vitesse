@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { siteConfig } from "@/config/site"
-import { authClient, signIn } from "@/lib/auth-client"
+import { authClient, signIn } from "@/lib/auth/auth-client"
 import { useState, useRef } from "react"
 import { FaGoogle, FaApple, FaFingerprint } from "react-icons/fa"
 import { LoadingSwap } from "@/components/ui/loading-swap"

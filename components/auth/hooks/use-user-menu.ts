@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession, authClient } from "@/lib/auth-client"
+import { useSession, authClient } from "@/lib/auth/auth-client"
 import { usePathname, useRouter } from "next/navigation"
 import { publicRoutes } from "@/routes"
 

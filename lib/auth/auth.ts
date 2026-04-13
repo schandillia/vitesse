@@ -15,6 +15,14 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+      },
+    },
+  },
   session: {
     cookieCache: {
       enabled: true,

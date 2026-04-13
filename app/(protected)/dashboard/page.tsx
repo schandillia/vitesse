@@ -1,23 +1,26 @@
-import { SidebarTrigger } from "@/components/ui/sidebar"
+import { ProtectedPageTitle } from "@/app/(protected)/components/protected-page-title"
+import { ProfileInformation } from "@/app/(protected)/dashboard/components/profile-information"
 import { siteConfig } from "@/config/site"
-import { MenuIcon } from "lucide-react"
+import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: siteConfig.metaData.dashboard.title,
   description: siteConfig.metaData.dashboard.description,
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await getServerSession()
+  const user = session?.user
+  if (!session || !user) {
+    redirect("/login")
+  }
+
   return (
     <div className="container">
-      <div className="flex items-center gap-3">
-        <SidebarTrigger className="md:hidden p-1 shrink-0">
-          <MenuIcon className="size-5" />
-        </SidebarTrigger>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-      </div>
-      <p>Welcome to your dashboard!</p>
+      <ProtectedPageTitle title="Dashboard" />
+      <ProfileInformation user={user} />
     </div>
   )
 }
