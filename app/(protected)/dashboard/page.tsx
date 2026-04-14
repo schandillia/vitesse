@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const session = await getServerSession()
   const user = session?.user
+
   if (!session || !user) {
     redirect("/login")
   }

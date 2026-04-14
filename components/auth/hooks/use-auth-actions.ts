@@ -1,11 +1,10 @@
 "use client"
 
-import { useSession, authClient } from "@/lib/auth/auth-client"
+import { authClient } from "@/lib/auth/auth-client"
 import { usePathname, useRouter } from "next/navigation"
 import { publicRoutes } from "@/routes"
 
-export function useUserMenu() {
-  const { data: session, isPending } = useSession()
+export function useAuthActions() {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -20,9 +19,5 @@ export function useUserMenu() {
     }
   }
 
-  return {
-    user: session?.user ?? null,
-    isPending,
-    handleSignOut,
-  }
+  return { handleSignOut }
 }

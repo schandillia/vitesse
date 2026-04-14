@@ -20,11 +20,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LayoutDashboard, Settings, ChevronsUpDown, User } from "lucide-react"
 import Link from "next/link"
-import { useUserMenu } from "@/components/auth/hooks/use-user-menu"
 import { usePathname } from "next/navigation"
 import { UserDropdownContent } from "@/components/auth/user-dropdown-content"
 import { UserAvatar } from "@/components/auth/user-avatar"
 import { UserInfo } from "@/components/auth/user-info"
+import { useAuthActions } from "@/components/auth/hooks/use-auth-actions"
+import type { auth } from "@/lib/auth/auth"
 
 const navItems = [
   { href: "/profile", label: "Profile", icon: User },
@@ -32,8 +33,12 @@ const navItems = [
   { href: "/settings", label: "Settings", icon: Settings },
 ]
 
-export function AppSidebar() {
-  const { user, handleSignOut } = useUserMenu()
+interface AppSidebarProps {
+  user: typeof auth.$Infer.Session.user
+}
+
+export function AppSidebar({ user }: AppSidebarProps) {
+  const { handleSignOut } = useAuthActions()
   const pathname = usePathname()
 
   return (
