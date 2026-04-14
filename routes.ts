@@ -1,3 +1,5 @@
+import { siteConfig } from "@/config/site"
+
 /**
  * Sets of routes for different access levels
  * Using Sets for O(1) lookup performance
@@ -34,4 +36,4 @@ export const apiRoutes = "/api/"
 /**
  * The default redirect path after sign-in
  */
-export const DEFAULT_LOGIN_REDIRECT = "/dashboard"
+export const DEFAULT_LOGIN_REDIRECT = siteConfig.callbackAfterLogin

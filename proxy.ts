@@ -1,12 +1,9 @@
+// proxy.ts
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { auth } from "@/lib/auth/auth"
-import {
-  publicRoutes,
-  authRoutes,
-  apiRoutes,
-  DEFAULT_LOGIN_REDIRECT,
-} from "@/routes"
+import { CSP } from "@/lib/csp"
+import { publicRoutes, authRoutes, DEFAULT_LOGIN_REDIRECT } from "@/routes"
 
 const createUrl = (path: string, url: URL) => new URL(path, url)
 
@@ -14,40 +11,39 @@ export async function proxy(request: NextRequest) {
   const { nextUrl } = request
   const { pathname, search } = nextUrl
 
-  if (pathname.startsWith(apiRoutes)) {
-    return NextResponse.next()
-  }
+  let response = NextResponse.next()
+  const isPublicRoute = publicRoutes.has(pathname)
 
-  if (publicRoutes.has(pathname)) {
-    return NextResponse.next()
-  }
+  // 1. Routing & Auth Logic
+  if (!isPublicRoute) {
+    const session = await auth.api.getSession({ headers: request.headers })
+    const isLoggedIn = !!session
 
-  const session = await auth.api.getSession({ headers: request.headers })
-  const isLoggedIn = !!session
+    if (authRoutes.has(pathname)) {
+      if (isLoggedIn) {
+        response = NextResponse.redirect(
+          createUrl(DEFAULT_LOGIN_REDIRECT, nextUrl)
+        )
+      }
+    } else if (!isLoggedIn) {
+      const callbackUrl = `${pathname}${search}`
+      const safeCallbackUrl = callbackUrl.startsWith("/")
+        ? callbackUrl
+        : DEFAULT_LOGIN_REDIRECT
+      const encodedCallbackUrl = encodeURIComponent(safeCallbackUrl)
 
-  if (authRoutes.has(pathname)) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(createUrl(DEFAULT_LOGIN_REDIRECT, nextUrl))
+      response = NextResponse.redirect(
+        createUrl(`/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+      )
     }
-    return NextResponse.next()
   }
 
-  // Redirect unauthenticated users safely
-  if (!isLoggedIn) {
-    const callbackUrl = `${pathname}${search}`
-
-    const safeCallbackUrl = callbackUrl.startsWith("/")
-      ? callbackUrl
-      : DEFAULT_LOGIN_REDIRECT
-
-    const encodedCallbackUrl = encodeURIComponent(safeCallbackUrl)
-
-    return NextResponse.redirect(
-      createUrl(`/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
-    )
+  // 2. CSP Optimization (Only apply to actual page renders, skip redirects)
+  if (response.status !== 301 && response.status !== 302) {
+    response.headers.set("Content-Security-Policy", CSP)
   }
 
-  return NextResponse.next()
+  return response
 }
 
 export const config = {
