@@ -25,11 +25,11 @@ function WelcomeEmail({ name }: WelcomeEmailProps) {
           </Text>
 
           <Text>
-            We're glad to have you. Click the link below to get started.
+            We’re glad to have you. Click the link below to get started.
           </Text>
           <Link href={siteConfig.url}>Go to {siteConfig.name}</Link>
           <Text>
-            If you didn't create this account, please contact us at{" "}
+            If you didn’t create this account, please contact us at{" "}
             <Link href={`mailto:${siteConfig.emails.support.email}`}>
               {siteConfig.emails.support.email}
             </Link>
