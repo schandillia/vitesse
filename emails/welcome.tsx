@@ -30,8 +30,8 @@ function WelcomeEmail({ name }: WelcomeEmailProps) {
           <Link href={siteConfig.url}>Go to {siteConfig.name}</Link>
           <Text>
             If you didn't create this account, please contact us at{" "}
-            <Link href={`mailto:${siteConfig.emails.support}`}>
-              {siteConfig.emails.support}
+            <Link href={`mailto:${siteConfig.emails.support.email}`}>
+              {siteConfig.emails.support.email}
             </Link>
             .
           </Text>

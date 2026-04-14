@@ -4,13 +4,11 @@ import { db } from "@/db/drizzle"
 import * as schema from "@/db/auth-schema"
 import { magicLink } from "better-auth/plugins"
 import { passkey } from "@better-auth/passkey"
-import { Resend } from "resend"
+import { sendEmail } from "@/lib/send-email"
 import { renderMagicLinkEmail } from "@/emails/magic-link"
 import { siteConfig } from "@/config/site"
 import { nextCookies } from "better-auth/next-js"
 import { renderWelcomeEmail } from "@/emails/welcome"
-
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
@@ -25,9 +23,11 @@ export const auth = betterAuth({
     },
   },
   session: {
+    expiresIn: siteConfig.expiresInDays * 24 * 60 * 60,
+    updateAge: siteConfig.updateAgeInDays * 24 * 60 * 60,
     cookieCache: {
       enabled: true,
-      maxAge: 60 * 5,
+      maxAge: siteConfig.cookieMaxAgeInMinutes * 60,
     },
   },
   socialProviders: {
@@ -41,11 +41,11 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          await resend.emails.send({
-            from: `${siteConfig.name} <${siteConfig.emails.noReply}>`,
+          await sendEmail({
             to: user.email,
+            from: `${siteConfig.emails.welcome.sender} <${siteConfig.emails.welcome.email}>`,
             subject: `Welcome to ${siteConfig.name}!`,
-            html: await renderWelcomeEmail(user.name || ""),
+            body: await renderWelcomeEmail(user.name || ""),
           })
         },
       },
@@ -55,11 +55,10 @@ export const auth = betterAuth({
     nextCookies(),
     magicLink({
       sendMagicLink: async ({ email, url }) => {
-        await resend.emails.send({
-          from: `${siteConfig.name} <${siteConfig.emails.noReply}>`,
+        await sendEmail({
           to: email,
           subject: `Your ${siteConfig.name} login link`,
-          html: await renderMagicLinkEmail(url),
+          body: await renderMagicLinkEmail(url),
         })
       },
     }),

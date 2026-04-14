@@ -1,24 +1,35 @@
-import { profile } from "console"
-import { features } from "process"
-
-export type SiteConfig = typeof siteConfig
+const brandName = "Vitesse"
+const brandDomain = "vitesse.com"
+const emailSenderName = "Amit"
 
 export const siteConfig = {
-  name: "Vitesse",
+  name: brandName,
   copyrightStartYear: 2023,
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  domain: "vitesse.com",
+  domain: brandDomain,
   callbackAfterLogin: "/dashboard",
+  expiresInDays: 30,
+  updateAgeInDays: 1,
+  cookieMaxAgeInMinutes: 5,
   emails: {
-    noReply: "onboarding@resend.dev",
-    support: "support@vitesse.com",
+    support: {
+      sender: `${brandName} Team`,
+      email: "onboarding@resend.dev",
+    },
+    welcome: {
+      sender: `${emailSenderName} from ${brandName}`,
+      email: "onboarding@resend.dev",
+    },
+    magicLink: {
+      sender: `${brandName} Accounts`,
+      email: "onboarding@resend.dev",
+    },
   },
   genericUser: "User",
   metaData: {
     home: {
-      title: "Vitesse, The best starter for Next.js 16",
-      description:
-        "Vitesse is a Next.js 13 starter template with everything you need to build a modern web app, including authentication, database, and more.",
+      title: `${brandName}, The best starter for Next.js 16`,
+      description: `${brandName} is a Next.js 16 starter template with everything you need to build a modern web app, including authentication, database, and more.`,
     },
     dashboard: {
       title: "Dashboard",
@@ -38,11 +49,11 @@ export const siteConfig = {
     },
     features: {
       title: "Features",
-      description: "Explore the features of Vitesse.",
+      description: `Explore the features of ${brandName}.`,
     },
     docs: {
       title: "Documentation",
-      description: "Find out how Vitesse works.",
+      description: `Find out how ${brandName} works.`,
     },
     contact: {
       title: "Contact",
@@ -50,7 +61,9 @@ export const siteConfig = {
     },
     about: {
       title: "About",
-      description: "Learn more about Vitesse.",
+      description: `Learn more about ${brandName}.`,
     },
   },
 }
+
+export type SiteConfig = typeof siteConfig
