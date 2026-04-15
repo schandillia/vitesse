@@ -40,7 +40,7 @@ export function ProfileInformation({ user }: ProfileInformationProps) {
 
   return (
     <div className="space-y-6">
-      <Card className="max-w-xl overflow-hidden border-muted/60 shadow-sm">
+      <Card className="max-w-2xl border-muted/60 shadow-xs bg-primary/5">
         <CardContent className="p-6 md:p-10">
           <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
             {/* Left Column: Avatar & Badge */}
@@ -51,16 +51,16 @@ export function ProfileInformation({ user }: ProfileInformationProps) {
             </div>
 
             {/* Right Column: Details & Stats */}
-            <div className="flex flex-1 flex-col justify-center">
+            <div className="flex flex-1 flex-col justify-center min-w-0">
               {/* Header Info: Centered on mobile, left-aligned on desktop */}
-              <div className="mb-6 flex flex-col items-center md:items-start">
+              <div className="mb-6 flex flex-col items-center md:items-start min-w-0 w-full">
                 {user.role && (
                   <Badge className="gap-1.5 px-3 py-1 mb-2 capitalize">
                     <ShieldIcon className="size-3" aria-hidden="true" />
                     {user.role}
                   </Badge>
                 )}
-                <EditableName initialName={defaultName} userId={user.id} />
+                <EditableName initialName={defaultName} />
                 <p className="text-center text-base text-muted-foreground md:text-left">
                   {user.email}
                 </p>

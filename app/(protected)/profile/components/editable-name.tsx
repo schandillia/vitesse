@@ -3,17 +3,15 @@
 import * as React from "react"
 import { PencilIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { updateUserName } from "@/actions/user"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { authClient } from "@/lib/auth/auth-client"
 
 interface EditableNameProps {
   initialName: string
-  userId: string
 }
 
-export function EditableName({ initialName, userId }: EditableNameProps) {
+export function EditableName({ initialName }: EditableNameProps) {
   const [name, setName] = React.useState(initialName)
   const [isEditing, setIsEditing] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
@@ -56,7 +54,7 @@ export function EditableName({ initialName, userId }: EditableNameProps) {
   }
 
   return (
-    <div className="mb-1 flex w-fit items-center">
+    <div className="mb-1 flex min-w-0 w-full items-center justify-center md:justify-start">
       {isEditing ? (
         <Input
           ref={inputRef}
@@ -72,19 +70,19 @@ export function EditableName({ initialName, userId }: EditableNameProps) {
           }}
           autoComplete="off"
           spellCheck={false}
-          className="h-8 rounded-none border-0 border-transparent bg-transparent! px-0 py-0 text-2xl font-bold tracking-tight shadow-none outline-none ring-0 focus:bg-transparent focus-visible:ring-0 active:bg-transparent md:text-2xl [&:-webkit-autofill]:delay-[9999s]"
+          className="h-8 rounded-none text-center md:text-left border-0 border-transparent bg-transparent! px-0 py-0 text-2xl font-bold tracking-tight shadow-none outline-none ring-0 focus:bg-transparent focus-visible:ring-0 active:bg-transparent md:text-2xl [&:-webkit-autofill]:delay-[9999s]"
         />
       ) : (
-        <h2 className="text-2xl font-bold tracking-tight">
+        <h2 className="text-2xl font-bold tracking-tight min-w-0 w-full">
           <button
             type="button"
             onClick={() => setIsEditing(true)}
-            className="cursor-text group flex items-center gap-2 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="cursor-text group flex w-full items-center justify-center md:justify-start gap-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring overflow-hidden before:block before:w-4 before:shrink-0 md:before:hidden"
             aria-label="Edit name"
           >
-            <span>{name}</span>
+            <span className="truncate min-w-0">{name}</span>
             <PencilIcon
-              className="size-4 text-muted-foreground transition-colors group-hover:text-foreground ml-2 opacity-30"
+              className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground opacity-30"
               aria-hidden="true"
             />
           </button>
