@@ -3,6 +3,10 @@
 import * as React from "react"
 import { PencilIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { updateUserName } from "@/actions/user"
+import { useRouter } from "next/navigation"
+import { toast } from "react-hot-toast"
+import { authClient } from "@/lib/auth/auth-client"
 
 interface EditableNameProps {
   initialName: string
@@ -13,6 +17,8 @@ export function EditableName({ initialName, userId }: EditableNameProps) {
   const [name, setName] = React.useState(initialName)
   const [isEditing, setIsEditing] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const router = useRouter()
 
   React.useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -25,12 +31,28 @@ export function EditableName({ initialName, userId }: EditableNameProps) {
     setIsEditing(false)
   }
 
-  const handleSave = () => {
-    if (name.trim() === "") {
-      setName(initialName)
+  const handleSave = async () => {
+    if (name.trim() === "" || name === initialName) {
+      setIsEditing(false)
+      return
     }
+
     setIsEditing(false)
-    // TODO: Wire up your Server Action here using the userId
+
+    // 2. Use BetterAuth's built-in update method instead of your custom action
+    // This updates the DB AND refreshes the session cookie automatically
+    const { error } = await authClient.updateUser({
+      name: name,
+    })
+
+    if (error) {
+      toast.error(error.message || "Failed to update profile")
+      setName(initialName)
+      return
+    }
+
+    toast.success("Profile updated successfully")
+    router.refresh()
   }
 
   return (

@@ -45,7 +45,7 @@ export function ProfileInformation({ user }: ProfileInformationProps) {
           <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
             {/* Left Column: Avatar & Badge */}
             <div className="flex shrink-0 flex-col items-center gap-4">
-              <div className="rounded-full ring-4 ring-background/50 drop-shadow-sm">
+              <div className="rounded-full ring-4 ring-foreground/40">
                 <UserAvatar user={user} className="size-36 md:size-60" />
               </div>
             </div>

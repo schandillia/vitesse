@@ -26,6 +26,7 @@ import { UserAvatar } from "@/components/auth/user-avatar"
 import { UserInfo } from "@/components/auth/user-info"
 import { useAuthActions } from "@/components/auth/hooks/use-auth-actions"
 import type { auth } from "@/lib/auth/auth"
+import { ModeToggle } from "@/components/layout/mode-toggle"
 
 const navItems = [
   { href: "/profile", label: "Profile", icon: User },
@@ -81,6 +82,9 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
       {/* Footer — user */}
       <SidebarFooter>
+        <div className="flex w-full justify-center pb-2">
+          <ModeToggle expanded />
+        </div>
         <SidebarMenu>
           <SidebarMenuItem>
             {user && (
