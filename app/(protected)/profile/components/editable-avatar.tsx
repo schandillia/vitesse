@@ -9,6 +9,7 @@ import { authClient } from "@/lib/auth/auth-client" // Adjust path to your Bette
 import toast from "react-hot-toast" // Updated to react-hot-toast
 import { useRouter } from "next/navigation"
 import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
 
 interface EditableAvatarProps {
   user: User
@@ -64,7 +65,7 @@ export function EditableAvatar({ user, className }: EditableAvatarProps) {
   }
 
   return (
-    <div className="relative group inline-block">
+    <div className={cn("relative group inline-block", className)}>
       {/* Hidden File Input */}
       <input
         type="file"
@@ -77,10 +78,13 @@ export function EditableAvatar({ user, className }: EditableAvatarProps) {
 
       {/* The Avatar */}
       <div
-        className={`relative overflow-hidden rounded-full cursor-pointer transition-opacity ${isUploading ? "opacity-50" : "group-hover:opacity-90"}`}
+        className={cn(
+          "relative overflow-hidden rounded-full cursor-pointer transition-opacity h-full w-full",
+          isUploading ? "opacity-50" : "group-hover:opacity-90"
+        )}
         onClick={() => !isUploading && fileInputRef.current?.click()}
       >
-        <UserAvatar user={user} className={className} />
+        <UserAvatar user={user} className="h-full w-full border-none" />
 
         {/* Loading Overlay */}
         {isUploading && (
@@ -94,7 +98,7 @@ export function EditableAvatar({ user, className }: EditableAvatarProps) {
       {!isUploading && (
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="absolute bottom-0 right-4 rounded-full bg-primary p-2 text-primary-foreground shadow-sm ring-2 ring-background transition-transform hover:scale-105 active:scale-95 md:bottom-2 md:right-6"
+          className="absolute bottom-0 right-2 rounded-full bg-primary p-2 text-primary-foreground shadow-sm ring-2 ring-background transition-transform hover:scale-105 active:scale-95 md:bottom-4 md:right-4"
           aria-label="Edit profile picture"
         >
           <PencilIcon className="size-4 md:size-5" />

@@ -46,12 +46,11 @@ export function ProfileInformation({ user }: ProfileInformationProps) {
           <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
             {/* Left Column: Avatar & Badge */}
             <div className="flex shrink-0 flex-col items-center gap-4">
-              <div className="rounded-full ring-4 ring-foreground/40">
-                <EditableAvatar
-                  user={user}
-                  className="size-36 md:size-60"
-                />{" "}
-              </div>
+              <EditableAvatar
+                user={user}
+                // We move the ring/border logic directly into the component
+                className="size-36 md:size-60 ring-4 ring-foreground/40 rounded-full"
+              />
             </div>
 
             {/* Right Column: Details & Stats */}
