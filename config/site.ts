@@ -15,6 +15,19 @@ export const siteConfig = {
   cookieMaxAgeInMinutes: 5,
   logOutEverywhereInstantly: true,
   enableSessionWatcher: true,
+  arcjet: {
+    enabled: false,
+    rateLimits: {
+      restrictive: {
+        max: 10,
+        interval: "10m",
+      },
+      lax: {
+        max: 60,
+        interval: "1m",
+      },
+    },
+  },
   avatarSizeLimitInMB: 5,
   sentry: {
     enabled: false,

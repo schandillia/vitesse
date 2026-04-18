@@ -1,5 +1,6 @@
 export const runtime = "nodejs"
 
+import { siteConfig } from "@/config/site"
 import { auth } from "@/lib/auth/auth"
 import { toNextJsHandler } from "better-auth/next-js"
 import arcjet, {
@@ -14,22 +15,24 @@ import arcjet, {
 import { findIp } from "@arcjet/ip"
 import { env } from "@/env"
 
-const aj = arcjet({
-  key: env.ARCJET_KEY!,
-  characteristics: ["userIdOrIp"],
-  rules: [shield({ mode: "LIVE" })],
-})
+function getAj() {
+  return arcjet({
+    key: env.ARCJET_KEY!,
+    characteristics: ["userIdOrIp"],
+    rules: [shield({ mode: "LIVE" })],
+  })
+}
 
 const botSettings = { mode: "LIVE", allow: [] } satisfies BotOptions
 const restrictiveRateLimitSettings = {
   mode: "LIVE",
-  max: 10,
-  interval: "10m",
+  max: siteConfig.arcjet.rateLimits.restrictive.max,
+  interval: siteConfig.arcjet.rateLimits.restrictive.interval,
 } as SlidingWindowRateLimitOptions<[]>
 const laxRateLimitSettings = {
   mode: "LIVE",
-  max: 60,
-  interval: "1m",
+  max: siteConfig.arcjet.rateLimits.lax.max,
+  interval: siteConfig.arcjet.rateLimits.lax.interval,
 } as SlidingWindowRateLimitOptions<[]>
 const emailSettings = {
   mode: "LIVE",
@@ -41,6 +44,10 @@ const authHandlers = toNextJsHandler(auth)
 export const { GET } = authHandlers
 
 export async function POST(request: Request) {
+  if (!siteConfig.arcjet.enabled) {
+    return authHandlers.POST(request)
+  }
+
   const clonedRequest = request.clone()
   const decision = await checkArcjet(request)
 
@@ -83,7 +90,7 @@ async function checkArcjet(request: Request) {
       "email" in body &&
       typeof body.email === "string"
     ) {
-      return aj
+      return getAj()
         .withRule(
           protectSignup({
             email: emailSettings,
@@ -93,14 +100,14 @@ async function checkArcjet(request: Request) {
         )
         .protect(request, { email: body.email, userIdOrIp })
     } else {
-      return aj
+      return getAj()
         .withRule(detectBot(botSettings))
         .withRule(slidingWindow(restrictiveRateLimitSettings))
         .protect(request, { userIdOrIp })
     }
   }
 
-  return aj
+  return getAj()
     .withRule(detectBot(botSettings))
     .withRule(slidingWindow(laxRateLimitSettings))
     .protect(request, { userIdOrIp })
