@@ -1,3 +1,5 @@
+import { env } from "@/env"
+
 const brandName = "Vitesse"
 const brandDomain = "vitesse.com"
 const emailSenderName = "Amit"
@@ -5,7 +7,7 @@ const emailSenderName = "Amit"
 export const siteConfig = {
   name: brandName,
   copyrightStartYear: 2023,
-  url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  url: env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   domain: brandDomain,
   callbackAfterLogin: "/dashboard",
   expiresInDays: 30,

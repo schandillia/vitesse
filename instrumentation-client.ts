@@ -3,11 +3,12 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import { siteConfig } from "@/config/site"
+import { env } from "@/env"
 import * as Sentry from "@sentry/nextjs"
 
 if (siteConfig.sentry.enabled) {
   Sentry.init({
-    dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    dsn: env.NEXT_PUBLIC_SENTRY_DSN,
 
     // Add optional integrations for additional features
     integrations: [Sentry.replayIntegration()],

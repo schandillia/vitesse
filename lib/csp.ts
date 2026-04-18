@@ -1,7 +1,8 @@
-const awsRegion = process.env.AWS_REGION || "ap-south-1"
+import { env } from "@/env"
 
-const posthogHost =
-  process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com"
+const awsRegion = env.AWS_REGION || "ap-south-1"
+
+const posthogHost = env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com"
 const posthogAssetHost = posthogHost.replace(
   ".i.posthog.com",
   "-assets.i.posthog.com"

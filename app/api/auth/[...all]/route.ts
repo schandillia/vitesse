@@ -1,4 +1,3 @@
-// app/api/auth/[...all]/route.ts
 export const runtime = "nodejs"
 
 import { auth } from "@/lib/auth/auth"
@@ -13,9 +12,10 @@ import arcjet, {
   slidingWindow,
 } from "@arcjet/next"
 import { findIp } from "@arcjet/ip"
+import { env } from "@/env"
 
 const aj = arcjet({
-  key: process.env.ARCJET_KEY!,
+  key: env.ARCJET_KEY!,
   characteristics: ["userIdOrIp"],
   rules: [shield({ mode: "LIVE" })],
 })

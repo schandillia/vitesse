@@ -1,9 +1,9 @@
+import { env } from "./env"
 import { withSentryConfig } from "@sentry/nextjs"
 import type { NextConfig } from "next"
 
 // 1. Read the host variable (fallback to US if missing)
-const posthogHost =
-  process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com"
+const posthogHost = env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com"
 
 // 2. Dynamically construct the asset host by injecting "-assets" into the domain string
 const posthogAssetHost = posthogHost.replace(

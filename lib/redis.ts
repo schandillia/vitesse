@@ -1,8 +1,9 @@
 import { siteConfig } from "@/config/site"
+import { env } from "@/env"
 import { Redis } from "@upstash/redis"
 
-const url = process.env.UPSTASH_REDIS_REST_URL
-const token = process.env.UPSTASH_REDIS_REST_TOKEN
+const url = env.UPSTASH_REDIS_REST_URL
+const token = env.UPSTASH_REDIS_REST_TOKEN
 
 if (!url || !token) {
   console.warn(

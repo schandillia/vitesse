@@ -8,12 +8,13 @@ import {
 import { auth } from "@/lib/auth/auth"
 import { randomUUID } from "crypto"
 import { headers } from "next/headers"
+import { env } from "@/env"
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION!,
+  region: env.AWS_REGION!,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY!,
   },
 })
 
@@ -41,7 +42,7 @@ export async function uploadAvatarAction(formData: FormData) {
     // 3. Upload the NEW file
     await s3Client.send(
       new PutObjectCommand({
-        Bucket: process.env.AWS_S3_BUCKET_NAME!,
+        Bucket: env.AWS_S3_BUCKET_NAME!,
         Key: uniqueFileName,
         Body: buffer,
         ContentType: file.type,
@@ -49,7 +50,7 @@ export async function uploadAvatarAction(formData: FormData) {
       })
     )
 
-    const publicUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uniqueFileName}`
+    const publicUrl = `https://${env.AWS_S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${uniqueFileName}`
 
     // 4. CLEANUP: Delete the old file from S3
     // We do this AFTER the new upload succeeds to ensure the user isn't left empty-handed
@@ -59,7 +60,7 @@ export async function uploadAvatarAction(formData: FormData) {
         if (oldKey) {
           await s3Client.send(
             new DeleteObjectCommand({
-              Bucket: process.env.AWS_S3_BUCKET_NAME!,
+              Bucket: env.AWS_S3_BUCKET_NAME!,
               Key: oldKey,
             })
           )

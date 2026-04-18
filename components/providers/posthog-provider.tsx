@@ -5,9 +5,9 @@ import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react"
 import { Suspense, useEffect, useRef } from "react"
 import { usePathname, useSearchParams } from "next/navigation"
 import { siteConfig } from "@/config/site"
+import { env } from "@/env"
 
-const posthogHost =
-  process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com"
+const posthogHost = env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com"
 const posthogUiHost = posthogHost.replace(".i.posthog.com", ".posthog.com")
 
 function PostHogPageView() {
@@ -34,8 +34,8 @@ function PostHogPageView() {
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Only initialize if the toggle is ON and the key exists
-    if (siteConfig.enablePostHog && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+    if (siteConfig.enablePostHog && env.NEXT_PUBLIC_POSTHOG_KEY) {
+      posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
         api_host: "/ingest", // Use the Next.js proxy tunnel to bypass ad-blockers
         ui_host: posthogUiHost, // Keep UI tools pointing to PostHog
         person_profiles: "identified_only", // Privacy friendly
