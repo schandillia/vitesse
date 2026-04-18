@@ -5,8 +5,8 @@ import { UserAvatar } from "@/components/auth/user-avatar"
 import { User } from "@/lib/auth/auth"
 import { PencilIcon, Loader2Icon } from "lucide-react"
 import { uploadAvatarAction } from "@/app/actions/upload-avatar"
-import { authClient } from "@/lib/auth/auth-client" // Adjust path to your BetterAuth client
-import toast from "react-hot-toast" // Updated to react-hot-toast
+import { authClient } from "@/lib/auth/auth-client"
+import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"

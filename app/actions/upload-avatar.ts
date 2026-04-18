@@ -19,14 +19,18 @@ const s3Client = new S3Client({
 
 export async function uploadAvatarAction(formData: FormData) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    })
+    if (!session || !session.user) {
+      throw new Error("Unauthorized")
+    }
+
     const file = formData.get("file") as File
     if (!file) throw new Error("No file provided")
 
     // 1. Identify the current avatar (to be deleted later)
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
-    const oldImageUrl = session?.user.image
+    const oldImageUrl = session.user.image
 
     // 2. Prepare the new upload
     const arrayBuffer = await file.arrayBuffer()
