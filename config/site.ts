@@ -16,15 +16,19 @@ export const siteConfig = {
   logOutEverywhereInstantly: true,
   enableSessionWatcher: true,
   arcjet: {
-    enabled: false,
+    enabled: true,
     rateLimits: {
-      restrictive: {
+      authRestrictive: {
         max: 10,
         interval: "10m",
       },
-      lax: {
+      authLax: {
         max: 60,
         interval: "1m",
+      },
+      contact: {
+        max: 5,
+        interval: "15m",
       },
     },
   },
@@ -39,16 +43,21 @@ export const siteConfig = {
   enablePostHog: true,
   emails: {
     support: {
-      sender: `${brandName} Team`,
+      sender: `Team ${brandName}`,
       email: "onboarding@resend.dev",
+    },
+    contact: {
+      sender: `Team ${brandName}`,
+      fromEmail: "onboarding@resend.dev",
+      toEmail: "amit@schandillia.com",
     },
     welcome: {
       sender: `${emailSenderName} from ${brandName}`,
-      email: "onboarding@resend.dev",
+      fromEmail: "onboarding@resend.dev",
     },
     magicLink: {
       sender: `${brandName} Accounts`,
-      email: "onboarding@resend.dev",
+      fromEmail: "onboarding@resend.dev",
     },
   },
   genericUser: "User",

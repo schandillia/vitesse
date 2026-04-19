@@ -14,25 +14,18 @@ import arcjet, {
 } from "@arcjet/next"
 import { findIp } from "@arcjet/ip"
 import { env } from "@/env"
-
-function getAj() {
-  return arcjet({
-    key: env.ARCJET_KEY!,
-    characteristics: ["userIdOrIp"],
-    rules: [shield({ mode: "LIVE" })],
-  })
-}
+import { ajAuth, getArcjetErrorMessage } from "@/lib/arcjet"
 
 const botSettings = { mode: "LIVE", allow: [] } satisfies BotOptions
 const restrictiveRateLimitSettings = {
   mode: "LIVE",
-  max: siteConfig.arcjet.rateLimits.restrictive.max,
-  interval: siteConfig.arcjet.rateLimits.restrictive.interval,
+  max: siteConfig.arcjet.rateLimits.authRestrictive.max,
+  interval: siteConfig.arcjet.rateLimits.authRestrictive.interval,
 } as SlidingWindowRateLimitOptions<[]>
 const laxRateLimitSettings = {
   mode: "LIVE",
-  max: siteConfig.arcjet.rateLimits.lax.max,
-  interval: siteConfig.arcjet.rateLimits.lax.interval,
+  max: siteConfig.arcjet.rateLimits.authLax.max,
+  interval: siteConfig.arcjet.rateLimits.authLax.interval,
 } as SlidingWindowRateLimitOptions<[]>
 const emailSettings = {
   mode: "LIVE",
@@ -51,14 +44,6 @@ export async function POST(request: Request) {
   const clonedRequest = request.clone()
   const decision = await checkArcjet(request)
 
-  function getEmailErrorMessage(emailTypes: string[]): string {
-    if (emailTypes.includes("INVALID")) return "Invalid email address."
-    if (emailTypes.includes("NO_MX_RECORDS")) return "Email domain not valid."
-    if (emailTypes.includes("DISPOSABLE"))
-      return "Disposable email addresses are not allowed."
-    return "Unknown error."
-  }
-
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
       return Response.json(
@@ -67,7 +52,7 @@ export async function POST(request: Request) {
       )
     } else if (decision.reason.isEmail()) {
       return Response.json(
-        { message: getEmailErrorMessage(decision.reason.emailTypes) },
+        { message: getArcjetErrorMessage(decision.reason.emailTypes) },
         { status: 400 }
       )
     } else {
@@ -90,7 +75,7 @@ async function checkArcjet(request: Request) {
       "email" in body &&
       typeof body.email === "string"
     ) {
-      return getAj()
+      return ajAuth
         .withRule(
           protectSignup({
             email: emailSettings,
@@ -100,14 +85,14 @@ async function checkArcjet(request: Request) {
         )
         .protect(request, { email: body.email, userIdOrIp })
     } else {
-      return getAj()
+      return ajAuth
         .withRule(detectBot(botSettings))
         .withRule(slidingWindow(restrictiveRateLimitSettings))
         .protect(request, { userIdOrIp })
     }
   }
 
-  return getAj()
+  return ajAuth
     .withRule(detectBot(botSettings))
     .withRule(slidingWindow(laxRateLimitSettings))
     .protect(request, { userIdOrIp })

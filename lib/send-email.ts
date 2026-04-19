@@ -13,7 +13,7 @@ interface SendEmailValues {
 
 export async function sendEmail({
   to,
-  from = `${siteConfig.emails.magicLink.sender} <${siteConfig.emails.magicLink.email}>`,
+  from = `${siteConfig.emails.magicLink.sender} <${siteConfig.emails.magicLink.fromEmail}>`,
   subject,
   body,
 }: SendEmailValues) {

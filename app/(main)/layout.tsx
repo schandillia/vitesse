@@ -10,7 +10,7 @@ export default function MainLayout({
   return (
     <LoginModalProvider>
       <Navbar />
-      <main className="flex-1 text-foreground py-10 space-y-16 w-full max-w-6xl mx-auto">
+      <main className="flex-1 text-foreground py-10 max-w-6xl mx-auto px-4 md:px-8">
         {children}
       </main>
       <Footer />

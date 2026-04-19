@@ -45,7 +45,7 @@ export const auth = betterAuth({
         after: async (user) => {
           await sendEmail({
             to: user.email,
-            from: `${siteConfig.emails.welcome.sender} <${siteConfig.emails.welcome.email}>`,
+            from: `${siteConfig.emails.welcome.sender} <${siteConfig.emails.welcome.fromEmail}>`,
             subject: `Welcome to ${siteConfig.name}!`,
             body: await renderWelcomeEmail(user.name || ""),
           })
