@@ -9,7 +9,7 @@ const stage = process.env.NODE_ENV === "production" ? "prod" : "dev"
 
 new CoreInfrastructureStack(
   app,
-  `${siteConfig.name.toLowerCase()}-infra-${stage}`,
+  `${siteConfig.brand.name.toLowerCase()}-infra-${stage}`,
   {
     /* If you don't specify 'env', this stack will be environment-agnostic.
      Account/Region-dependent features and context lookups will not work,

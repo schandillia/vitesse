@@ -5,8 +5,8 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.dashboard.title,
-  description: siteConfig.metaData.dashboard.description,
+  title: siteConfig.seo.metaData.dashboard.title,
+  description: siteConfig.seo.metaData.dashboard.description,
 }
 
 export default async function DashboardPage() {

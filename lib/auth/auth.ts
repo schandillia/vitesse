@@ -25,11 +25,11 @@ export const auth = betterAuth({
     },
   },
   session: {
-    expiresIn: siteConfig.expiresInDays * 24 * 60 * 60,
-    updateAge: siteConfig.updateAgeInDays * 24 * 60 * 60,
+    expiresIn: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+    updateAge: siteConfig.authAndSession.updateAgeInDays * 24 * 60 * 60,
     cookieCache: {
-      enabled: !siteConfig.logOutEverywhereInstantly,
-      maxAge: siteConfig.cookieMaxAgeInMinutes * 60,
+      enabled: !siteConfig.authAndSession.logOutEverywhereInstantly,
+      maxAge: siteConfig.authAndSession.cookieMaxAgeInMinutes * 60,
     },
   },
   socialProviders: {
@@ -46,7 +46,7 @@ export const auth = betterAuth({
           await sendEmail({
             to: user.email,
             from: `${siteConfig.emails.welcome.sender} <${siteConfig.emails.welcome.fromEmail}>`,
-            subject: `Welcome to ${siteConfig.name}!`,
+            subject: `Welcome to ${siteConfig.brand.name}!`,
             body: await renderWelcomeEmail(user.name || ""),
           })
         },
@@ -59,7 +59,7 @@ export const auth = betterAuth({
       sendMagicLink: async ({ email, url }) => {
         await sendEmail({
           to: email,
-          subject: `Your ${siteConfig.name} login link`,
+          subject: `Your ${siteConfig.brand.name} login link`,
           body: await renderMagicLinkEmail(url),
         })
       },

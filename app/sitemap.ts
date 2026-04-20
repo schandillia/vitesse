@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next"
 import { siteConfig } from "@/config/site"
 
-const { url } = siteConfig
+const {
+  brand: { url },
+} = siteConfig
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

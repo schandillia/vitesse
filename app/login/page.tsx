@@ -4,8 +4,8 @@ import { siteConfig } from "@/config/site"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.login.title,
-  description: siteConfig.metaData.login.description,
+  title: siteConfig.seo.metaData.login.title,
+  description: siteConfig.seo.metaData.login.description,
 }
 
 export default async function LoginPage({
@@ -30,7 +30,7 @@ export default async function LoginPage({
             <div className="relative hidden min-h-[350px] bg-muted md:block">
               <img
                 src="/login-image.svg"
-                alt={`Illustration for ${siteConfig.name} login`}
+                alt={`Illustration for ${siteConfig.brand.name} login`}
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 dark:bg-black/60" />

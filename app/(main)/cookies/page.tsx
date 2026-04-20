@@ -6,8 +6,8 @@ import path from "path"
 import { CookiePreferences } from "@/app/(main)/cookies/components/cookie-preferences"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.cookies.title,
-  description: siteConfig.metaData.cookies.description,
+  title: siteConfig.seo.metaData.cookies.title,
+  description: siteConfig.seo.metaData.cookies.description,
 }
 
 export default async function CookiesPage() {
@@ -15,7 +15,7 @@ export default async function CookiesPage() {
   const raw = await readFile(filePath, "utf-8")
 
   const content = raw
-    .replace(/{{BRAND_NAME}}/g, siteConfig.name)
+    .replace(/{{BRAND_NAME}}/g, siteConfig.brand.name)
     .replace(/{{LAST_REVISED_DATE}}/g, "April 19, 2026")
     .replace(/{{PRIVACY_EMAIL}}/g, siteConfig.emails.privacy.toEmail)
 

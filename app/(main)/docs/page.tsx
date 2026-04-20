@@ -2,8 +2,8 @@ import { siteConfig } from "@/config/site"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.docs.title,
-  description: siteConfig.metaData.docs.description,
+  title: siteConfig.seo.metaData.docs.title,
+  description: siteConfig.seo.metaData.docs.description,
 }
 
 export default function DocsPage() {

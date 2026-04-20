@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   if (!isPublicRoute) {
     const session = await auth.api.getSession({
       headers: request.headers,
-      ...(siteConfig.logOutEverywhereInstantly && {
+      ...(siteConfig.authAndSession.logOutEverywhereInstantly && {
         query: { disableCookieCache: true },
       }),
     })

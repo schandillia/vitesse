@@ -14,16 +14,16 @@ export function Navbar() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
-          aria-label={siteConfig.name}
+          aria-label={siteConfig.brand.name}
           className="flex items-center gap-2"
         >
           <img
             src="/brand-logo.svg"
-            alt={siteConfig.name}
+            alt={siteConfig.brand.name}
             className="h-7 w-auto"
           />
           <span className="font-extrabold text-2xl tracking-tight">
-            {siteConfig.name}
+            {siteConfig.brand.name}
           </span>
         </Link>
         <div className="flex items-center gap-6 font-bold">

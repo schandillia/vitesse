@@ -37,7 +37,8 @@ function PostHogInit() {
   const hasInitialized = useRef(false)
 
   useEffect(() => {
-    if (!siteConfig.enablePostHog || !env.NEXT_PUBLIC_POSTHOG_KEY) return
+    if (!siteConfig.observability.enablePostHog || !env.NEXT_PUBLIC_POSTHOG_KEY)
+      return
 
     if (consent?.analytics) {
       if (!posthog.__loaded) {
@@ -66,7 +67,7 @@ function PostHogInit() {
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   // If the feature is disabled, render nothing but the app itself
-  if (!siteConfig.enablePostHog) {
+  if (!siteConfig.observability.enablePostHog) {
     return <>{children}</>
   }
 

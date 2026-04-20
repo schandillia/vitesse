@@ -1,11 +1,9 @@
 "use server"
 
-import { z } from "zod"
 import { headers } from "next/headers"
 import { sendEmail } from "@/lib/send-email"
 import { siteConfig } from "@/config/site"
-import arcjet, { protectSignup, shield } from "@arcjet/next"
-import { env } from "@/env"
+import { protectSignup } from "@arcjet/next"
 import { contactFormSchema } from "@/lib/validations/contact"
 import { aj, getArcjetErrorMessage } from "@/lib/arcjet"
 import { renderContactNotificationEmail } from "@/emails/contact-notification"
@@ -25,7 +23,7 @@ export async function sendContactEmailAction(values: unknown) {
     const { name, email, subject, message } = parsed.data
 
     // 2. Arcjet protection
-    if (siteConfig.arcjet.enabled) {
+    if (siteConfig.security.arcjet.enabled) {
       const headersList = await headers()
       const decision = await aj
         .withRule(
@@ -37,8 +35,9 @@ export async function sendContactEmailAction(values: unknown) {
             bots: { mode: "LIVE", allow: [] },
             rateLimit: {
               mode: "LIVE",
-              max: siteConfig.arcjet.rateLimits.contact.max,
-              interval: siteConfig.arcjet.rateLimits.contact.interval as string,
+              max: siteConfig.security.arcjet.rateLimits.contact.max,
+              interval: siteConfig.security.arcjet.rateLimits.contact
+                .interval as string,
             },
           })
         )

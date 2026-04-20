@@ -2,8 +2,8 @@ import { siteConfig } from "@/config/site"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.about.title,
-  description: siteConfig.metaData.about.description,
+  title: siteConfig.seo.metaData.about.title,
+  description: siteConfig.seo.metaData.about.description,
 }
 
 export default function AboutPage() {

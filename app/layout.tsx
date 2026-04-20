@@ -31,7 +31,9 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <TooltipProvider>
-                {siteConfig.enableSessionWatcher && <SessionWatcher />}
+                {siteConfig.authAndSession.enableSessionWatcher && (
+                  <SessionWatcher />
+                )}
                 {children}
                 <Toaster position="top-right" />
                 <CookieBanner />

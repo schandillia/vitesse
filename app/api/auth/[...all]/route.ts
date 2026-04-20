@@ -3,29 +3,27 @@ export const runtime = "nodejs"
 import { siteConfig } from "@/config/site"
 import { auth } from "@/lib/auth/auth"
 import { toNextJsHandler } from "better-auth/next-js"
-import arcjet, {
+import {
   BotOptions,
   EmailOptions,
-  shield,
   SlidingWindowRateLimitOptions,
   protectSignup,
   detectBot,
   slidingWindow,
 } from "@arcjet/next"
 import { findIp } from "@arcjet/ip"
-import { env } from "@/env"
 import { ajAuth, getArcjetErrorMessage } from "@/lib/arcjet"
 
 const botSettings = { mode: "LIVE", allow: [] } satisfies BotOptions
 const restrictiveRateLimitSettings = {
   mode: "LIVE",
-  max: siteConfig.arcjet.rateLimits.authRestrictive.max,
-  interval: siteConfig.arcjet.rateLimits.authRestrictive.interval,
+  max: siteConfig.security.arcjet.rateLimits.authRestrictive.max,
+  interval: siteConfig.security.arcjet.rateLimits.authRestrictive.interval,
 } as SlidingWindowRateLimitOptions<[]>
 const laxRateLimitSettings = {
   mode: "LIVE",
-  max: siteConfig.arcjet.rateLimits.authLax.max,
-  interval: siteConfig.arcjet.rateLimits.authLax.interval,
+  max: siteConfig.security.arcjet.rateLimits.authLax.max,
+  interval: siteConfig.security.arcjet.rateLimits.authLax.interval,
 } as SlidingWindowRateLimitOptions<[]>
 const emailSettings = {
   mode: "LIVE",
@@ -37,7 +35,7 @@ const authHandlers = toNextJsHandler(auth)
 export const { GET } = authHandlers
 
 export async function POST(request: Request) {
-  if (!siteConfig.arcjet.enabled) {
+  if (!siteConfig.security.arcjet.enabled) {
     return authHandlers.POST(request)
   }
 

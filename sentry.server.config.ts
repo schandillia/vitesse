@@ -6,18 +6,18 @@ import { siteConfig } from "@/config/site"
 import { env } from "@/env"
 import * as Sentry from "@sentry/nextjs"
 
-if (siteConfig.sentry.enabled) {
+if (siteConfig.observability.sentry.enabled) {
   Sentry.init({
     dsn: env.NEXT_PUBLIC_SENTRY_DSN,
 
     // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-    tracesSampleRate: siteConfig.sentry.tracesSampleRate,
+    tracesSampleRate: siteConfig.observability.sentry.tracesSampleRate,
 
     // Enable logs to be sent to Sentry
     enableLogs: true,
 
     // Enable sending user PII (Personally Identifiable Information)
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-    sendDefaultPii: siteConfig.sentry.sendDefaultPii,
+    sendDefaultPii: siteConfig.observability.sentry.sendDefaultPii,
   })
 }

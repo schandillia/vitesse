@@ -16,7 +16,7 @@ export class S3StorageConstruct extends Construct {
 
     // 1. The Bucket
     this.bucket = new s3.Bucket(this, "UserUploadsBucket", {
-      bucketName: `${siteConfig.name.toLowerCase()}-${cdk.Stack.of(this).account}-${stage}-uploads`,
+      bucketName: `${siteConfig.brand.name.toLowerCase()}-${cdk.Stack.of(this).account}-${stage}-uploads`,
       publicReadAccess: true,
       blockPublicAccess: new s3.BlockPublicAccess({
         blockPublicAcls: false,

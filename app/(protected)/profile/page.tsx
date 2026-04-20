@@ -6,8 +6,8 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.profile.title,
-  description: siteConfig.metaData.profile.description,
+  title: siteConfig.seo.metaData.profile.title,
+  description: siteConfig.seo.metaData.profile.description,
 }
 
 export default async function ProfilePage() {

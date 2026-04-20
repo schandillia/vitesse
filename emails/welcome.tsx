@@ -20,14 +20,14 @@ function WelcomeEmail({ name }: WelcomeEmailProps) {
       <Body>
         <Container>
           <Text>
-            Welcome to {siteConfig.name}
+            Welcome to {siteConfig.brand.name}
             {name ? `, ${name}` : ""}!
           </Text>
 
           <Text>
             We’re glad to have you. Click the link below to get started.
           </Text>
-          <Link href={siteConfig.url}>Go to {siteConfig.name}</Link>
+          <Link href={siteConfig.brand.url}>Go to {siteConfig.brand.name}</Link>
           <Text>
             If you didn’t create this account, please contact us at{" "}
             <Link href={`mailto:${siteConfig.emails.support.email}`}>

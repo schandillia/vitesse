@@ -6,8 +6,8 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.settings.title,
-  description: siteConfig.metaData.settings.description,
+  title: siteConfig.seo.metaData.settings.title,
+  description: siteConfig.seo.metaData.settings.description,
 }
 
 export default async function SettingsPage() {

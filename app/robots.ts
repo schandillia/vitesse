@@ -30,6 +30,6 @@ export default function robots(): MetadataRoute.Robots {
         "/monitoring/",
       ],
     },
-    sitemap: `${siteConfig.url}/sitemap.xml`,
+    sitemap: `${siteConfig.brand.url}/sitemap.xml`,
   }
 }

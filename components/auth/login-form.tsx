@@ -24,7 +24,7 @@ interface LoginFormProps extends React.ComponentProps<"div"> {
 
 export function LoginForm({
   className,
-  callbackURL = siteConfig.callbackAfterLogin,
+  callbackURL = siteConfig.authAndSession.callbackAfterLogin,
   ...props
 }: LoginFormProps) {
   const [email, setEmail] = useState("")

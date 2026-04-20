@@ -1,12 +1,11 @@
 import { siteConfig } from "@/config/site"
 import type { Metadata } from "next"
 import { MessageForm } from "@/app/(main)/contact/components/message-form"
-import { MessageSquare, Clock } from "lucide-react"
 import { getServerSession } from "@/lib/auth/get-server-session"
 
 export const metadata: Metadata = {
-  title: siteConfig.metaData.contact.title,
-  description: siteConfig.metaData.contact.description,
+  title: siteConfig.seo.metaData.contact.title,
+  description: siteConfig.seo.metaData.contact.description,
 }
 
 export default async function ContactPage() {

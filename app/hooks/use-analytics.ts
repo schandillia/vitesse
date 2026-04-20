@@ -7,17 +7,17 @@ export function useAnalytics() {
   const posthog = usePostHog()
 
   function capture(event: string, properties?: Record<string, unknown>) {
-    if (!siteConfig.enablePostHog || !posthog) return
+    if (!siteConfig.observability.enablePostHog || !posthog) return
     posthog.capture(event, properties)
   }
 
   function identify(userId: string, properties?: Record<string, unknown>) {
-    if (!siteConfig.enablePostHog || !posthog) return
+    if (!siteConfig.observability.enablePostHog || !posthog) return
     posthog.identify(userId, properties)
   }
 
   function reset() {
-    if (!siteConfig.enablePostHog || !posthog) return
+    if (!siteConfig.observability.enablePostHog || !posthog) return
     posthog.reset()
   }
 

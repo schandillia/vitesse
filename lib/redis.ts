@@ -7,7 +7,7 @@ const token = env.UPSTASH_REDIS_REST_TOKEN
 
 if (!url || !token) {
   console.warn(
-    `⚠️ [${siteConfig.name}] Upstash Redis environment variables are missing. Caching is disabled and will fall back to the primary database.`
+    `⚠️ [${siteConfig.brand.name}] Upstash Redis environment variables are missing. Caching is disabled and will fall back to the primary database.`
   )
 }
 

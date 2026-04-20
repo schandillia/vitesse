@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth/auth-client"
 import toast from "react-hot-toast"
 import { LoadingSwap } from "@/components/ui/loading-swap"
-import { siteConfig } from "@/config/site"
 import { useAnalytics } from "@/app/hooks/use-analytics"
+import { siteConfig } from "@/config/site"
 
 function formatCacheTime(minutes: number): string {
   if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"}`
@@ -66,10 +66,11 @@ export function LogOutEverywhereButton() {
       >
         <LoadingSwap isLoading={loading}>Log Out Everywhere </LoadingSwap>
       </Button>
-      {!siteConfig.logOutEverywhereInstantly && (
+      {!siteConfig.authAndSession.logOutEverywhereInstantly && (
         <p className="text-sm text-muted-foreground mt-2">
           Other devices may take up to{" "}
-          {formatCacheTime(siteConfig.cookieMaxAgeInMinutes)} to be logged out.
+          {formatCacheTime(siteConfig.authAndSession.cookieMaxAgeInMinutes)} to
+          be logged out.
         </p>
       )}
     </>

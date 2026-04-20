@@ -1,23 +1,23 @@
-import type { Metadata } from "next"
 import { siteConfig } from "@/config/site"
+import type { Metadata } from "next"
 
 export const baseMetadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
+  metadataBase: new URL(siteConfig.brand.url),
 
   title: {
-    default: siteConfig.metaData.home.title,
-    template: `%s | ${siteConfig.name}`,
+    default: siteConfig.seo.metaData.home.title,
+    template: `%s | ${siteConfig.brand.name}`,
   },
 
-  description: siteConfig.metaData.home.description,
+  description: siteConfig.seo.metaData.home.description,
 
-  applicationName: siteConfig.name,
+  applicationName: siteConfig.brand.name,
 
-  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  authors: [{ name: siteConfig.brand.name, url: siteConfig.brand.url }],
 
-  creator: siteConfig.name,
+  creator: siteConfig.brand.name,
 
-  publisher: siteConfig.name,
+  publisher: siteConfig.brand.name,
 
   verification: {
     google: siteConfig.seo.verification.google || undefined,
@@ -41,25 +41,25 @@ export const baseMetadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-    title: siteConfig.metaData.home.title,
-    description: siteConfig.metaData.home.description,
+    url: siteConfig.brand.url,
+    siteName: siteConfig.brand.name,
+    title: siteConfig.seo.metaData.home.title,
+    description: siteConfig.seo.metaData.home.description,
     images: [
       {
         url: "/opengraph-image.png",
         width: 1200,
         height: 630,
-        alt: siteConfig.name,
+        alt: siteConfig.brand.name,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.metaData.home.title,
-    description: siteConfig.metaData.home.description,
+    title: siteConfig.seo.metaData.home.title,
+    description: siteConfig.seo.metaData.home.description,
     images: ["/opengraph-image.png"],
-    creator: `@${siteConfig.name.toLowerCase()}`,
+    creator: `@${siteConfig.brand.name.toLowerCase()}`,
   },
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],

@@ -24,7 +24,7 @@ export const publicRoutes = new Set([
   "/robots.txt",
   "/sitemap.xml",
   "/manifest.json",
-  ...(siteConfig.sentry.enabled ? ["/monitoring"] : []),
+  ...(siteConfig.observability.sentry.enabled ? ["/monitoring"] : []),
 ])
 
 export const authRoutes = new Set(["/login"])
@@ -38,4 +38,5 @@ export const apiRoutes = "/api/"
 /**
  * The default redirect path after sign-in
  */
-export const DEFAULT_LOGIN_REDIRECT = siteConfig.callbackAfterLogin
+export const DEFAULT_LOGIN_REDIRECT =
+  siteConfig.authAndSession.callbackAfterLogin

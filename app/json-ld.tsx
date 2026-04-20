@@ -6,15 +6,15 @@ export function JsonLd() {
     "@graph": [
       {
         "@type": "WebSite",
-        url: siteConfig.url,
-        name: siteConfig.name,
-        description: siteConfig.metaData.home.description,
+        url: siteConfig.brand.url,
+        name: siteConfig.brand.name,
+        description: siteConfig.seo.metaData.home.description,
       },
       {
         "@type": "Organization",
-        url: siteConfig.url,
-        name: siteConfig.name,
-        logo: `${siteConfig.url}/opengraph-image.png`,
+        url: siteConfig.brand.url,
+        name: siteConfig.brand.name,
+        logo: `${siteConfig.brand.url}/opengraph-image.png`,
       },
     ],
   }

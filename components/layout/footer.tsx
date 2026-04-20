@@ -5,10 +5,10 @@ import { ModeToggle } from "@/components/layout/mode-toggle"
 function getCopyrightYears() {
   const currentYear = new Date().getFullYear()
   if (
-    siteConfig.copyrightStartYear &&
-    siteConfig.copyrightStartYear < currentYear
+    siteConfig.brand.copyrightStartYear &&
+    siteConfig.brand.copyrightStartYear < currentYear
   ) {
-    return `${siteConfig.copyrightStartYear}–${currentYear}`
+    return `${siteConfig.brand.copyrightStartYear}–${currentYear}`
   }
   return `${currentYear}`
 }
@@ -46,7 +46,7 @@ export function Footer() {
         {/* Right: Copyright + Toggle */}
         <div className="flex items-center justify-center gap-3 md:justify-end">
           <p className="text-sm text-muted-foreground">
-            © {getCopyrightYears()} {siteConfig.name}
+            © {getCopyrightYears()} {siteConfig.brand.name}
           </p>
           <ModeToggle />
         </div>
