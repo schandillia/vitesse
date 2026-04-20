@@ -17,15 +17,21 @@ jobs:
     timeout-minutes: 10
 
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       CI: true
       NEXT_PUBLIC_APP_URL: http://localhost:3000
       BETTER_AUTH_URL: http://localhost:3000
       NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
       RESEND_API_KEY: dummy
-      BETTER_AUTH_SECRET: dummy
+      BETTER_AUTH_SECRET: "abcdefghijklmnopqrstuvwxyz123456"
       DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
       ARCJET_KEY: dummy
       ARCJET_ENV: development
+      UPSTASH_REDIS_REST_URL: dummy
+      UPSTASH_REDIS_REST_TOKEN: dummy
+      SENTRY_AUTH_TOKEN: dummy
+      GOOGLE_CLIENT_ID: dummy
+      GOOGLE_CLIENT_SECRET: dummy
 
     steps:
       - uses: actions/checkout@v4
@@ -34,12 +40,19 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Cache dependencies
+      - name: Cache Bun dependencies
         uses: actions/cache@v4
         with:
           path: ~/.bun/install/cache
           key: "bun-${{ runner.os }}-${{ hashFiles('**/bun.lockb') }}"
           restore-keys: "bun-${{ runner.os }}-"
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: "next-${{ runner.os }}-${{ hashFiles('**/*.{js,ts,tsx,jsx}') }}"
+          restore-keys: "next-${{ runner.os }}-"
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
