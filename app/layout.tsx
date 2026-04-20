@@ -1,6 +1,6 @@
-import type { Metadata } from "next"
 import "./globals.css"
-import { siteConfig } from "@/config/site"
+import type { Metadata } from "next"
+import { baseMetadata } from "@/lib/metadata"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "react-hot-toast"
@@ -8,14 +8,9 @@ import { SessionWatcher } from "@/lib/auth/session-watcher"
 import { PostHogProvider } from "@/components/providers/posthog-provider"
 import { ConsentProvider } from "@/components/providers/consent-provider"
 import { CookieBanner } from "@/components/cookies/cookie-banner"
+import { siteConfig } from "@/config/site"
 
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.metaData.home.title,
-    template: `%s | ${siteConfig.metaData.home.title}`,
-  },
-  description: siteConfig.metaData.home.description,
-}
+export const metadata: Metadata = baseMetadata
 
 export default function RootLayout({
   children,

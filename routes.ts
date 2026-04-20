@@ -23,6 +23,7 @@ export const publicRoutes = new Set([
   "/contact",
   "/robots.txt",
   "/sitemap.xml",
+  "/manifest.json",
   ...(siteConfig.sentry.enabled ? ["/monitoring"] : []),
 ])
 

@@ -5,6 +5,10 @@ const brandDomain = "vitesse.com"
 const emailSenderName = "Amit"
 
 export const siteConfig = {
+  brand: {
+    backgroundColor: "#0f0f0f",
+    themeColor: "#0f0f0f",
+  },
   name: brandName,
   copyrightStartYear: 2023,
   url: env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
