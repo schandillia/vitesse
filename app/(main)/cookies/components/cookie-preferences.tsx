@@ -1,32 +1,16 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { getConsent, setConsent } from "@/app/actions/consent"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+import { useCookieConsent } from "@/app/hooks/use-cookie-consent"
+import { CookieCategories } from "@/components/cookies/cookie-categories"
 import { Button } from "@/components/ui/button"
 import toast from "react-hot-toast"
 
 export function CookiePreferences() {
-  const [analytics, setAnalytics] = useState(false)
-  const [marketing, setMarketing] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function load() {
-      const consent = await getConsent()
-      if (consent) {
-        setAnalytics(consent.analytics)
-        setMarketing(consent.marketing)
-      }
-      setLoading(false)
-    }
-    load()
-  }, [])
+  const { analytics, setAnalytics, marketing, setMarketing, loading, save } =
+    useCookieConsent()
 
   async function handleSave() {
-    await setConsent({ analytics, marketing })
-    window.dispatchEvent(new Event("consentUpdated"))
+    await save()
     toast.success("Cookie preferences saved.")
   }
 
@@ -42,52 +26,12 @@ export function CookiePreferences() {
         </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <Label htmlFor="essential-pref" className="font-medium">
-              Essential
-            </Label>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Required for the site to function. Cannot be disabled.
-            </p>
-          </div>
-          <Checkbox id="essential-pref" checked disabled />
-        </div>
-
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <Label htmlFor="analytics-pref" className="font-medium">
-              Analytics
-            </Label>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Helps us understand how you use the site. We use PostHog for
-              analytics.
-            </p>
-          </div>
-          <Checkbox
-            id="analytics-pref"
-            checked={analytics}
-            onCheckedChange={(checked) => setAnalytics(checked === true)}
-          />
-        </div>
-
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <Label htmlFor="marketing-pref" className="font-medium">
-              Marketing
-            </Label>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Used to show relevant advertisements and track their performance.
-            </p>
-          </div>
-          <Checkbox
-            id="marketing-pref"
-            checked={marketing}
-            onCheckedChange={(checked) => setMarketing(checked === true)}
-          />
-        </div>
-      </div>
+      <CookieCategories
+        analytics={analytics}
+        marketing={marketing}
+        onAnalyticsChange={setAnalytics}
+        onMarketingChange={setMarketing}
+      />
 
       <Button onClick={handleSave} className="w-full">
         Save preferences
