@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       )
     } else if (decision.reason.isEmail()) {
       return Response.json(
-        { message: getArcjetErrorMessage(decision.reason.emailTypes) },
+        { message: getArcjetErrorMessage(decision) },
         { status: 400 }
       )
     } else {
