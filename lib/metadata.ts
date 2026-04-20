@@ -56,4 +56,14 @@ export const baseMetadata: Metadata = {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     apple: "/apple-icon.png",
   },
+  ...(siteConfig.seo.googleVerification && {
+    verification: {
+      google: siteConfig.seo.googleVerification,
+      ...(siteConfig.seo.bingVerification && {
+        other: {
+          "msvalidate.01": siteConfig.seo.bingVerification,
+        },
+      }),
+    },
+  }),
 }
