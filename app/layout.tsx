@@ -9,6 +9,7 @@ import { PostHogProvider } from "@/components/providers/posthog-provider"
 import { ConsentProvider } from "@/components/providers/consent-provider"
 import { CookieBanner } from "@/components/cookies/cookie-banner"
 import { siteConfig } from "@/config/site"
+import { JsonLd } from "@/app/json-ld"
 
 export const metadata: Metadata = baseMetadata
 
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
+        <JsonLd />
         <ConsentProvider>
           <PostHogProvider>
             <ThemeProvider
