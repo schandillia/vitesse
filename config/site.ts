@@ -65,6 +65,12 @@ export const siteConfig = {
     },
   },
   genericUser: "User",
+  seo: {
+    verification: {
+      google: "",
+      bing: "",
+    },
+  },
   metaData: {
     home: {
       title: `${brandName}, The best starter for Next.js 16`,

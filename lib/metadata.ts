@@ -19,6 +19,15 @@ export const baseMetadata: Metadata = {
 
   publisher: siteConfig.name,
 
+  verification: {
+    google: siteConfig.seo.verification.google || undefined,
+    other: {
+      ...(siteConfig.seo.verification.bing
+        ? { "msvalidate.01": siteConfig.seo.verification.bing }
+        : {}),
+    },
+  },
+
   robots: {
     index: true,
     follow: true,
