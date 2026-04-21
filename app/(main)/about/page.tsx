@@ -17,12 +17,12 @@ const values = [
   {
     title: "Default to transparency",
     // Replace with your own value
-    body: "We share what we’re working on, what broke, and what we learned. No spin, no corporate speak.",
+    body: "We share what we're working on, what broke, and what we learned. No spin, no corporate speak.",
   },
   {
     title: "Quality over quantity",
     // Replace with your own value
-    body: "We’d rather do fewer things exceptionally well than many things adequately.",
+    body: "We'd rather do fewer things exceptionally well than many things adequately.",
   },
 ]
 
