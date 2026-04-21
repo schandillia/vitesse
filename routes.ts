@@ -15,6 +15,7 @@ export const publicRoutes = new Set([
   "/pricing",
   "/docs",
   "/features",
+  "/blog",
   "/faq",
   "/grievance",
   "/support",
