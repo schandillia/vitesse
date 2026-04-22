@@ -13,7 +13,7 @@ export function SessionWatcher() {
     !publicRoutes.has(pathname) && !authRoutes.has(pathname)
 
   // Track last user activity
-  const lastActivityRef = useRef<number>(Date.now())
+  const lastActivityRef = useRef<number>(0)
 
   // Prevent duplicate redirects
   const hasRedirectedRef = useRef(false)
@@ -23,6 +23,8 @@ export function SessionWatcher() {
 
     // Reset redirect guard on route change
     hasRedirectedRef.current = false
+
+    lastActivityRef.current = Date.now()
 
     const updateActivity = () => {
       lastActivityRef.current = Date.now()
