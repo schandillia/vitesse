@@ -20,7 +20,6 @@ export const publicRoutes = new Set([
   "/grievance",
   "/support",
   "/credits",
-  "/security",
   "/contact",
   "/robots.txt",
   "/sitemap.xml",
