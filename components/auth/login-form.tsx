@@ -17,7 +17,6 @@ import { LoadingSwap } from "@/components/ui/loading-swap"
 import { MagicLinkSent } from "@/components/auth/magic-link-sent"
 import { LoginFormHeader } from "@/components/auth/login-form-header"
 import { SocialLogin } from "@/components/auth/social-login"
-import { useRouter } from "next/navigation"
 
 interface LoginFormProps extends React.ComponentProps<"div"> {
   callbackURL?: string
@@ -37,7 +36,6 @@ export function LoginForm({
   )
   const [error, setError] = useState<string | null>(null)
   const isLoadingRef = useRef(false)
-  const router = useRouter()
 
   async function withLoading(
     action: "magic" | "other",
