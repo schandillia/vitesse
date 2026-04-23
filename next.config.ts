@@ -14,6 +14,9 @@ const posthogAssetHost = posthogHost.replace(
 const nextConfig: NextConfig = {
   experimental: {
     authInterrupts: true,
+    serverActions: {
+      bodySizeLimit: `10mb`,
+    },
   },
   async rewrites() {
     return {

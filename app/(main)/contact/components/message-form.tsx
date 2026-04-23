@@ -20,7 +20,7 @@ import Link from "next/link"
 import {
   contactFormSchema,
   type ContactFormValues,
-} from "@/lib/validations/contact"
+} from "@/lib/validations/contact-form-schema"
 
 interface MessageFormProps {
   user?: {

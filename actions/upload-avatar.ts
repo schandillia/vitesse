@@ -9,6 +9,7 @@ import { auth } from "@/lib/auth/auth"
 import { randomUUID } from "crypto"
 import { headers } from "next/headers"
 import { env } from "@/env"
+import { avatarSchema } from "@/lib/validations/avatar-schema"
 
 const s3Client = new S3Client({
   region: env.AWS_REGION!,
@@ -18,76 +19,111 @@ const s3Client = new S3Client({
   },
 })
 
+function extractS3Key(imageUrl: string): string | null {
+  try {
+    const url = new URL(imageUrl)
+    if (
+      url.hostname.includes("cloudfront.net") ||
+      url.hostname.includes("amazonaws.com")
+    ) {
+      return url.pathname.slice(1)
+    }
+    return null
+  } catch {
+    try {
+      if (imageUrl.includes("amazonaws.com")) {
+        return imageUrl.split(".com/")[1] || null
+      }
+      const lastSlash = imageUrl.lastIndexOf("/")
+      return lastSlash !== -1 ? imageUrl.slice(lastSlash + 1) : null
+    } catch {
+      return null
+    }
+  }
+}
+
 export async function uploadAvatarAction(formData: FormData) {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
     })
-    if (!session || !session.user) {
+
+    if (!session?.user) {
       throw new Error("Unauthorized")
     }
 
-    const file = formData.get("file") as File
-    if (!file) throw new Error("No file provided")
+    const file = formData.get("file") as File | null
+    if (!file) {
+      throw new Error("No file provided")
+    }
 
-    // 1. Identify the current avatar (to be deleted later)
-    const oldImageUrl = session.user.image
+    // Zod Validation
+    const validation = avatarSchema.safeParse({ file })
+    if (!validation.success) {
+      return {
+        success: false,
+        error: validation.error.issues[0]?.message || "Invalid file",
+      } as const
+    }
 
-    // 2. Prepare the new upload
-    const arrayBuffer = await file.arrayBuffer()
+    const validatedFile = validation.data.file
+
+    // Upload preparation
+    const arrayBuffer = await validatedFile.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
-    const extension = file.name.split(".").pop()
+
+    const extension =
+      validatedFile.name.split(".").pop()?.toLowerCase() || "jpg"
     const uniqueFileName = `avatars/${randomUUID()}.${extension}`
 
-    // 3. Upload the NEW file
+    // Upload to S3
     await s3Client.send(
       new PutObjectCommand({
         Bucket: env.AWS_S3_BUCKET_NAME!,
         Key: uniqueFileName,
         Body: buffer,
-        ContentType: file.type,
+        ContentType: validatedFile.type,
         CacheControl: "max-age=31536000",
       })
     )
 
+    // Generate public URL
     const cdnBase = env.NEXT_PUBLIC_CLOUDFRONT_URL
     const publicUrl = cdnBase
       ? `${cdnBase}/${uniqueFileName}`
       : `https://${env.AWS_S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${uniqueFileName}`
 
-    // 4. CLEANUP: Delete the old file from S3
-    // We do this AFTER the new upload succeeds to ensure the user isn't left empty-handed
+    // Silent cleanup of old avatar
+    const oldImageUrl = session.user.image
     if (oldImageUrl) {
-      try {
-        let oldKey: string | undefined
-
-        if (oldImageUrl.includes("cloudfront.net")) {
-          // Extract key from CloudFront URL: https://xxxx.cloudfront.net/avatars/uuid.ext
-          oldKey = new URL(oldImageUrl).pathname.slice(1)
-        } else if (oldImageUrl.includes("amazonaws.com")) {
-          // Extract key from S3 URL: https://bucket.s3.region.amazonaws.com/avatars/uuid.ext
-          oldKey = oldImageUrl.split(".com/")[1]
-        }
-
-        if (oldKey) {
+      const oldKey = extractS3Key(oldImageUrl)
+      if (oldKey) {
+        try {
           await s3Client.send(
             new DeleteObjectCommand({
               Bucket: env.AWS_S3_BUCKET_NAME!,
               Key: oldKey,
             })
           )
+        } catch {
+          // Silent failure - new avatar is already uploaded
         }
-      } catch (deleteError) {
-        console.error(
-          "Non-critical: Failed to delete old S3 object",
-          deleteError
-        )
       }
     }
 
-    return { success: true, url: publicUrl }
+    return {
+      success: true,
+      url: publicUrl,
+    } as const
   } catch (error) {
-    console.error("S3 Upload Error:", error)
-    return { success: false, error: "Failed to upload image" }
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to upload image. Please try again."
+
+    return {
+      success: false,
+      error: errorMessage,
+    } as const
   }
 }

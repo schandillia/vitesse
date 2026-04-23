@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth/auth-client"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { siteConfig } from "@/config/site"
+import { avatarSchema } from "@/lib/validations/avatar-schema"
 
 interface EditableAvatarProps {
   user: User
@@ -27,11 +27,10 @@ export function EditableAvatar({ user, className }: EditableAvatarProps) {
     const file = event.target.files?.[0]
     if (!file) return
 
-    // Optional: Check file size (e.g., limit to 5MB)
-    if (file.size > siteConfig.uploads.avatarSizeLimitInMB * 1024 * 1024) {
-      toast.error(
-        `Image must be smaller than ${siteConfig.uploads.avatarSizeLimitInMB}MB`
-      )
+    // Client-side validation using same Zod schema
+    const validation = avatarSchema.safeParse({ file })
+    if (!validation.success) {
+      toast.error(validation.error.issues[0]?.message || "Invalid image")
       return
     }
 
@@ -40,43 +39,35 @@ export function EditableAvatar({ user, className }: EditableAvatarProps) {
       const formData = new FormData()
       formData.append("file", file)
 
-      // 1. Upload to S3 via Server Action
       const result = await uploadAvatarAction(formData)
 
-      if (!result.success || !result.url) {
-        throw new Error(result.error)
+      if (!result.success) {
+        toast.error(result.error)
+        return
       }
 
-      // 2. Update BetterAuth Session & Database
-      await authClient.updateUser({
-        image: result.url,
-      })
-
-      toast.success("Profile picture updated!")
+      await authClient.updateUser({ image: result.url })
+      toast.success("Profile picture updated successfully!")
       router.refresh()
-    } catch (error) {
-      toast.error("Failed to update profile picture")
-      console.error(error)
+    } catch {
+      toast.error("Something went wrong. Please try again.")
     } finally {
       setIsUploading(false)
-      // Reset the input so the same file can be selected again if needed
       if (fileInputRef.current) fileInputRef.current.value = ""
     }
   }
 
   return (
     <div className={cn("relative group inline-block", className)}>
-      {/* Hidden File Input */}
       <input
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
-        accept="image/jpeg, image/png, image/webp"
+        accept="image/jpeg,image/png,image/webp"
         aria-label="Upload new profile picture"
       />
 
-      {/* The Avatar */}
       <div
         className={cn(
           "relative overflow-hidden rounded-full cursor-pointer transition-opacity h-full w-full",
@@ -86,7 +77,6 @@ export function EditableAvatar({ user, className }: EditableAvatarProps) {
       >
         <UserAvatar user={user} className="h-full w-full border-none" />
 
-        {/* Loading Overlay */}
         {isUploading && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
             <Loader2Icon className="size-8 animate-spin text-primary" />
@@ -94,7 +84,6 @@ export function EditableAvatar({ user, className }: EditableAvatarProps) {
         )}
       </div>
 
-      {/* Pencil Badge */}
       {!isUploading && (
         <button
           onClick={() => fileInputRef.current?.click()}
