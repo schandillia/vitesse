@@ -12,6 +12,9 @@ const ACCEPTED_MIME_TYPES = [
 
 const ACCEPTED_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "jfif"] as const
 
+type AllowedMimeType = (typeof ACCEPTED_MIME_TYPES)[number]
+type AllowedExtension = (typeof ACCEPTED_EXTENSIONS)[number]
+
 export const avatarSchema = z.object({
   file: z
     .instanceof(File, { message: "File is required" })
@@ -19,14 +22,14 @@ export const avatarSchema = z.object({
       // Size validation
       if (file.size > MAX_SIZE_BYTES) {
         ctx.addIssue({
-          code: "custom", // ← Fixed: use string "custom"
+          code: "custom",
           message: `Image must be smaller than ${siteConfig.uploads.avatarSizeLimitInMB}MB`,
         })
         return
       }
 
       // MIME Type validation
-      if (!ACCEPTED_MIME_TYPES.includes(file.type as any)) {
+      if (!ACCEPTED_MIME_TYPES.includes(file.type as AllowedMimeType)) {
         ctx.addIssue({
           code: "custom",
           message: "Only JPG, PNG, and WebP images are allowed",
@@ -36,7 +39,10 @@ export const avatarSchema = z.object({
 
       // Extension validation
       const extension = file.name.split(".").pop()?.toLowerCase()
-      if (!extension || !ACCEPTED_EXTENSIONS.includes(extension as any)) {
+      if (
+        !extension ||
+        !ACCEPTED_EXTENSIONS.includes(extension as AllowedExtension)
+      ) {
         ctx.addIssue({
           code: "custom",
           message: "Only JPG, PNG, and WebP images are allowed",
