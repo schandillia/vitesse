@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
 interface UserInfoProps {
@@ -13,7 +14,7 @@ export function UserInfo({ user, showEmail = true, className }: UserInfoProps) {
   return (
     <div className={cn("flex flex-col min-w-0 leading-tight", className)}>
       <span className="text-sm font-medium truncate">
-        {user.name || "User"}
+        {user.name || siteConfig.emails.genericUser}
       </span>
       {showEmail && (
         <span className="text-xs text-muted-foreground truncate">

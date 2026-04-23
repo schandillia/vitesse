@@ -92,6 +92,10 @@ export const siteConfig = {
         title: "Documentation",
         description: `Find out how ${BRANDNAME} works.`,
       },
+      blog: {
+        title: "Blog",
+        description: `Thoughts, updates, and insights from the ${BRANDNAME} team.`,
+      },
       contact: {
         title: "Contact",
         description: "Get in touch with us.",

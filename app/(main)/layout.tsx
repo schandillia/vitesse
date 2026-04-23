@@ -12,7 +12,7 @@ export default async function MainLayout({
   return (
     <LoginModalProvider>
       <Navbar session={session} />
-      <main className="flex-1 text-foreground py-10 max-w-6xl mx-auto px-4 md:px-8">
+      <main className="flex-1 text-foreground py-10 w-full max-w-6xl mx-auto px-4 md:px-8">
         {children}
       </main>
       <Footer />

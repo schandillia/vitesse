@@ -1,7 +1,6 @@
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { db } from "@/db/drizzle"
-import * as schema from "@/db/auth-schema"
+import { db, schema } from "@/db/drizzle"
 import { magicLink } from "better-auth/plugins"
 import { passkey } from "@better-auth/passkey"
 import { sendEmail } from "@/lib/send-email"

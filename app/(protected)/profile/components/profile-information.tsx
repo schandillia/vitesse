@@ -6,6 +6,7 @@ import { format, formatDistanceToNow } from "date-fns"
 import { ShieldIcon, CalendarIcon, ClockIcon } from "lucide-react"
 import { EditableAvatar } from "@/app/(protected)/profile/components/editable-avatar"
 import { EditableName } from "@/app/(protected)/profile/components/editable-name"
+import { siteConfig } from "@/config/site"
 
 interface ProfileInformationProps {
   user: User
@@ -36,7 +37,7 @@ function InfoRow({
 }
 
 export function ProfileInformation({ user }: ProfileInformationProps) {
-  const defaultName = user.name || user.email.split("@")[0]
+  const defaultName = user.name || siteConfig.emails.genericUser
 
   return (
     <div className="space-y-6">
