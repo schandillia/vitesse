@@ -4,8 +4,7 @@ import { db } from "@/db/drizzle"
 import { post, category } from "@/db/blog-schema"
 import { user } from "@/db/auth-schema"
 import { desc, eq, lt, and, type InferSelectModel } from "drizzle-orm"
-
-const PAGE_SIZE = 6
+import { PAGE_SIZE, paginate } from "@/lib/blog-pagination"
 
 export type Post = InferSelectModel<typeof post>
 export type Category = InferSelectModel<typeof category>
@@ -38,12 +37,7 @@ export async function getPosts(cursor?: string): Promise<GetPostsResult> {
       },
     })
 
-    const hasMore = posts.length > PAGE_SIZE
-    const trimmed = hasMore ? posts.slice(0, PAGE_SIZE) : posts
-    const nextCursor = hasMore
-      ? trimmed[trimmed.length - 1].createdAt.toISOString()
-      : null
-
+    const { trimmed, hasMore, nextCursor } = paginate(posts)
     return { posts: trimmed, nextCursor, hasMore }
   } catch {
     return { posts: [], nextCursor: null, hasMore: false, error: true }

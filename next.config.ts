@@ -15,12 +15,30 @@ const posthogAssetHost = posthogHost.replace(
 const hasSentryToken =
   !!process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_AUTH_TOKEN !== "dummy"
 
+const cloudfrontUrl = process.env.NEXT_PUBLIC_CLOUDFRONT_URL || ""
+
 const nextConfig: NextConfig = {
   experimental: {
     authInterrupts: true,
     serverActions: {
       bodySizeLimit: `10mb`,
     },
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      ...(cloudfrontUrl
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: new URL(cloudfrontUrl).hostname,
+            },
+          ]
+        : []),
+    ],
   },
   async rewrites() {
     return {

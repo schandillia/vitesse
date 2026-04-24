@@ -5,9 +5,12 @@ export function PostCard({ post }: { post: PostWithRelations }) {
   return (
     <article className="flex flex-col gap-4 p-6 border rounded-xl hover:bg-muted/50 transition-colors">
       {post.category && (
-        <span className="text-sm font-medium text-primary">
+        <Link
+          href={`/blog/category/${post.category.slug}`}
+          className="text-sm font-medium text-primary hover:underline w-fit"
+        >
           {post.category.name}
-        </span>
+        </Link>
       )}
 
       <Link href={`/blog/${post.slug}`}>

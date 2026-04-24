@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import Image from "next/image"
 import { imageSizes } from "@/lib/image-sizes"
 import { MarkdownRenderer } from "@/components/markdown/markdown-renderer"
+import Link from "next/link"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -26,6 +27,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <article className="mx-auto max-w-4xl py-10 px-4">
       <header className="mb-8 space-y-4 text-center md:text-left">
         <div className="space-y-2">
+          {post.category && (
+            <Link
+              href={`/blog/category/${post.category.slug}`}
+              className="text-xs font-medium bg-muted text-muted-foreground px-2.5 py-1 rounded-full hover:bg-muted/70 transition-colors w-fit"
+            >
+              {post.category.name}
+            </Link>
+          )}
           <h1 className="text-4xl/tight md:text-5xl/tight font-bold">
             {post.title}
           </h1>
@@ -35,19 +44,29 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <div className="flex items-center justify-center md:justify-start gap-3 text-muted-foreground">
-          <time dateTime={post.createdAt.toISOString()}>
-            {formatDate(post.createdAt)}
-          </time>
-          {isUpdated && (
-            <>
-              <span>•</span>
-              <time dateTime={post.updatedAt.toISOString()}>
-                Updated {formatDate(post.updatedAt)}
-              </time>
-            </>
-          )}
+          <span className="flex items-center gap-2">
+            {post.author.image && (
+              <Image
+                src={post.author.image}
+                alt={post.author.name}
+                width={24}
+                height={24}
+                className="rounded-full object-cover"
+              />
+            )}
+            {post.author.name}
+          </span>
           <span>•</span>
-          <span>{post.author.name}</span>
+          <span className="space-x-1">
+            <time dateTime={post.createdAt.toISOString()}>
+              {formatDate(post.createdAt)}
+            </time>
+            {isUpdated && (
+              <time dateTime={post.updatedAt.toISOString()}>
+                (Updated {formatDate(post.updatedAt)})
+              </time>
+            )}
+          </span>
         </div>
       </header>
 
