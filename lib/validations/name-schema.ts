@@ -4,7 +4,7 @@ export const nameSchema = z
   .string()
   .trim()
   .min(2, "Name must be at least 2 characters")
-  .max(50, "Name cannot exceed 50 characters")
+  .max(100, "Name cannot exceed 100 characters")
   .regex(
     // \p{L} = Any letter in any language
     // \s = Spaces

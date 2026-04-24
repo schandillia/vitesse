@@ -31,27 +31,27 @@ export function EditableName({ initialName }: EditableNameProps) {
   }
 
   const handleSave = async () => {
-    const trimmedNewName = name.trim()
+    // 1. Clean the input: Trim ends AND collapse internal consecutive spaces
+    const cleanedInput = name.trim().replace(/\s+/g, " ")
 
-    // Check 1: Is old name same as trim(new name)?
-    if (trimmedNewName === initialName) {
-      setName(initialName) // Restore old name (wipes any trailing spaces from UI)
+    // Check 1: Use the cleaned input for comparison
+    if (cleanedInput === initialName) {
+      setName(initialName)
       setIsEditing(false)
       return
     }
 
-    // Check 2: Does new name pass Zod validation?
-    // We pass the trimmed name to Zod so it doesn't have to guess
-    const validation = nameSchema.safeParse(trimmedNewName)
+    // Check 2: Pass the cleaned input to Zod
+    const validation = nameSchema.safeParse(cleanedInput)
 
     if (!validation.success) {
       toast.error(validation.error.issues[0].message)
-      setName(initialName) // Restore old name
-      setIsEditing(false) // Exit edit mode
+      setName(initialName)
+      setIsEditing(false)
       return
     }
 
-    // If yes: update UI with new name and call BetterAuth
+    // Update UI with the perfectly formatted name
     const safeName = validation.data
     setName(safeName)
     setIsEditing(false)
