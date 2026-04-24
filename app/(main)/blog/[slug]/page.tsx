@@ -19,23 +19,33 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  return (
-    <article className="mx-auto max-w-3xl py-10 px-4">
-      <header className="mb-8 space-y-4 text-center md:text-left">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl/tight">
-          {post.title}
-        </h1>
+  const isUpdated =
+    post.updatedAt && formatDate(post.updatedAt) !== formatDate(post.createdAt)
 
-        {post.logline && (
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            {post.logline}
-          </p>
-        )}
+  return (
+    <article className="mx-auto max-w-4xl py-10 px-4">
+      <header className="mb-8 space-y-4 text-center md:text-left">
+        <div className="space-y-2">
+          <h1 className="text-4xl/tight md:text-5xl/tight font-bold">
+            {post.title}
+          </h1>
+          {post.logline && (
+            <h2 className="text-xl/tight md:text-2xl/tight">{post.logline}</h2>
+          )}
+        </div>
 
         <div className="flex items-center justify-center md:justify-start gap-3 text-muted-foreground">
           <time dateTime={post.createdAt.toISOString()}>
             {formatDate(post.createdAt)}
           </time>
+          {isUpdated && (
+            <>
+              <span>•</span>
+              <time dateTime={post.updatedAt.toISOString()}>
+                Updated {formatDate(post.updatedAt)}
+              </time>
+            </>
+          )}
           <span>•</span>
           <span>{post.author.name}</span>
         </div>

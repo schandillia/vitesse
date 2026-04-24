@@ -1,6 +1,8 @@
 import React from "react"
 import { MDXRemote } from "next-mdx-remote/rsc"
 import { siteConfig } from "@/config/site"
+import remarkGfm from "remark-gfm"
+import remarkSupersub from "remark-supersub"
 
 // 1. Define your custom components locally
 const mdxComponents = {
@@ -23,5 +25,18 @@ interface MarkdownRendererProps {
 
 // 3. Export the unified renderer
 export function MarkdownRenderer({ source }: MarkdownRendererProps) {
-  return <MDXRemote source={source} components={mdxComponents} />
+  return (
+    <MDXRemote
+      source={source}
+      components={mdxComponents}
+      options={{
+        mdxOptions: {
+          remarkPlugins: [
+            [remarkGfm, { singleTilde: false }], // Handles Tables, Strikethrough, Autolinks
+            remarkSupersub, // Handles BOTH ^superscript^ and ~subscript~
+          ],
+        },
+      }}
+    />
+  )
 }
