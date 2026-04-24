@@ -44,12 +44,10 @@ export default withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   // Skip source map uploads and release creation in CI — SENTRY_AUTH_TOKEN is a dummy value there
   sourcemaps: {
-    disable: process.env.CI === "true",
+    disable:
+      !process.env.SENTRY_AUTH_TOKEN ||
+      process.env.SENTRY_AUTH_TOKEN === "dummy",
   },
-  // release: {
-  //   create: process.env.CI !== "true",
-  //   finalize: process.env.CI !== "true",
-  // },
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
