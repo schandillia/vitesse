@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { DestructiveActionButton } from "@/components/auth/destructive-action-button"
+import { formatDate } from "@/lib/date"
 
 const passkeySchema = z.object({
   name: z.string().min(1, "Please name your device (e.g., 'Work Laptop')"),
@@ -147,12 +148,7 @@ export function PasskeyManagement({ passkeys }: { passkeys: Passkey[] }) {
                       {passkey.name}
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Added{" "}
-                      {new Date(passkey.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      Added {formatDate(passkey.createdAt)}
                     </CardDescription>
                   </div>
                 </div>

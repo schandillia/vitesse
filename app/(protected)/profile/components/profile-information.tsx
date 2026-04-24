@@ -2,11 +2,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { User } from "@/lib/auth/auth"
-import { format, formatDistanceToNow } from "date-fns"
 import { ShieldIcon, CalendarIcon, ClockIcon } from "lucide-react"
 import { EditableAvatar } from "@/app/(protected)/profile/components/editable-avatar"
 import { EditableName } from "@/app/(protected)/profile/components/editable-name"
 import { siteConfig } from "@/config/site"
+import { formatDate, formatRelativeTime } from "@/lib/date"
 
 interface ProfileInformationProps {
   user: User
@@ -76,14 +76,12 @@ export function ProfileInformation({ user }: ProfileInformationProps) {
                 <InfoRow
                   icon={CalendarIcon}
                   label="Member since"
-                  value={format(new Date(user.createdAt), "MMMM d, yyyy")}
+                  value={formatDate(user.createdAt)}
                 />
                 <InfoRow
                   icon={ClockIcon}
                   label="Last updated"
-                  value={formatDistanceToNow(new Date(user.updatedAt), {
-                    addSuffix: true,
-                  })}
+                  value={formatRelativeTime(user.updatedAt)}
                 />
               </div>
             </div>
