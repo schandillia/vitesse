@@ -3,7 +3,7 @@
 import { db } from "@/db/drizzle"
 import { post } from "@/db/blog-schema"
 import { eq, and } from "drizzle-orm"
-import { type PostWithRelations } from "./get-posts"
+import { PostWithRelations } from "@/actions/get-posts"
 
 /**
  * Fetches a single published blog post by its slug,

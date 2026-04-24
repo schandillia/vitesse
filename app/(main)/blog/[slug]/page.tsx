@@ -1,6 +1,17 @@
 import { getPostBySlug } from "@/actions/get-post-by-slug"
 import { formatDate } from "@/lib/date"
 import { notFound } from "next/navigation"
+import { MDXRemote } from "next-mdx-remote/rsc"
+
+const mdxComponents = {
+  h1: (props: any) => <h1 {...props} className="text-3xl font-bold my-4" />,
+  // You can even add your own custom components here!
+  Callout: ({ children }: { children: React.ReactNode }) => (
+    <div className="p-4 bg-primary/10 border-l-4 border-primary my-6 rounded">
+      {children}
+    </div>
+  ),
+}
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -51,8 +62,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* The main content area */}
       <div className="prose prose-neutral dark:prose-invert max-w-none leading-relaxed">
-        {/* If using raw HTML/Markdown, render it here */}
-        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        <MDXRemote source={post.content} components={mdxComponents} />
       </div>
     </article>
   )
