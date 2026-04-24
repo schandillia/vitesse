@@ -5,6 +5,7 @@ import Image from "next/image"
 import { imageSizes } from "@/lib/image-sizes"
 import { MarkdownRenderer } from "@/components/markdown/markdown-renderer"
 import Link from "next/link"
+import { BlogBreadcrumbs } from "@/app/(main)/blog/components/blog-breadcrumbs"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -24,7 +25,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     post.updatedAt && formatDate(post.updatedAt) !== formatDate(post.createdAt)
 
   return (
-    <article className="mx-auto max-w-4xl py-10 px-4">
+    <article className="mx-auto max-w-4xl pb-10 px-4">
+      <BlogBreadcrumbs postTitle={post.title} />
       <header className="mb-8 space-y-4 text-center md:text-left">
         <div className="space-y-2">
           {post.category && (
