@@ -12,13 +12,40 @@ interface BlogBreadcrumbsProps {
   className?: string
   postTitle?: string
   categoryName?: string
+  authorName?: string
+}
+
+function TrailingCrumb({
+  label,
+  className,
+}: {
+  label: string
+  className?: string
+}) {
+  return (
+    <>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbPage className={className}>{label}</BreadcrumbPage>
+      </BreadcrumbItem>
+    </>
+  )
 }
 
 export function BlogBreadcrumbs({
   className,
   postTitle,
   categoryName,
+  authorName,
 }: BlogBreadcrumbsProps) {
+  const trailing = postTitle
+    ? { label: postTitle, className: "max-w-[200px] md:max-w-[400px] truncate" }
+    : categoryName
+      ? { label: categoryName }
+      : authorName
+        ? { label: authorName }
+        : null
+
   return (
     <Breadcrumb aria-label="Breadcrumb" className={cn("mb-10", className)}>
       <BreadcrumbList>
@@ -29,28 +56,7 @@ export function BlogBreadcrumbs({
         <BreadcrumbItem>
           <BreadcrumbLink href="/blog">Blog</BreadcrumbLink>
         </BreadcrumbItem>
-
-        {/* Renders ONLY if you pass a postTitle */}
-        {postTitle && (
-          <>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="max-w-[200px] md:max-w-[400px] truncate">
-                {postTitle}
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        )}
-
-        {/* Renders ONLY if you pass a categoryName (and no postTitle) */}
-        {categoryName && !postTitle && (
-          <>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{categoryName}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        )}
+        {trailing && <TrailingCrumb {...trailing} />}
       </BreadcrumbList>
     </Breadcrumb>
   )

@@ -7,14 +7,14 @@ export function PostCard({ post }: { post: PostWithRelations }) {
       {post.category && (
         <Link
           href={`/blog/category/${post.category.slug}`}
-          className="text-sm font-medium text-primary hover:underline w-fit"
+          className="text-sm font-medium text-primary w-fit"
         >
           {post.category.name}
         </Link>
       )}
 
       <Link href={`/blog/${post.slug}`}>
-        <h2 className="text-2xl font-bold hover:underline">{post.title}</h2>
+        <h2 className="text-2xl font-bold">{post.title}</h2>
       </Link>
 
       {post.excerpt && (
@@ -22,7 +22,9 @@ export function PostCard({ post }: { post: PostWithRelations }) {
       )}
 
       <div className="flex items-center gap-2 text-sm text-muted-foreground mt-auto pt-4 border-t">
-        <span>{post.author.name}</span>
+        <Link href={`/blog/author/${post.author.username}`}>
+          {post.author.name}
+        </Link>
         <span>•</span>
         <time dateTime={post.createdAt.toISOString()}>
           {post.createdAt.toLocaleDateString("en-US", {

@@ -56,7 +56,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 className="rounded-full object-cover"
               />
             )}
-            {post.author.name}
+            <Link href={`/blog/author/${post.author.username}`}>
+              {post.author.name}
+            </Link>
           </span>
           <span>•</span>
           <span className="space-x-1">

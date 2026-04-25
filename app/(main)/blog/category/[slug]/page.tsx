@@ -17,7 +17,7 @@ export async function generateMetadata({
   if (!categoryName) return {}
 
   return {
-    title: `${categoryName} — Blog`,
+    title: `${categoryName} | Blog`,
     description: `All posts in ${categoryName}.`,
   }
 }
