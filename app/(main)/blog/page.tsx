@@ -15,10 +15,9 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600 // Revalidate this page every 60 minutes (ISR)
 
-const session = await getServerSession()
-const isAdmin = session?.user?.role === ROLES.ADMIN
-
 export default async function BlogPage() {
+  const session = await getServerSession()
+  const isAdmin = session?.user?.role === ROLES.ADMIN
   const { posts, nextCursor, hasMore } = await getPosts()
 
   return (
@@ -32,7 +31,7 @@ export default async function BlogPage() {
         </h2>
         {isAdmin && (
           <Button asChild size="lg">
-            <Link href="/blog/new">
+            <Link href="/admin/blog/new">
               <PlusIcon className="size-4" />
               Add Post
             </Link>
