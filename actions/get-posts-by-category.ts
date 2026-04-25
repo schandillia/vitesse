@@ -9,15 +9,25 @@ import { PAGE_SIZE, paginate } from "@/lib/blog-pagination"
 export async function getPostsByCategory(
   categorySlug: string,
   cursor?: string
-): Promise<GetPostsResult & { categoryName: string | null }> {
+): Promise<
+  GetPostsResult & {
+    categoryName: string | null
+    categoryDescription: string | null
+  }
+> {
   try {
     const found = await db.query.category.findFirst({
       where: eq(category.slug, categorySlug),
     })
 
     if (!found)
-      return { posts: [], nextCursor: null, hasMore: false, categoryName: null }
-
+      return {
+        posts: [],
+        nextCursor: null,
+        hasMore: false,
+        categoryName: null,
+        categoryDescription: null,
+      }
     const posts = await db.query.post.findMany({
       where: and(
         eq(post.published, true),
@@ -30,7 +40,13 @@ export async function getPostsByCategory(
     })
 
     const { trimmed, hasMore, nextCursor } = paginate(posts)
-    return { posts: trimmed, nextCursor, hasMore, categoryName: found.name }
+    return {
+      posts: trimmed,
+      nextCursor,
+      hasMore,
+      categoryName: found.name,
+      categoryDescription: found.description ?? null,
+    }
   } catch {
     return {
       posts: [],
@@ -38,6 +54,7 @@ export async function getPostsByCategory(
       hasMore: false,
       error: true,
       categoryName: null,
+      categoryDescription: null,
     }
   }
 }
