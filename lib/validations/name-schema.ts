@@ -7,8 +7,8 @@ const MIN_NAME_LENGTH = siteConfig.users.minNameLength
 export const nameSchema = z
   .string()
   .trim()
-  .min(MIN_NAME_LENGTH, `Name must be at least {MIN_NAME_LENGTH} characters`)
-  .max(MAX_NAME_LENGTH, `Name cannot exceed {MAX_NAME_LENGTH} characters`)
+  .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters`)
+  .max(MAX_NAME_LENGTH, `Name cannot exceed ${MAX_NAME_LENGTH} characters`)
   .regex(
     // \p{L} = Any letter in any language
     // \s = Spaces
