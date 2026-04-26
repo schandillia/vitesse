@@ -45,7 +45,6 @@ export async function uploadBlogImageAction(formData: FormData) {
       })
     )
 
-    const cdnBase = env.NEXT_PUBLIC_CLOUDFRONT_URL
     const publicUrl = getPublicUrl(uniqueFileName)
 
     return { success: true, url: publicUrl } as const
