@@ -165,6 +165,7 @@ export function PostSettingsModal({
             />
             {coverImage ? (
               <div className="relative group w-full aspect-video overflow-hidden rounded-lg border">
+                {/* eslint-disable-next-line @next/next/no-img-element -- editor/upload preview */}
                 <img
                   src={coverImage}
                   alt="Cover"

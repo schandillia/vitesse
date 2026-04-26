@@ -11,6 +11,7 @@ export function ImageNodeView({
   return (
     <NodeViewWrapper as="figure" className="my-4">
       <div className="relative block w-fit group">
+        {/* eslint-disable-next-line @next/next/no-img-element -- TipTap NodeView requires raw <img> */}
         <img
           src={node.attrs.src}
           alt={node.attrs.caption || ""}

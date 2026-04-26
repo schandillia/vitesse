@@ -1,7 +1,7 @@
 "use server"
 
 import { PutObjectCommand } from "@aws-sdk/client-s3"
-import { s3Client, getPublicUrl } from "@/lib/s3"
+import { getPublicUrl, s3Client } from "@/lib/s3"
 import { auth } from "@/lib/auth/auth"
 import { randomUUID } from "crypto"
 import { headers } from "next/headers"
@@ -46,9 +46,7 @@ export async function uploadBlogImageAction(formData: FormData) {
     )
 
     const cdnBase = env.NEXT_PUBLIC_CLOUDFRONT_URL
-    const publicUrl = cdnBase
-      ? `${cdnBase}/${uniqueFileName}`
-      : `https://${env.AWS_S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${uniqueFileName}`
+    const publicUrl = getPublicUrl(uniqueFileName)
 
     return { success: true, url: publicUrl } as const
   } catch (error) {
