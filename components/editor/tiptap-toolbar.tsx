@@ -1,5 +1,6 @@
 "use client"
 
+import { AlignmentSelector } from "@/components/editor/alignment-selector"
 import { HeadingSelector } from "@/components/editor/heading-selector"
 import { useEditorState, type Editor } from "@tiptap/react"
 import {
@@ -121,13 +122,7 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
       >
         <ListOrderedIcon className="size-4" />
       </button>
-      <button
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={buttonClass(editor.isActive("blockquote"))}
-        title="Blockquote"
-      >
-        <QuoteIcon className="size-4" />
-      </button>
+      <AlignmentSelector editor={editor} />
 
       <div className="w-px h-5 bg-border mx-1" />
 
@@ -137,6 +132,13 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         title="Link"
       >
         <LinkIcon className="size-4" />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        className={buttonClass(editor.isActive("blockquote"))}
+        title="Blockquote"
+      >
+        <QuoteIcon className="size-4" />
       </button>
       <button
         onClick={() => editor.chain().focus().setHorizontalRule().run()}

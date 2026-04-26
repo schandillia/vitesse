@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
 import Typography from "@tiptap/extension-typography"
+import TextAlign from "@tiptap/extension-text-align"
 import { useState } from "react"
 import { TiptapToolbar } from "@/components/editor/tiptap-toolbar"
 
@@ -16,6 +17,7 @@ export function TiptapEditor() {
     extensions: [
       StarterKit.configure({}),
       Typography,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
       Placeholder.configure({ placeholder: "Start writing…" }),
     ],
     content: "",
