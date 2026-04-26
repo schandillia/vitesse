@@ -30,7 +30,7 @@ export function TiptapEditor() {
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Title"
+        placeholder="Title…"
         className="w-full bg-transparent text-4xl font-bold placeholder:text-muted-foreground/40 outline-none leading-tight"
       />
       <input
