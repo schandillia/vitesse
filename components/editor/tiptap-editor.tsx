@@ -75,11 +75,18 @@ export function TiptapEditor() {
     if (!editor) return
     setIsSaving(true)
 
+    const getMarkdown = () => {
+      const storage = editor.storage as unknown as {
+        markdown: { getMarkdown: () => string }
+      }
+      return storage.markdown.getMarkdown()
+    }
+
     const result = await createPost({
       title,
       slug,
       logline,
-      content: (editor.storage as Record<string, any>).markdown.getMarkdown(),
+      content: getMarkdown(),
       published,
     })
 
