@@ -32,6 +32,7 @@ export const siteConfig = {
 
   uploads: {
     avatarSizeLimitInMB: 5,
+    blogImageSizeLimitInMB: 10,
   },
 
   blog: {

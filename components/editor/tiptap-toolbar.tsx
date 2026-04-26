@@ -1,7 +1,9 @@
 "use client"
 
+import { uploadBlogImageAction } from "@/actions/upload-blog-image"
 import { AlignmentSelector } from "@/components/editor/alignment-selector"
 import { HeadingSelector } from "@/components/editor/heading-selector"
+import { blogImageSchema } from "@/lib/validations/blog-image-schema"
 import { useEditorState, type Editor } from "@tiptap/react"
 import {
   BoldIcon,
@@ -18,7 +20,10 @@ import {
   SuperscriptIcon,
   SubscriptIcon,
   HighlighterIcon,
+  ImageIcon,
 } from "lucide-react"
+import { useRef } from "react"
+import toast from "react-hot-toast"
 
 interface TiptapToolbarProps {
   editor: Editor | null
@@ -32,6 +37,8 @@ const buttonClass = (active: boolean) =>
   }`
 
 export function TiptapToolbar({ editor }: TiptapToolbarProps) {
+  const imageInputRef = useRef<HTMLInputElement>(null)
+
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -55,6 +62,30 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
     if (url) {
       editor.chain().focus().setLink({ href: url }).run()
     }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const validation = blogImageSchema.safeParse({ file })
+    if (!validation.success) {
+      toast.error(validation.error.issues[0]?.message || "Invalid image")
+      e.target.value = ""
+      return
+    }
+
+    const formData = new FormData()
+    formData.append("file", file)
+
+    const result = await uploadBlogImageAction(formData)
+    if (result.success) {
+      editor.chain().focus().setImage({ src: result.url }).run()
+    } else {
+      toast.error(result.error)
+    }
+
+    e.target.value = ""
   }
 
   return (
@@ -152,6 +183,21 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
 
       <div className="w-px h-5 bg-border mx-1" />
 
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageUpload}
+        aria-label="Upload image"
+      />
+      <button
+        onClick={() => imageInputRef.current?.click()}
+        className={buttonClass(false)}
+        title="Insert image"
+      >
+        <ImageIcon className="size-4" />
+      </button>
       <button
         onClick={setLink}
         className={buttonClass(editor.isActive("link"))}

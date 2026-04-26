@@ -1,25 +1,18 @@
 import { z } from "zod"
 import { siteConfig } from "@/config/site"
+import {
+  COMMON_IMAGE_MIME_TYPES,
+  COMMON_IMAGE_EXTENSIONS,
+  type CommonMimeType,
+  type CommonExtension,
+} from "@/lib/validations/image-validation"
 
 const MAX_SIZE_BYTES = siteConfig.uploads.avatarSizeLimitInMB * 1024 * 1024
-
-const ACCEPTED_MIME_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/jfif",
-] as const
-
-const ACCEPTED_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "jfif"] as const
-
-type AllowedMimeType = (typeof ACCEPTED_MIME_TYPES)[number]
-type AllowedExtension = (typeof ACCEPTED_EXTENSIONS)[number]
 
 export const avatarSchema = z.object({
   file: z
     .instanceof(File, { message: "File is required" })
     .superRefine((file, ctx) => {
-      // Size validation
       if (file.size > MAX_SIZE_BYTES) {
         ctx.addIssue({
           code: "custom",
@@ -28,8 +21,7 @@ export const avatarSchema = z.object({
         return
       }
 
-      // MIME Type validation
-      if (!ACCEPTED_MIME_TYPES.includes(file.type as AllowedMimeType)) {
+      if (!COMMON_IMAGE_MIME_TYPES.includes(file.type as CommonMimeType)) {
         ctx.addIssue({
           code: "custom",
           message: "Only JPG, PNG, and WebP images are allowed",
@@ -37,11 +29,10 @@ export const avatarSchema = z.object({
         return
       }
 
-      // Extension validation
       const extension = file.name.split(".").pop()?.toLowerCase()
       if (
         !extension ||
-        !ACCEPTED_EXTENSIONS.includes(extension as AllowedExtension)
+        !COMMON_IMAGE_EXTENSIONS.includes(extension as CommonExtension)
       ) {
         ctx.addIssue({
           code: "custom",

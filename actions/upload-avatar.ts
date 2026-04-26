@@ -1,23 +1,12 @@
 "use server"
 
-import {
-  S3Client,
-  PutObjectCommand,
-  DeleteObjectCommand,
-} from "@aws-sdk/client-s3"
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { auth } from "@/lib/auth/auth"
 import { randomUUID } from "crypto"
 import { headers } from "next/headers"
 import { env } from "@/env"
 import { avatarSchema } from "@/lib/validations/avatar-schema"
-
-const s3Client = new S3Client({
-  region: env.AWS_REGION!,
-  credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY!,
-  },
-})
+import { s3Client, getPublicUrl } from "@/lib/s3"
 
 function extractS3Key(imageUrl: string): string | null {
   try {
@@ -87,12 +76,6 @@ export async function uploadAvatarAction(formData: FormData) {
       })
     )
 
-    // Generate public URL
-    const cdnBase = env.NEXT_PUBLIC_CLOUDFRONT_URL
-    const publicUrl = cdnBase
-      ? `${cdnBase}/${uniqueFileName}`
-      : `https://${env.AWS_S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${uniqueFileName}`
-
     // Silent cleanup of old avatar
     const oldImageUrl = session.user.image
     if (oldImageUrl) {
@@ -113,7 +96,7 @@ export async function uploadAvatarAction(formData: FormData) {
 
     return {
       success: true,
-      url: publicUrl,
+      url: getPublicUrl(uniqueFileName),
     } as const
   } catch (error) {
     const errorMessage =

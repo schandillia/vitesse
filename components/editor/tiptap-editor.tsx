@@ -1,6 +1,6 @@
 "use client"
 
-import { useEditor, EditorContent } from "@tiptap/react"
+import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
 import Typography from "@tiptap/extension-typography"
@@ -8,9 +8,17 @@ import TextAlign from "@tiptap/extension-text-align"
 import Superscript from "@tiptap/extension-superscript"
 import Subscript from "@tiptap/extension-subscript"
 import Highlight from "@tiptap/extension-highlight"
+import Image from "@tiptap/extension-image"
 import CharacterCount from "@tiptap/extension-character-count"
 import { useState } from "react"
 import { TiptapToolbar } from "@/components/editor/tiptap-toolbar"
+import { ImageNodeView } from "@/components/editor/image-node-view"
+
+const CustomImage = Image.configure({ inline: false }).extend({
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageNodeView)
+  },
+})
 
 export function TiptapEditor() {
   const [title, setTitle] = useState("")
@@ -26,6 +34,7 @@ export function TiptapEditor() {
       Subscript,
       Highlight.configure({ multicolor: false }),
       CharacterCount,
+      CustomImage,
       Placeholder.configure({ placeholder: "Start writing…" }),
     ],
     content: "",
@@ -54,7 +63,7 @@ export function TiptapEditor() {
       <div className="sticky top-14 z-40 bg-background/80 backdrop-blur -mx-4 px-4 py-2 border-b">
         <TiptapToolbar editor={editor} />
       </div>
-      <div className="[&_.ProseMirror_a]:cursor-pointer">
+      <div className="[&_.ProseMirror_a]:cursor-pointer [&_.ProseMirror_img]:max-w-full [&_.ProseMirror_img]:rounded-lg [&_.ProseMirror_img]:my-4">
         <EditorContent editor={editor} />
       </div>
     </div>
