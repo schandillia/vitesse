@@ -35,16 +35,18 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
-      if (!ctx.editor) return { canUndo: false, canRedo: false }
+      if (!ctx.editor) return { canUndo: false, canRedo: false, words: 0 }
       return {
         canUndo: ctx.editor.can().undo(),
         canRedo: ctx.editor.can().redo(),
+        words: ctx.editor.storage.characterCount?.words?.() ?? 0,
       }
     },
   })
 
   const canUndo = editorState?.canUndo ?? false
   const canRedo = editorState?.canRedo ?? false
+  const words = editorState?.words ?? 0
 
   if (!editor) return null
 
@@ -171,6 +173,10 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
       >
         <MinusIcon className="size-4" />
       </button>
+
+      <span className="ml-auto text-xs text-muted-foreground px-2 py-1 rounded-full border-muted border-2 bg-muted-background">
+        {words.toLocaleString()} {words === 1 ? "word" : "words"}
+      </span>
     </div>
   )
 }
