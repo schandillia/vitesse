@@ -3,13 +3,17 @@
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react"
 import { XIcon } from "lucide-react"
 
-export function ImageNodeView({ node, deleteNode }: NodeViewProps) {
+export function ImageNodeView({
+  node,
+  deleteNode,
+  updateAttributes,
+}: NodeViewProps) {
   return (
-    <NodeViewWrapper as="div" className="my-4">
+    <NodeViewWrapper as="figure" className="my-4">
       <div className="relative block w-fit group">
         <img
           src={node.attrs.src}
-          alt={node.attrs.alt || ""}
+          alt={node.attrs.caption || ""}
           className="max-w-full rounded-lg block"
         />
         <button
@@ -20,6 +24,16 @@ export function ImageNodeView({ node, deleteNode }: NodeViewProps) {
           <XIcon className="size-4" />
         </button>
       </div>
+      <figcaption>
+        <input
+          type="text"
+          value={node.attrs.caption || ""}
+          onChange={(e) => updateAttributes({ caption: e.target.value })}
+          onKeyDown={(e) => e.stopPropagation()}
+          placeholder="Add a caption…"
+          className="w-full text-sm text-muted-foreground text-center bg-transparent outline-none placeholder:text-muted-foreground/40"
+        />
+      </figcaption>
     </NodeViewWrapper>
   )
 }
