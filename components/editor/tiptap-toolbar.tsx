@@ -15,6 +15,8 @@ import {
   MinusIcon,
   UndoIcon,
   RedoIcon,
+  SuperscriptIcon,
+  SubscriptIcon,
 } from "lucide-react"
 
 interface TiptapToolbarProps {
@@ -104,6 +106,20 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         title="Inline code"
       >
         <CodeIcon className="size-4" />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleSuperscript().run()}
+        className={buttonClass(editor.isActive("superscript"))}
+        title="Superscript"
+      >
+        <SuperscriptIcon className="size-4" />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleSubscript().run()}
+        className={buttonClass(editor.isActive("subscript"))}
+        title="Subscript"
+      >
+        <SubscriptIcon className="size-4" />
       </button>
 
       <div className="w-px h-5 bg-border mx-1" />
