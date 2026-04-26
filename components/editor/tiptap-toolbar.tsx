@@ -21,7 +21,7 @@ interface TiptapToolbarProps {
 }
 
 const buttonClass = (active: boolean) =>
-  `p-2 rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+  `p-2 rounded-md cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
     active
       ? "bg-muted text-foreground"
       : "text-muted-foreground hover:text-foreground hover:bg-muted"

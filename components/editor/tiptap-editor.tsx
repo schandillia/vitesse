@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
 import { useState } from "react"
 import { TiptapToolbar } from "@/components/editor/tiptap-toolbar"
@@ -15,7 +14,6 @@ export function TiptapEditor() {
     immediatelyRender: false,
     extensions: [
       StarterKit.configure({}),
-      Link.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder: "Start writing…" }),
     ],
     content: "",
@@ -44,7 +42,9 @@ export function TiptapEditor() {
       <div className="sticky top-14 z-40 bg-background/80 backdrop-blur -mx-4 px-4 py-2 border-b">
         <TiptapToolbar editor={editor} />
       </div>
-      <EditorContent editor={editor} />
+      <div className="[&_.ProseMirror_a]:cursor-pointer">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   )
 }

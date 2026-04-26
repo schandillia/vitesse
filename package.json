@@ -29,7 +29,6 @@
     "@syenchuk/remark-abbr": "^1.0.1",
     "@t3-oss/env-nextjs": "^0.13.11",
     "@tailwindcss/typography": "^0.5.19",
-    "@tiptap/extension-link": "^3.22.4",
     "@tiptap/extension-placeholder": "^3.22.4",
     "@tiptap/pm": "^3.22.4",
     "@tiptap/react": "^3.22.4",
