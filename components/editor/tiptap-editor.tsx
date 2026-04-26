@@ -7,6 +7,7 @@ import Typography from "@tiptap/extension-typography"
 import TextAlign from "@tiptap/extension-text-align"
 import Superscript from "@tiptap/extension-superscript"
 import Subscript from "@tiptap/extension-subscript"
+import Highlight from "@tiptap/extension-highlight"
 import { useState } from "react"
 import { TiptapToolbar } from "@/components/editor/tiptap-toolbar"
 
@@ -22,6 +23,7 @@ export function TiptapEditor() {
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Superscript,
       Subscript,
+      Highlight.configure({ multicolor: false }),
       Placeholder.configure({ placeholder: "Start writing…" }),
     ],
     content: "",

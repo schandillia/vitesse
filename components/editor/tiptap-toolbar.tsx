@@ -17,6 +17,7 @@ import {
   RedoIcon,
   SuperscriptIcon,
   SubscriptIcon,
+  HighlighterIcon,
 } from "lucide-react"
 
 interface TiptapToolbarProps {
@@ -120,6 +121,13 @@ export function TiptapToolbar({ editor }: TiptapToolbarProps) {
         title="Subscript"
       >
         <SubscriptIcon className="size-4" />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHighlight().run()}
+        className={buttonClass(editor.isActive("highlight"))}
+        title="Highlight"
+      >
+        <HighlighterIcon className="size-4" />
       </button>
 
       <div className="w-px h-5 bg-border mx-1" />
