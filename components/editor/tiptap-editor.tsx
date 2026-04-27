@@ -1,6 +1,6 @@
 "use client"
 
-import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react"
+import { useEditor, EditorContent } from "@tiptap/react"
 import { useAutosave } from "@/hooks/use-autosave"
 import { Markdown } from "tiptap-markdown"
 import StarterKit from "@tiptap/starter-kit"
@@ -10,28 +10,19 @@ import TextAlign from "@tiptap/extension-text-align"
 import Superscript from "@tiptap/extension-superscript"
 import Subscript from "@tiptap/extension-subscript"
 import Highlight from "@tiptap/extension-highlight"
-import Image from "@tiptap/extension-image"
 import CharacterCount from "@tiptap/extension-character-count"
 import { useCallback, useEffect, useState } from "react"
 import { TiptapToolbar } from "@/components/editor/tiptap-toolbar"
-import { ImageNodeView } from "@/components/editor/image-node-view"
 import { PostSettingsModal } from "@/components/editor/post-settings-modal"
 import { updatePost } from "@/actions/update-post"
 import { getCategories, type CategoryOption } from "@/actions/get-categories"
 import { Button } from "@/components/ui/button"
 import { SettingsIcon } from "lucide-react"
-import { GoDotFill } from "react-icons/go"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
-import { Badge } from "@/components/ui/badge"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { CustomImage } from "@/lib/custom-image"
-
-const statusConfig = {
-  saving: { text: "Saving…", className: "text-amber-500 animate-pulse" },
-  saved: { text: "Saved", className: "text-green-500" },
-  error: { text: "Unable to save", className: "text-destructive animate-ping" },
-} as const
+import { SaveStatusBadge } from "@/components/editor/save-status-badge"
 
 interface TiptapEditorProps {
   draftId: string
@@ -147,19 +138,7 @@ export function TiptapEditor({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-end text-xs text-muted-foreground h-4">
-        <Badge
-          variant="secondary"
-          className="flex items-center gap-1 px-2 py-0"
-        >
-          <GoDotFill
-            className={
-              saveStatus === "idle"
-                ? "text-green-500"
-                : statusConfig[saveStatus].className
-            }
-          />
-          {saveStatus === "idle" ? "Up to date" : statusConfig[saveStatus].text}
-        </Badge>
+        <SaveStatusBadge status={saveStatus} />
       </div>
       <input
         value={title}
