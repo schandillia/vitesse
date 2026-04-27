@@ -19,13 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { uploadBlogImageAction } from "@/actions/upload-blog-image"
-import { blogImageSchema } from "@/lib/validations/blog-image-schema"
 import { type CategoryOption } from "@/actions/get-categories"
-import { ImageIcon, XIcon } from "lucide-react"
 import toast from "react-hot-toast"
 import { siteConfig } from "@/config/site"
 import { LoadingSwap } from "@/components/ui/loading-swap"
+import { CoverImageField } from "@/components/editor/cover-image-field"
 
 interface FormFieldProps {
   label: string
@@ -87,41 +85,11 @@ export function PostSettingsModal({
   onPublish,
   isPublishing,
 }: PostSettingsModalProps) {
-  const coverImageInputRef = useRef<HTMLInputElement>(null)
-  const [isUploadingCover, setIsUploadingCover] = useState(false)
   const [localSlug, setLocalSlug] = useState(slug)
 
   useEffect(() => {
     setLocalSlug(slug)
   }, [slug])
-
-  const handleCoverImageUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const validation = blogImageSchema.safeParse({ file })
-    if (!validation.success) {
-      toast.error(validation.error.issues[0]?.message || "Invalid image")
-      e.target.value = ""
-      return
-    }
-
-    setIsUploadingCover(true)
-    const formData = new FormData()
-    formData.append("file", file)
-
-    const result = await uploadBlogImageAction(formData)
-    if (result.success) {
-      onCoverImageChange(result.url)
-    } else {
-      toast.error(result.error)
-    }
-
-    setIsUploadingCover(false)
-    e.target.value = ""
-  }
 
   const handlePublish = () => {
     if (!slug.trim()) {
@@ -206,48 +174,10 @@ export function PostSettingsModal({
             </Select>
           </FormField>
 
-          <FormField label="Cover Image">
-            <input
-              ref={coverImageInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleCoverImageUpload}
-              aria-label="Upload cover image"
-            />
-            {coverImage ? (
-              <div className="relative group w-full aspect-video overflow-hidden rounded-lg border">
-                {/* eslint-disable-next-line @next/next/no-img-element -- editor/upload preview */}
-                <img
-                  src={coverImage}
-                  alt="Cover"
-                  className="w-full h-full object-cover"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onCoverImageChange("")}
-                  className="absolute top-2 right-2 rounded-full bg-background/80 backdrop-blur text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Remove cover image"
-                >
-                  <XIcon className="size-4" />
-                </Button>
-              </div>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={() => coverImageInputRef.current?.click()}
-                disabled={isUploadingCover}
-                className="flex flex-col items-center justify-center gap-2 w-full aspect-video rounded-lg border-dashed text-muted-foreground hover:text-foreground h-auto"
-                title="Upload cover image"
-              >
-                <ImageIcon className="size-6" />
-                <span className="text-sm">
-                  {isUploadingCover ? "Uploading…" : "Upload cover image"}
-                </span>
-              </Button>
-            )}
-          </FormField>
+          <CoverImageField
+            coverImage={coverImage}
+            onCoverImageChange={onCoverImageChange}
+          />
         </div>
 
         <div className="flex justify-end gap-3 pt-2">
