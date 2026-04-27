@@ -25,6 +25,7 @@ import { type CategoryOption } from "@/actions/get-categories"
 import { ImageIcon, XIcon } from "lucide-react"
 import toast from "react-hot-toast"
 import { siteConfig } from "@/config/site"
+import { LoadingSwap } from "@/components/ui/loading-swap"
 
 interface FormFieldProps {
   label: string
@@ -254,7 +255,7 @@ export function PostSettingsModal({
             Update
           </Button>
           <Button onClick={handlePublish} disabled={isPublishing}>
-            {isPublishing ? "Publishing…" : "Publish"}
+            <LoadingSwap isLoading={isPublishing}>Publish</LoadingSwap>
           </Button>
         </div>
       </DialogContent>

@@ -23,6 +23,7 @@ import { GoDotFill } from "react-icons/go"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
+import { LoadingSwap } from "@/components/ui/loading-swap"
 
 const CustomImage = Image.configure({ inline: false }).extend({
   addAttributes() {
@@ -272,7 +273,6 @@ export function TiptapEditor({
     })
 
     if (result.success) {
-      toast.success("Post published!")
       router.push(`/blog/${slug}`)
     } else {
       toast.error(result.error)
@@ -327,7 +327,7 @@ export function TiptapEditor({
           Settings
         </Button>
         <Button onClick={handlePublish} disabled={isPublishing} size="sm">
-          {isPublishing ? "Publishing…" : "Publish"}
+          <LoadingSwap isLoading={isPublishing}>Publish</LoadingSwap>
         </Button>
       </div>
 

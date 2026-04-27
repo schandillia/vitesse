@@ -2,10 +2,8 @@
 
 import { db } from "@/db/drizzle"
 import { post } from "@/db/blog-schema"
-import { auth } from "@/lib/auth/auth"
-import { headers } from "next/headers"
-import { ROLES } from "@/lib/auth/roles"
 import { eq } from "drizzle-orm"
+import { requireAdmin, resolveExcerpt } from "@/lib/blog-utils"
 
 type UpdatePostInput = {
   id: string
@@ -27,13 +25,8 @@ export async function updatePost(
   input: UpdatePostInput
 ): Promise<UpdatePostResult> {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
-
-    if (!session?.user || session.user.role !== ROLES.ADMIN) {
-      return { success: false, error: "Unauthorized" }
-    }
+    const { authorized } = await requireAdmin()
+    if (!authorized) return { success: false, error: "Unauthorized" }
 
     const updates: Record<string, unknown> = {}
 
@@ -43,8 +36,16 @@ export async function updatePost(
     if (input.logline !== undefined)
       updates.logline = input.logline.trim() || null
     if (input.content !== undefined) updates.content = input.content
-    if (input.excerpt !== undefined)
-      updates.excerpt = input.excerpt.trim() || null
+    if (
+      input.excerpt !== undefined ||
+      input.logline !== undefined ||
+      input.content !== undefined
+    )
+      updates.excerpt = resolveExcerpt(
+        input.excerpt,
+        input.logline,
+        input.content
+      )
     if (input.coverImage !== undefined)
       updates.coverImage = input.coverImage || null
     if (input.categoryId !== undefined)

@@ -2,10 +2,8 @@
 
 import { db } from "@/db/drizzle"
 import { post } from "@/db/blog-schema"
-import { auth } from "@/lib/auth/auth"
-import { headers } from "next/headers"
-import { ROLES } from "@/lib/auth/roles"
 import { randomUUID } from "crypto"
+import { requireAdmin, resolveExcerpt } from "@/lib/blog-utils"
 
 type CreatePostInput = {
   title?: string
@@ -26,13 +24,8 @@ export async function createPost(
   input: CreatePostInput
 ): Promise<CreatePostResult> {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
-
-    if (!session?.user || session.user.role !== ROLES.ADMIN) {
-      return { success: false, error: "Unauthorized" }
-    }
+    const { authorized, user } = await requireAdmin()
+    if (!authorized) return { success: false, error: "Unauthorized" }
 
     const id = randomUUID()
     const slug = input.slug?.trim() || `draft-${randomUUID().slice(0, 8)}`
@@ -44,10 +37,10 @@ export async function createPost(
       logline: input.logline?.trim() || null,
       slug,
       content: input.content?.trim() || "",
-      excerpt: input.excerpt?.trim() || null,
+      excerpt: resolveExcerpt(input.excerpt, input.logline, input.content),
       coverImage: input.coverImage || null,
       categoryId: input.categoryId || null,
-      authorId: session.user.id,
+      authorId: user!.id,
       published: input.published ?? false,
     })
 
