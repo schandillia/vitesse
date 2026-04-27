@@ -137,8 +137,8 @@ export function TiptapEditor({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-end text-xs text-muted-foreground h-4">
-        <SaveStatusBadge status={saveStatus} />
+      <div className="sticky top-14 z-40 bg-background/80 backdrop-blur -mx-4 px-4 py-2 border-b">
+        <TiptapToolbar editor={editor} />
       </div>
       <input
         value={title}
@@ -152,26 +152,26 @@ export function TiptapEditor({
         placeholder="Add a subtitle…"
         className="w-full bg-transparent text-xl placeholder:text-muted-foreground/40 outline-none leading-tight"
       />
-      <div className="sticky top-14 z-40 bg-background/80 backdrop-blur -mx-4 px-4 py-2 border-b">
-        <TiptapToolbar editor={editor} />
-      </div>
       <div className="[&_.ProseMirror_a]:cursor-pointer [&_.ProseMirror_img]:max-w-full [&_.ProseMirror_img]:rounded-lg [&_.ProseMirror_img]:my-4">
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} placeholder="Start writing…" />
       </div>
 
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSettingsOpen(true)}
-          title="Post settings"
-        >
-          <SettingsIcon className="size-4" />
-          Settings
-        </Button>
-        <Button onClick={handlePublish} disabled={isPublishing} size="sm">
-          <LoadingSwap isLoading={isPublishing}>Publish</LoadingSwap>
-        </Button>
+      <div className="fixed bottom-20 right-6 z-50 flex items-end gap-2">
+        <SaveStatusBadge status={saveStatus} />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSettingsOpen(true)}
+            title="Post settings"
+          >
+            <SettingsIcon className="size-4" />
+            Settings
+          </Button>
+          <Button onClick={handlePublish} disabled={isPublishing} size="sm">
+            <LoadingSwap isLoading={isPublishing}>Publish</LoadingSwap>
+          </Button>
+        </div>
       </div>
 
       <PostSettingsModal
