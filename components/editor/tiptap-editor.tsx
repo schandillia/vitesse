@@ -1,6 +1,7 @@
 "use client"
 
 import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react"
+import { useAutosave } from "@/hooks/use-autosave"
 import { Markdown } from "tiptap-markdown"
 import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
@@ -11,7 +12,7 @@ import Subscript from "@tiptap/extension-subscript"
 import Highlight from "@tiptap/extension-highlight"
 import Image from "@tiptap/extension-image"
 import CharacterCount from "@tiptap/extension-character-count"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { TiptapToolbar } from "@/components/editor/tiptap-toolbar"
 import { ImageNodeView } from "@/components/editor/image-node-view"
 import { PostSettingsModal } from "@/components/editor/post-settings-modal"
@@ -44,6 +45,12 @@ const CustomImage = Image.configure({ inline: false }).extend({
   },
 })
 
+const statusConfig = {
+  saving: { text: "Saving…", className: "text-amber-500 animate-pulse" },
+  saved: { text: "Saved", className: "text-green-500" },
+  error: { text: "Unable to save", className: "text-destructive animate-ping" },
+} as const
+
 interface TiptapEditorProps {
   draftId: string
   initialTitle?: string
@@ -74,34 +81,6 @@ export function TiptapEditor({
   const [isPublishing, setIsPublishing] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [categories, setCategories] = useState<CategoryOption[]>([])
-  const [saveStatus, setSaveStatus] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle")
-  const isSavingRef = useRef(false)
-  const lastSavedStateRef = useRef({
-    content: initialContent,
-    title: initialTitle,
-    logline: initialLogline,
-    slug: initialSlug,
-    excerpt: initialExcerpt,
-    categoryId: initialCategoryId,
-    coverImage: initialCoverImage,
-  })
-  const statusConfig = {
-    saving: {
-      text: "Saving…",
-      className: "text-amber-500 animate-pulse",
-    },
-    saved: {
-      text: "Saved",
-      className: "text-green-500",
-    },
-    error: {
-      text: "Unable to save",
-      className: "text-destructive animate-ping",
-    },
-  } as const
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -119,10 +98,7 @@ export function TiptapEditor({
       Highlight.configure({ multicolor: false }),
       CharacterCount,
       CustomImage,
-      Markdown.configure({
-        html: false,
-        transformPastedText: true,
-      }),
+      Markdown.configure({ html: false, transformPastedText: true }),
       Placeholder.configure({ placeholder: "Start writing…" }),
     ],
     content: initialContent,
@@ -141,117 +117,22 @@ export function TiptapEditor({
     return storage?.markdown?.getMarkdown() ?? ""
   }, [editor])
 
-  const save = useCallback(async () => {
-    if (isSavingRef.current) return
-
-    const content = getMarkdown()
-    if (
-      content === lastSavedStateRef.current.content &&
-      title === lastSavedStateRef.current.title &&
-      logline === lastSavedStateRef.current.logline &&
-      slug === lastSavedStateRef.current.slug &&
-      excerpt === lastSavedStateRef.current.excerpt &&
-      categoryId === lastSavedStateRef.current.categoryId &&
-      coverImage === lastSavedStateRef.current.coverImage
-    )
-      return
-
-    isSavingRef.current = true
-    setSaveStatus("saving")
-
-    try {
-      const result = await updatePost({
-        id: draftId,
-        title,
-        slug,
-        logline,
-        excerpt,
-        categoryId: categoryId || undefined,
-        coverImage: coverImage || undefined,
-        content,
-      })
-
-      if (result.success) {
-        lastSavedStateRef.current = {
-          content,
-          title,
-          logline,
-          slug,
-          excerpt,
-          categoryId,
-          coverImage,
-        }
-        setSaveStatus("saved")
-      } else {
-        setSaveStatus("error")
-      }
-    } catch {
-      setSaveStatus("error")
-    } finally {
-      isSavingRef.current = false
-    }
-  }, [
+  const { saveStatus, save } = useAutosave({
     draftId,
     title,
-    slug,
     logline,
+    slug,
     excerpt,
     categoryId,
     coverImage,
     getMarkdown,
-  ])
-
-  // Debounce on modal changes
-  useEffect(() => {
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-    debounceTimerRef.current = setTimeout(() => {
-      save()
-    }, 1500)
-    return () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-    }
-  }, [slug, excerpt, categoryId, coverImage, save])
-
-  // Debounced autosave on editor change
-  useEffect(() => {
-    if (!editor) return
-
-    const handleUpdate = () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-      debounceTimerRef.current = setTimeout(() => {
-        save()
-      }, 1500)
-    }
-
-    editor.on("update", handleUpdate)
-    return () => {
-      editor.off("update", handleUpdate)
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-    }
-  }, [editor, save])
-
-  // Debounced autosave on title/logline change
-  useEffect(() => {
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-    debounceTimerRef.current = setTimeout(() => {
-      save()
-    }, 1500)
-    return () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
-    }
-  }, [title, logline, save])
-
-  // Save on tab close
-  useEffect(() => {
-    const handleBeforeUnload = () => save()
-    window.addEventListener("beforeunload", handleBeforeUnload)
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
-  }, [save])
+    editor,
+  })
 
   const handlePublish = async () => {
     if (!title.trim() || title === "Untitled") {
       toast.error("Please set a title before publishing")
-      return // just toast, no modal
+      return
     }
     if (!slug.trim() || slug.startsWith("draft-")) {
       setSettingsOpen(true)
@@ -259,6 +140,7 @@ export function TiptapEditor({
     }
 
     setIsPublishing(true)
+    await save()
 
     const result = await updatePost({
       id: draftId,
