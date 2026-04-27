@@ -11,14 +11,14 @@ import Subscript from "@tiptap/extension-subscript"
 import Highlight from "@tiptap/extension-highlight"
 import Image from "@tiptap/extension-image"
 import CharacterCount from "@tiptap/extension-character-count"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { TiptapToolbar } from "@/components/editor/tiptap-toolbar"
 import { ImageNodeView } from "@/components/editor/image-node-view"
 import { PostSettingsModal } from "@/components/editor/post-settings-modal"
-import { createPost } from "@/actions/create-post"
+import { updatePost } from "@/actions/update-post"
 import { getCategories, type CategoryOption } from "@/actions/get-categories"
 import { Button } from "@/components/ui/button"
-import { SettingsIcon } from "lucide-react"
+import { CheckIcon, LoaderCircleIcon, SettingsIcon } from "lucide-react"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 
@@ -41,16 +41,51 @@ const CustomImage = Image.configure({ inline: false }).extend({
   },
 })
 
-export function TiptapEditor() {
-  const [title, setTitle] = useState("")
-  const [logline, setLogline] = useState("")
-  const [slug, setSlug] = useState("")
-  const [excerpt, setExcerpt] = useState("")
-  const [categoryId, setCategoryId] = useState("")
-  const [coverImage, setCoverImage] = useState("")
+interface TiptapEditorProps {
+  draftId: string
+  initialTitle?: string
+  initialLogline?: string
+  initialSlug?: string
+  initialContent?: string
+  initialExcerpt?: string
+  initialCategoryId?: string
+  initialCoverImage?: string
+}
+
+export function TiptapEditor({
+  draftId,
+  initialTitle = "",
+  initialLogline = "",
+  initialSlug = "",
+  initialContent = "",
+  initialExcerpt = "",
+  initialCategoryId = "",
+  initialCoverImage = "",
+}: TiptapEditorProps) {
+  const [title, setTitle] = useState(initialTitle)
+  const [logline, setLogline] = useState(initialLogline)
+  const [slug, setSlug] = useState(initialSlug)
+  const [excerpt, setExcerpt] = useState(initialExcerpt)
+  const [categoryId, setCategoryId] = useState(initialCategoryId)
+  const [coverImage, setCoverImage] = useState(initialCoverImage)
   const [isPublishing, setIsPublishing] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [categories, setCategories] = useState<CategoryOption[]>([])
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+    "idle"
+  )
+
+  const isSavingRef = useRef(false)
+  const lastSavedStateRef = useRef({
+    content: initialContent,
+    title: initialTitle,
+    logline: initialLogline,
+    slug: initialSlug,
+    excerpt: initialExcerpt,
+    categoryId: initialCategoryId,
+    coverImage: initialCoverImage,
+  })
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -74,7 +109,7 @@ export function TiptapEditor() {
       }),
       Placeholder.configure({ placeholder: "Start writing…" }),
     ],
-    content: "",
+    content: initialContent,
     editorProps: {
       attributes: {
         class:
@@ -90,25 +125,53 @@ export function TiptapEditor() {
     return storage?.markdown?.getMarkdown() ?? ""
   }, [editor])
 
-  // Auto-save draft every 30 seconds
-  useEffect(() => {
-    if (!editor) return
-    const interval = setInterval(async () => {
-      if (!title.trim() || !slug.trim()) return
-      await createPost({
+  const save = useCallback(async () => {
+    if (isSavingRef.current) return
+
+    const content = getMarkdown()
+    if (
+      content === lastSavedStateRef.current.content &&
+      title === lastSavedStateRef.current.title &&
+      logline === lastSavedStateRef.current.logline &&
+      slug === lastSavedStateRef.current.slug &&
+      excerpt === lastSavedStateRef.current.excerpt &&
+      categoryId === lastSavedStateRef.current.categoryId &&
+      coverImage === lastSavedStateRef.current.coverImage
+    )
+      return
+
+    isSavingRef.current = true
+    setSaveStatus("saving")
+
+    const result = await updatePost({
+      id: draftId,
+      title,
+      slug,
+      logline,
+      excerpt,
+      categoryId: categoryId || undefined,
+      coverImage: coverImage || undefined,
+      content,
+    })
+
+    if (result.success) {
+      lastSavedStateRef.current = {
+        content,
         title,
-        slug,
         logline,
+        slug,
         excerpt,
-        categoryId: categoryId || undefined,
-        coverImage: coverImage || undefined,
-        content: getMarkdown(),
-        published: false,
-      })
-    }, 30000)
-    return () => clearInterval(interval)
+        categoryId,
+        coverImage,
+      }
+      setSaveStatus("saved")
+    } else {
+      setSaveStatus("idle")
+    }
+
+    isSavingRef.current = false
   }, [
-    editor,
+    draftId,
     title,
     slug,
     logline,
@@ -118,16 +181,67 @@ export function TiptapEditor() {
     getMarkdown,
   ])
 
+  // Debounce on modal changes
+  useEffect(() => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+    debounceTimerRef.current = setTimeout(() => {
+      save()
+    }, 1500)
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+    }
+  }, [slug, excerpt, categoryId, coverImage, save])
+
+  // Debounced autosave on editor change
+  useEffect(() => {
+    if (!editor) return
+
+    const handleUpdate = () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+      debounceTimerRef.current = setTimeout(() => {
+        save()
+      }, 1500)
+    }
+
+    editor.on("update", handleUpdate)
+    return () => {
+      editor.off("update", handleUpdate)
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+    }
+  }, [editor, save])
+
+  // Debounced autosave on title/logline change
+  useEffect(() => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+    debounceTimerRef.current = setTimeout(() => {
+      save()
+    }, 1500)
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+    }
+  }, [title, logline, save])
+
+  // Save on tab close
+  useEffect(() => {
+    const handleBeforeUnload = () => save()
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+  }, [save])
+
   const handlePublish = async () => {
-    if (!slug.trim()) {
-      toast.error("Slug is required before publishing")
+    if (!title.trim() || title === "Untitled") {
+      toast.error("Please set a title before publishing")
+      return // just toast, no modal
+    }
+    if (!slug.trim() || slug.startsWith("draft-")) {
       setSettingsOpen(true)
       return
     }
 
     setIsPublishing(true)
 
-    const result = await createPost({
+    const result = await updatePost({
+      id: draftId,
       title,
       slug,
       logline,
@@ -140,16 +254,30 @@ export function TiptapEditor() {
 
     if (result.success) {
       toast.success("Post published!")
-      router.push(`/blog/${result.slug}`)
+      router.push(`/blog/${slug}`)
     } else {
       toast.error(result.error)
+      setIsPublishing(false)
     }
-
-    setIsPublishing(false)
   }
 
   return (
     <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between text-xs text-muted-foreground h-4">
+        {saveStatus === "saving" && (
+          <span className="flex items-center gap-1">
+            <LoaderCircleIcon className="size-3 animate-spin" />
+            Saving…
+          </span>
+        )}
+        {saveStatus === "saved" && (
+          <span className="flex items-center gap-1">
+            <CheckIcon className="size-3" />
+            Saved
+          </span>
+        )}
+        {saveStatus === "idle" && <span />}
+      </div>
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -192,6 +320,7 @@ export function TiptapEditor() {
         onSlugChange={setSlug}
         excerpt={excerpt}
         onExcerptChange={setExcerpt}
+        logline={logline}
         categoryId={categoryId}
         onCategoryChange={setCategoryId}
         coverImage={coverImage}

@@ -8,10 +8,10 @@ import { ROLES } from "@/lib/auth/roles"
 import { randomUUID } from "crypto"
 
 type CreatePostInput = {
-  title: string
-  slug: string
+  title?: string
+  slug?: string
   logline?: string
-  content: string
+  content?: string
   excerpt?: string
   categoryId?: string
   coverImage?: string
@@ -19,7 +19,7 @@ type CreatePostInput = {
 }
 
 type CreatePostResult =
-  | { success: true; slug: string }
+  | { success: true; id: string; slug: string }
   | { success: false; error: string }
 
 export async function createPost(
@@ -34,24 +34,16 @@ export async function createPost(
       return { success: false, error: "Unauthorized" }
     }
 
-    if (!input.title.trim()) {
-      return { success: false, error: "Title is required" }
-    }
-
-    if (!input.slug.trim()) {
-      return { success: false, error: "Slug is required" }
-    }
-
-    if (!input.content.trim()) {
-      return { success: false, error: "Content is required" }
-    }
+    const id = randomUUID()
+    const slug = input.slug?.trim() || `draft-${randomUUID().slice(0, 8)}`
+    const title = input.title?.trim() || "Untitled"
 
     await db.insert(post).values({
-      id: randomUUID(),
-      title: input.title.trim(),
+      id,
+      title,
       logline: input.logline?.trim() || null,
-      slug: input.slug.trim(),
-      content: input.content,
+      slug,
+      content: input.content?.trim() || "",
       excerpt: input.excerpt?.trim() || null,
       coverImage: input.coverImage || null,
       categoryId: input.categoryId || null,
@@ -59,7 +51,7 @@ export async function createPost(
       published: input.published ?? false,
     })
 
-    return { success: true, slug: input.slug.trim() }
+    return { success: true, id, slug }
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to create post"

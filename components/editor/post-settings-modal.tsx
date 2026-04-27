@@ -4,6 +4,7 @@ import { useRef, useState } from "react"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -32,6 +33,7 @@ interface PostSettingsModalProps {
   onSlugChange: (slug: string) => void
   excerpt: string
   onExcerptChange: (excerpt: string) => void
+  logline?: string
   categoryId: string
   onCategoryChange: (categoryId: string) => void
   coverImage: string
@@ -48,6 +50,7 @@ export function PostSettingsModal({
   onSlugChange,
   excerpt,
   onExcerptChange,
+  logline = "",
   categoryId,
   onCategoryChange,
   coverImage,
@@ -99,28 +102,41 @@ export function PostSettingsModal({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Post Settings</DialogTitle>
+          <DialogDescription>
+            Configure your post before publishing.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-5 py-2">
           {/* Slug */}
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="slug">
-              Slug <span className="text-destructive">*</span>
+            <Label htmlFor="slug" className="flex items-center gap-0">
+              <span>Post URL</span>
+              <span className="text-destructive">*</span>
             </Label>
-            <Input
-              id="slug"
-              value={slug}
-              onChange={(e) =>
-                onSlugChange(
-                  e.target.value
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")
-                    .replace(/[^\w-]/g, "")
-                )
-              }
-              placeholder="my-post-slug"
-              className="font-mono"
-            />
+            <div className="flex items-center rounded-md border overflow-hidden focus-within:ring-1 focus-within:ring-ring">
+              <span className="px-3 py-2 text-sm text-muted-foreground bg-muted border-r shrink-0">
+                /blog/
+              </span>
+              <Input
+                id="slug"
+                value={slug}
+                onChange={(e) =>
+                  onSlugChange(
+                    e.target.value
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^\w-]/g, "")
+                  )
+                }
+                placeholder="my-post-slug"
+                className="font-mono border-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none"
+                maxLength={255}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground text-right">
+              {slug.length} / 255
+            </p>
           </div>
 
           {/* Excerpt */}
@@ -128,7 +144,7 @@ export function PostSettingsModal({
             <Label htmlFor="excerpt">Excerpt</Label>
             <Textarea
               id="excerpt"
-              value={excerpt}
+              value={excerpt || logline}
               onChange={(e) => onExcerptChange(e.target.value)}
               placeholder="A short description of your post…"
               rows={3}
@@ -200,7 +216,7 @@ export function PostSettingsModal({
 
         <div className="flex justify-end gap-3 pt-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Close
+            Update
           </Button>
           <Button onClick={handlePublish} disabled={isPublishing}>
             {isPublishing ? "Publishing…" : "Publish"}

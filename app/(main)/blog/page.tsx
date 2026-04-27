@@ -6,7 +6,8 @@ import { getServerSession } from "@/lib/auth/get-server-session"
 import { ROLES } from "@/lib/auth/roles"
 import { PlusIcon } from "lucide-react"
 import type { Metadata } from "next"
-import Link from "next/link"
+import { createPost } from "@/actions/create-post"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.blog.title,
@@ -14,6 +15,14 @@ export const metadata: Metadata = {
 }
 
 export const revalidate = 3600 // Revalidate this page every 60 minutes (ISR)
+
+async function handleNewPost() {
+  "use server"
+  const result = await createPost({ published: false })
+  if (result.success) {
+    redirect(`/blog/edit/${result.id}`)
+  }
+}
 
 export default async function BlogPage() {
   const session = await getServerSession()
@@ -30,12 +39,12 @@ export default async function BlogPage() {
           {siteConfig.blog.pageSubHeading}
         </h2>
         {isAdmin && (
-          <Button asChild size="lg">
-            <Link href="/blog/new">
+          <form action={handleNewPost}>
+            <Button type="submit" size="lg">
               <PlusIcon className="size-4" />
               Add Post
-            </Link>
-          </Button>
+            </Button>
+          </form>
         )}
       </header>
 
