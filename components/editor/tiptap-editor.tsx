@@ -18,9 +18,11 @@ import { PostSettingsModal } from "@/components/editor/post-settings-modal"
 import { updatePost } from "@/actions/update-post"
 import { getCategories, type CategoryOption } from "@/actions/get-categories"
 import { Button } from "@/components/ui/button"
-import { CheckIcon, LoaderCircleIcon, SettingsIcon } from "lucide-react"
+import { SettingsIcon } from "lucide-react"
+import { GoDotFill } from "react-icons/go"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import { Badge } from "@/components/ui/badge"
 
 const CustomImage = Image.configure({ inline: false }).extend({
   addAttributes() {
@@ -71,10 +73,9 @@ export function TiptapEditor({
   const [isPublishing, setIsPublishing] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [categories, setCategories] = useState<CategoryOption[]>([])
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
-    "idle"
-  )
-
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle")
   const isSavingRef = useRef(false)
   const lastSavedStateRef = useRef({
     content: initialContent,
@@ -85,6 +86,20 @@ export function TiptapEditor({
     categoryId: initialCategoryId,
     coverImage: initialCoverImage,
   })
+  const statusConfig = {
+    saving: {
+      text: "Saving…",
+      className: "text-amber-500 animate-pulse",
+    },
+    saved: {
+      text: "Saved",
+      className: "text-green-500",
+    },
+    error: {
+      text: "Unable to save",
+      className: "text-destructive animate-ping",
+    },
+  } as const
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const router = useRouter()
 
@@ -143,33 +158,37 @@ export function TiptapEditor({
     isSavingRef.current = true
     setSaveStatus("saving")
 
-    const result = await updatePost({
-      id: draftId,
-      title,
-      slug,
-      logline,
-      excerpt,
-      categoryId: categoryId || undefined,
-      coverImage: coverImage || undefined,
-      content,
-    })
-
-    if (result.success) {
-      lastSavedStateRef.current = {
-        content,
+    try {
+      const result = await updatePost({
+        id: draftId,
         title,
-        logline,
         slug,
+        logline,
         excerpt,
-        categoryId,
-        coverImage,
-      }
-      setSaveStatus("saved")
-    } else {
-      setSaveStatus("idle")
-    }
+        categoryId: categoryId || undefined,
+        coverImage: coverImage || undefined,
+        content,
+      })
 
-    isSavingRef.current = false
+      if (result.success) {
+        lastSavedStateRef.current = {
+          content,
+          title,
+          logline,
+          slug,
+          excerpt,
+          categoryId,
+          coverImage,
+        }
+        setSaveStatus("saved")
+      } else {
+        setSaveStatus("error")
+      }
+    } catch {
+      setSaveStatus("error")
+    } finally {
+      isSavingRef.current = false
+    }
   }, [
     draftId,
     title,
@@ -263,20 +282,20 @@ export function TiptapEditor({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between text-xs text-muted-foreground h-4">
-        {saveStatus === "saving" && (
-          <span className="flex items-center gap-1">
-            <LoaderCircleIcon className="size-3 animate-spin" />
-            Saving…
-          </span>
-        )}
-        {saveStatus === "saved" && (
-          <span className="flex items-center gap-1">
-            <CheckIcon className="size-3" />
-            Saved
-          </span>
-        )}
-        {saveStatus === "idle" && <span />}
+      <div className="flex items-center justify-end text-xs text-muted-foreground h-4">
+        <Badge
+          variant="secondary"
+          className="flex items-center gap-1 px-2 py-0"
+        >
+          <GoDotFill
+            className={
+              saveStatus === "idle"
+                ? "text-green-500"
+                : statusConfig[saveStatus].className
+            }
+          />
+          {saveStatus === "idle" ? "Up to date" : statusConfig[saveStatus].text}
+        </Badge>
       </div>
       <input
         value={title}

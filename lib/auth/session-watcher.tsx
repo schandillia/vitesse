@@ -35,6 +35,14 @@ export function SessionWatcher() {
     window.addEventListener("keydown", updateActivity, { passive: true })
     window.addEventListener("click", updateActivity, { passive: true })
 
+    const channel = new BroadcastChannel("auth")
+    channel.onmessage = (event) => {
+      if (event.data?.type === "LOGOUT") {
+        hasRedirectedRef.current = true
+        router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}`)
+      }
+    }
+
     const checkSession = async () => {
       // Prevent duplicate execution after redirect
       if (hasRedirectedRef.current) return
@@ -45,11 +53,14 @@ export function SessionWatcher() {
       // Skip if user idle
       if (Date.now() - lastActivityRef.current > 5 * 60 * 1000) return
 
+      if (pathname.startsWith("/login")) return
+
       const { data: session, error } = await authClient.getSession()
 
-      if (error || !session) {
-        hasRedirectedRef.current = true
+      if (error) return // network/server issue → ignore
 
+      if (!session) {
+        hasRedirectedRef.current = true
         router.replace(
           `/login?session_expired=true&callbackUrl=${encodeURIComponent(pathname)}`
         )
@@ -75,6 +86,7 @@ export function SessionWatcher() {
       window.removeEventListener("keydown", updateActivity)
       window.removeEventListener("click", updateActivity)
       document.removeEventListener("visibilitychange", handleVisibilityChange)
+      channel.close()
     }
   }, [shouldWatchSession, router, pathname])
 

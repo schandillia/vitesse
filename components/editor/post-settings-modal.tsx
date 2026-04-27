@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,34 @@ import { blogImageSchema } from "@/lib/validations/blog-image-schema"
 import { type CategoryOption } from "@/actions/get-categories"
 import { ImageIcon, XIcon } from "lucide-react"
 import toast from "react-hot-toast"
+import { siteConfig } from "@/config/site"
+
+interface FormFieldProps {
+  label: string
+  htmlFor?: string
+  required?: boolean
+  children: React.ReactNode
+  hint?: React.ReactNode
+}
+
+function FormField({
+  label,
+  htmlFor,
+  required,
+  children,
+  hint,
+}: FormFieldProps) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Label htmlFor={htmlFor} className="flex items-center gap-0">
+        {label}
+        {required && <span className="text-destructive">*</span>}
+      </Label>
+      {children}
+      {hint}
+    </div>
+  )
+}
 
 interface PostSettingsModalProps {
   open: boolean
@@ -60,6 +88,11 @@ export function PostSettingsModal({
 }: PostSettingsModalProps) {
   const coverImageInputRef = useRef<HTMLInputElement>(null)
   const [isUploadingCover, setIsUploadingCover] = useState(false)
+  const [localSlug, setLocalSlug] = useState(slug)
+
+  useEffect(() => {
+    setLocalSlug(slug)
+  }, [slug])
 
   const handleCoverImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -91,7 +124,7 @@ export function PostSettingsModal({
 
   const handlePublish = () => {
     if (!slug.trim()) {
-      toast.error("Slug is required before publishing")
+      toast.error("Post URL is required before publishing")
       return
     }
     onPublish()
@@ -99,7 +132,7 @@ export function PostSettingsModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Post Settings</DialogTitle>
           <DialogDescription>
@@ -108,40 +141,46 @@ export function PostSettingsModal({
         </DialogHeader>
 
         <div className="flex flex-col gap-5 py-2">
-          {/* Slug */}
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="slug" className="flex items-center gap-0">
-              <span>Post URL</span>
-              <span className="text-destructive">*</span>
-            </Label>
+          <FormField
+            label="Post URL"
+            htmlFor="slug"
+            required
+            hint={
+              <p className="text-xs text-muted-foreground text-right">
+                {slug.length} / 255
+              </p>
+            }
+          >
             <div className="flex items-center rounded-md border overflow-hidden focus-within:ring-1 focus-within:ring-ring">
               <span className="px-3 py-2 text-sm text-muted-foreground bg-muted border-r shrink-0">
-                /blog/
+                {siteConfig.brand.url}/blog/
               </span>
               <Input
                 id="slug"
-                value={slug}
+                value={localSlug}
                 onChange={(e) =>
-                  onSlugChange(
+                  setLocalSlug(
                     e.target.value
                       .toLowerCase()
                       .replace(/\s+/g, "-")
                       .replace(/[^\w-]/g, "")
                   )
                 }
+                onBlur={() => {
+                  if (localSlug.trim()) {
+                    onSlugChange(localSlug)
+                  } else {
+                    setLocalSlug(slug) // revert to last valid value
+                  }
+                }}
                 placeholder="my-post-slug"
                 className="font-mono border-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none"
                 maxLength={255}
               />
             </div>
-            <p className="text-xs text-muted-foreground text-right">
-              {slug.length} / 255
-            </p>
-          </div>
+          </FormField>
 
-          {/* Excerpt */}
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="excerpt">Excerpt</Label>
+          <FormField label="Excerpt" htmlFor="excerpt">
             <Textarea
               id="excerpt"
               value={excerpt || logline}
@@ -149,11 +188,9 @@ export function PostSettingsModal({
               placeholder="A short description of your post…"
               rows={3}
             />
-          </div>
+          </FormField>
 
-          {/* Category */}
-          <div className="flex flex-col gap-1.5">
-            <Label>Category</Label>
+          <FormField label="Category">
             <Select value={categoryId} onValueChange={onCategoryChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />
@@ -166,11 +203,9 @@ export function PostSettingsModal({
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </FormField>
 
-          {/* Cover Image */}
-          <div className="flex flex-col gap-1.5">
-            <Label>Cover Image</Label>
+          <FormField label="Cover Image">
             <input
               ref={coverImageInputRef}
               type="file"
@@ -211,7 +246,7 @@ export function PostSettingsModal({
                 </span>
               </Button>
             )}
-          </div>
+          </FormField>
         </div>
 
         <div className="flex justify-end gap-3 pt-2">

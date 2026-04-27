@@ -8,6 +8,7 @@ import toast from "react-hot-toast"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import { useAnalytics } from "@/app/hooks/use-analytics"
 import { siteConfig } from "@/config/site"
+import { authChannel } from "@/lib/auth/broadcast"
 
 function formatCacheTime(minutes: number): string {
   if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"}`
@@ -46,6 +47,7 @@ export function LogOutEverywhereButton() {
 
       reset()
 
+      authChannel?.postMessage({ type: "LOGOUT" })
       await authClient.signOut()
       toast.success("Logged out from all devices")
       router.push("/login")
