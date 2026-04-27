@@ -25,25 +25,7 @@ import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { LoadingSwap } from "@/components/ui/loading-swap"
-
-const CustomImage = Image.configure({ inline: false }).extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      caption: {
-        default: "",
-        parseHTML: (element) =>
-          element.querySelector("figcaption")?.textContent || "",
-        renderHTML: (attributes) => ({
-          caption: attributes.caption,
-        }),
-      },
-    }
-  },
-  addNodeView() {
-    return ReactNodeViewRenderer(ImageNodeView)
-  },
-})
+import { CustomImage } from "@/lib/custom-image"
 
 const statusConfig = {
   saving: { text: "Saving…", className: "text-amber-500 animate-pulse" },
