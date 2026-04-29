@@ -20,10 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   LayoutDashboardIcon,
-  SettingsIcon,
-  ShieldIcon,
   ChevronsUpDownIcon,
-  User,
   UsersIcon,
   ActivityIcon,
   ServerIcon,
