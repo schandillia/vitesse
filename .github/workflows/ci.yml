@@ -1,0 +1,79 @@
+name: CI
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Type check, lint, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      NODE_OPTIONS: "--no-warnings"
+      FORCE_COLOR: true
+      CI: true
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
+      RESEND_API_KEY: dummy
+      BETTER_AUTH_SECRET: "abcdefghijklmnopqrstuvwxyz123456"
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres"
+      ARCJET_KEY: dummy
+      ARCJET_ENV: development
+      UPSTASH_REDIS_REST_URL: "https://dummy.com"
+      UPSTASH_REDIS_REST_TOKEN: dummy
+      SENTRY_AUTH_TOKEN: dummy
+      GOOGLE_CLIENT_ID: dummy
+      GOOGLE_CLIENT_SECRET: dummy
+      NEXT_PUBLIC_CLOUDFRONT_URL: "https://dummy.cloudfront.net"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: "bun-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}"
+          restore-keys: "bun-${{ runner.os }}-"
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: "modules-${{ runner.os }}-${{ hashFiles('**/bun.lock') }}"
+          restore-keys: "modules-${{ runner.os }}-"
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: "next-${{ runner.os }}-${{ hashFiles('**/bun.lock', 'app/**/*', 'components/**/*') }}"
+          restore-keys: "next-${{ runner.os }}-"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Type check
+        run: bun run type-check
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Build
+        run: bun run build

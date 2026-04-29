@@ -1,0 +1,134 @@
+import { betterAuth } from "better-auth"
+import { drizzleAdapter } from "better-auth/adapters/drizzle"
+import { db, schema } from "@/db/drizzle"
+import { magicLink } from "better-auth/plugins"
+import { passkey } from "@better-auth/passkey"
+import { sendEmail } from "@/lib/send-email"
+import { renderMagicLinkEmail } from "@/emails/magic-link"
+import { siteConfig } from "@/config/site"
+import { nextCookies } from "better-auth/next-js"
+import { renderWelcomeEmail } from "@/emails/welcome"
+import { redis } from "@/lib/redis"
+import { env } from "@/env"
+
+export const auth = betterAuth({
+  baseURL: env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET,
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+        input: false,
+      },
+      username: {
+        type: "string",
+        required: true,
+        input: true,
+        unique: true,
+      },
+      bio: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+    },
+  },
+  session: {
+    expiresIn: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+    updateAge: siteConfig.authAndSession.updateAgeInDays * 24 * 60 * 60,
+    cookieCache: {
+      enabled: !siteConfig.authAndSession.logOutEverywhereInstantly,
+      maxAge: siteConfig.authAndSession.cookieMaxAgeInMinutes * 60,
+    },
+    advanced: {
+      ipAddress: {
+        ipAddressHeaders: ["x-forwarded-for", "x-real-ip"],
+        disableIpTracking: false,
+      },
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID!,
+      clientSecret: env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
+  // fires once per user regardless of auth method
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const prefix = user.email
+            .split("@")[0]
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "_")
+            .slice(0, 20)
+
+          const suffix = Math.random().toString(36).slice(2, 6)
+          const username = `${prefix}_${suffix}`
+
+          return {
+            data: {
+              ...user,
+              username,
+              name: user.name || siteConfig.users.defaultName,
+            },
+          }
+        },
+        after: async (user) => {
+          await sendEmail({
+            to: user.email,
+            from: `${siteConfig.emails.welcome.sender} <${siteConfig.emails.welcome.fromEmail}>`,
+            subject: `Welcome to ${siteConfig.brand.name}!`,
+            body: await renderWelcomeEmail(user.name || ""),
+          })
+        },
+      },
+    },
+  },
+  plugins: [
+    nextCookies(),
+    magicLink({
+      sendMagicLink: async ({ email, url }) => {
+        await sendEmail({
+          to: email,
+          subject: `Your ${siteConfig.brand.name} login link`,
+          body: await renderMagicLinkEmail(url),
+        })
+      },
+    }),
+    passkey(),
+  ],
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema,
+  }),
+  // Caching layer with redis
+  ...(redis && {
+    secondaryStorage: {
+      get: async (key) => {
+        const value = await redis!.get(key)
+        // Upstash parses JSON automatically, but Better-Auth expects a string back
+        return value
+          ? typeof value === "string"
+            ? value
+            : JSON.stringify(value)
+          : null
+      },
+      set: async (key, value, ttl) => {
+        if (ttl) {
+          await redis!.set(key, value, { ex: ttl })
+        } else {
+          await redis!.set(key, value)
+        }
+      },
+      delete: async (key) => {
+        await redis!.del(key)
+      },
+    },
+  }),
+})
+
+export type Session = typeof auth.$Infer.Session
+export type User = typeof auth.$Infer.Session.user

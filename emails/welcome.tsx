@@ -1,0 +1,45 @@
+import {
+  Html,
+  Head,
+  Body,
+  Container,
+  Text,
+  Link,
+} from "@react-email/components"
+import { siteConfig } from "@/config/site"
+import { render } from "@react-email/render"
+
+interface WelcomeEmailProps {
+  name: string | null
+}
+
+function WelcomeEmail({ name }: WelcomeEmailProps) {
+  return (
+    <Html>
+      <Head />
+      <Body>
+        <Container>
+          <Text>
+            Welcome to {siteConfig.brand.name}
+            {name ? `, ${name}` : ""}!
+          </Text>
+
+          <Text>
+            We’re glad to have you. Click the link below to get started.
+          </Text>
+          <Link href={siteConfig.brand.url}>Go to {siteConfig.brand.name}</Link>
+          <Text>
+            If you didn’t create this account, please contact us at{" "}
+            <Link href={`mailto:${siteConfig.emails.support.email}`}>
+              {siteConfig.emails.support.email}
+            </Link>
+            .
+          </Text>
+        </Container>
+      </Body>
+    </Html>
+  )
+}
+
+export const renderWelcomeEmail = (name: string) =>
+  render(<WelcomeEmail name={name} />)
