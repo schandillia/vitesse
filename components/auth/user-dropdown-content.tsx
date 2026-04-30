@@ -11,6 +11,7 @@ import {
   LogOutIcon,
   SettingsIcon,
   ShieldIcon,
+  UserIcon,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { UserInfo } from "@/components/auth/user-info"
@@ -27,11 +28,12 @@ interface UserDropdownContentProps {
 }
 
 const menuItems = [
+  { href: "/profile", label: "Profile", icon: UserIcon },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
   { href: "/settings", label: "Settings", icon: SettingsIcon },
 ]
 
-const baseItemClass = "rounded-md cursor-pointer"
+const baseItemClass = "rounded-md cursor-pointer py-1"
 
 export function UserDropdownContent({
   user,
@@ -47,7 +49,7 @@ export function UserDropdownContent({
   const filteredItems = menuItems.filter((item) => item.href !== pathname)
 
   return (
-    <DropdownMenuContent align={align} side={side} className="w-48">
+    <DropdownMenuContent align={align} side={side} className="w-48 space-y-2">
       {/* Show only in navbar */}
       {!isSidebar && (
         <>
