@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontalIcon, ShieldIcon, Trash2Icon } from "lucide-react"
+import { MoreHorizontalIcon, ShieldUserIcon, Trash2Icon } from "lucide-react"
 import { ROLES, type Role } from "@/lib/auth/roles"
 import { changeRole } from "@/actions/change-role"
 import { deleteUser } from "@/actions/delete-user"
@@ -111,7 +111,7 @@ export function UserActions({
           <DropdownMenuSeparator />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
-              <ShieldIcon className="size-4 mr-2" aria-hidden="true" />
+              <ShieldUserIcon className="size-4 mr-2" aria-hidden="true" />
               Change Role
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>

@@ -7,10 +7,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 import {
+  GlobeLockIcon,
   LayoutDashboardIcon,
   LogOutIcon,
   SettingsIcon,
-  ShieldIcon,
+  ShieldUserIcon,
   UserIcon,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -31,6 +32,7 @@ const menuItems = [
   { href: "/profile", label: "Profile", icon: UserIcon },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
   { href: "/settings", label: "Settings", icon: SettingsIcon },
+  { href: "/security", label: "Security", icon: GlobeLockIcon },
 ]
 
 const baseItemClass = "rounded-md cursor-pointer py-1"
@@ -75,7 +77,7 @@ export function UserDropdownContent({
       {user.role === ROLES.ADMIN && (
         <DropdownMenuItem asChild className={baseItemClass}>
           <Link href="/admin" className="flex items-center gap-2">
-            <ShieldIcon className="size-4" />
+            <ShieldUserIcon className="size-4" />
             <span>Admin</span>
           </Link>
         </DropdownMenuItem>
