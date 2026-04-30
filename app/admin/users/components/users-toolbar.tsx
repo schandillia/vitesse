@@ -49,7 +49,7 @@ export function UsersToolbar() {
   return (
     <div className="flex items-center gap-3">
       <Input
-        placeholder="Search by name or email..."
+        placeholder="Search by name or email…"
         defaultValue={searchParams.get("search") ?? ""}
         onChange={(e) => handleSearch(e.target.value)}
         className="max-w-sm"
