@@ -9,7 +9,7 @@ import { ActivityToolbar } from "@/app/admin/activity/components/activity-toolba
 import { Pagination } from "@/app/admin/users/components/pagination"
 import { db } from "@/db/drizzle"
 import { auditLog, user } from "@/db/auth-schema"
-import { desc, eq, count } from "drizzle-orm"
+import { desc, eq, count, gte, lte, and } from "drizzle-orm"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.activity.title,
@@ -23,19 +23,35 @@ interface AdminActivityPageProps {
   searchParams: Promise<{
     page?: string
     event?: string
+    from?: string
+    to?: string
   }>
 }
 
 async function getActivity({
   page,
   event,
+  from,
+  to,
 }: {
   page: number
   event: string | null
+  from: string | null
+  to: string | null
 }) {
   const offset = (page - 1) * PAGE_SIZE
 
-  const where = event ? eq(auditLog.event, event) : undefined
+  const filters = []
+
+  if (event) filters.push(eq(auditLog.event, event))
+  if (from) filters.push(gte(auditLog.createdAt, new Date(from)))
+  if (to) {
+    const toDate = new Date(to)
+    toDate.setHours(23, 59, 59, 999)
+    filters.push(lte(auditLog.createdAt, toDate))
+  }
+
+  const where = filters.length > 0 ? and(...filters) : undefined
 
   const [rows, totalResult] = await Promise.all([
     db
@@ -69,14 +85,18 @@ async function getActivity({
 export default async function AdminActivityPage({
   searchParams,
 }: AdminActivityPageProps) {
-  const { page, event } = await searchParams
+  const { page, event, from, to } = await searchParams
 
   const currentPage = Math.max(1, parseInt(page ?? "1"))
   const currentEvent = event ?? null
+  const currentFrom = from ?? null
+  const currentTo = to ?? null
 
   const { rows, totalPages } = await getActivity({
     page: currentPage,
     event: currentEvent,
+    from: currentFrom,
+    to: currentTo,
   })
 
   return (

@@ -122,10 +122,8 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                           {row.user.name}
                         </span>
                         <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="text-xs text-muted-foreground truncate block">
-                              {row.user.email}
-                            </span>
+                          <TooltipTrigger className="text-xs text-muted-foreground truncate block text-left">
+                            {row.user.email}
                           </TooltipTrigger>
                           <TooltipContent>{row.user.email}</TooltipContent>
                         </Tooltip>
@@ -156,10 +154,8 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground truncate max-w-0">
                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="truncate block">
-                        {parseDetails(row.event, row.metadata)}
-                      </span>
+                    <TooltipTrigger className="truncate block text-left w-full">
+                      {parseDetails(row.event, row.metadata)}
                     </TooltipTrigger>
                     <TooltipContent>
                       {parseDetails(row.event, row.metadata)}

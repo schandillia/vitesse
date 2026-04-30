@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { DateRangePicker } from "@/components/date-range-picker"
 
 const EVENT_TYPES = [
   { value: "all", label: "All events" },
@@ -34,6 +35,22 @@ export function ActivityToolbar() {
     router.push(`${pathname}?${params.toString()}`)
   }
 
+  function handleDateRange(from: string | null, to: string | null) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (from) {
+      params.set("from", from)
+    } else {
+      params.delete("from")
+    }
+    if (to) {
+      params.set("to", to)
+    } else {
+      params.delete("to")
+    }
+    params.delete("page")
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
   return (
     <div className="flex items-center gap-3">
       <Select
@@ -51,6 +68,12 @@ export function ActivityToolbar() {
           ))}
         </SelectContent>
       </Select>
+
+      <DateRangePicker
+        from={searchParams.get("from")}
+        to={searchParams.get("to")}
+        onChange={handleDateRange}
+      />
     </div>
   )
 }
