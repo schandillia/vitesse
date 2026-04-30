@@ -43,13 +43,13 @@ export async function changeRole(userId: string, newRole: Role) {
       id: crypto.randomUUID(),
       userId: session.user.id,
       event: "role_change",
-      metadata: JSON.stringify({
+      metadata: {
         targetUserId: userId,
         targetUserName: targetUser.name,
         targetUserEmail: targetUser.email,
         previousRole: targetUser.role,
         newRole,
-      }),
+      },
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + retentionMs),
     })
@@ -59,5 +59,4 @@ export async function changeRole(userId: string, newRole: Role) {
   } catch {
     return { success: false, error: "Failed to update role." }
   }
-  return { success: false, error: "Failed to update role." }
 }

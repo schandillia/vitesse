@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuthActions } from "@/components/auth/hooks/use-auth-actions"
+import { useAuthActions } from "@/hooks/use-auth-actions"
 import { useLoginModal } from "@/components/auth/login-modal-provider"
 import { Button } from "@/components/ui/button"
 import {

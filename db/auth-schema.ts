@@ -106,7 +106,7 @@ export const auditLog = pgTable(
     id: text("id").primaryKey(),
     userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
     event: text("event").notNull(),
-    metadata: text("metadata"), // JSON string
+    metadata: t.jsonb("metadata"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     expiresAt: timestamp("expires_at").notNull(),
   },

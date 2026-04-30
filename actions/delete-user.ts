@@ -33,11 +33,11 @@ export async function deleteUser(userId: string) {
       id: crypto.randomUUID(),
       userId: session.user.id,
       event: "user_deleted",
-      metadata: JSON.stringify({
+      metadata: {
         deletedUserId: userId,
         deletedUserName: targetUser.name,
         deletedUserEmail: targetUser.email,
-      }),
+      },
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + retentionMs),
     })

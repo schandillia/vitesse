@@ -1,7 +1,10 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
 import { GatedPageTitle } from "@/components/layout/gated-page-title"
-import { ActivityTable } from "@/app/admin/activity/components/activity-table"
+import {
+  ActivityTable,
+  type ActivityRow,
+} from "@/app/admin/activity/components/activity-table"
 import { ActivityToolbar } from "@/app/admin/activity/components/activity-toolbar"
 import { Pagination } from "@/app/admin/users/components/pagination"
 import { db } from "@/db/drizzle"
@@ -58,7 +61,7 @@ async function getActivity({
   ])
 
   return {
-    rows,
+    rows: rows as ActivityRow[],
     totalPages: Math.ceil(totalResult[0].count / PAGE_SIZE),
   }
 }
@@ -80,7 +83,7 @@ export default async function AdminActivityPage({
     <div className="container space-y-6">
       <GatedPageTitle
         title="Activity"
-        description="Monitor platform events and user activity."
+        description="Monitor platform events and user activity"
       />
       <ActivityToolbar />
       <ActivityTable rows={rows} />

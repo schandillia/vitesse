@@ -30,7 +30,7 @@ import { usePathname } from "next/navigation"
 import { UserDropdownContent } from "@/components/auth/user-dropdown-content"
 import { UserAvatar } from "@/components/auth/user-avatar"
 import { UserInfo } from "@/components/auth/user-info"
-import { useAuthActions } from "@/components/auth/hooks/use-auth-actions"
+import { useAuthActions } from "@/hooks/use-auth-actions"
 import type { auth } from "@/lib/auth/auth"
 import { ModeToggle } from "@/components/layout/mode-toggle"
 

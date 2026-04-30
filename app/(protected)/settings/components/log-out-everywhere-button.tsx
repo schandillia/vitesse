@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth/auth-client"
 import toast from "react-hot-toast"
 import { LoadingSwap } from "@/components/ui/loading-swap"
-import { useAnalytics } from "@/app/hooks/use-analytics"
+import { useAnalytics } from "@/hooks/use-analytics"
 import { siteConfig } from "@/config/site"
 import { authChannel } from "@/lib/auth/broadcast"
 

@@ -3,7 +3,7 @@
 import { authClient } from "@/lib/auth/auth-client"
 import { usePathname, useRouter } from "next/navigation"
 import { publicRoutes } from "@/routes"
-import { useAnalytics } from "@/app/hooks/use-analytics"
+import { useAnalytics } from "@/hooks/use-analytics"
 import { authChannel } from "@/lib/auth/broadcast"
 
 export function useAuthActions() {

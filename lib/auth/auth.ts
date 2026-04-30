@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth"
+import { createAuthMiddleware } from "better-auth/api"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db, schema } from "@/db/drizzle"
 import { magicLink } from "better-auth/plugins"
@@ -10,7 +11,9 @@ import { nextCookies } from "better-auth/next-js"
 import { renderWelcomeEmail } from "@/emails/welcome"
 import { redis } from "@/lib/redis"
 import { env } from "@/env"
-import { auditLog } from "@/db/auth-schema"
+import { auditLog, user } from "@/db/auth-schema"
+import { eq } from "drizzle-orm"
+import { onFailedLogin } from "@/lib/auth/hooks/failed-login"
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -55,6 +58,11 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET!,
     },
   },
+
+  hooks: {
+    after: onFailedLogin,
+  },
+
   // fires once per user regardless of auth method
   databaseHooks: {
     user: {
@@ -92,10 +100,10 @@ export const auth = betterAuth({
               id: crypto.randomUUID(),
               userId: user.id,
               event: "signup",
-              metadata: JSON.stringify({
+              metadata: {
                 email: user.email,
                 name: user.name,
-              }),
+              },
               createdAt: new Date(),
               expiresAt: new Date(Date.now() + retentionMs),
             }),
@@ -114,10 +122,10 @@ export const auth = betterAuth({
             id: crypto.randomUUID(),
             userId: session.userId,
             event: "login",
-            metadata: JSON.stringify({
+            metadata: {
               ipAddress: session.ipAddress ?? null,
               userAgent: session.userAgent ?? null,
-            }),
+            },
             createdAt: new Date(),
             expiresAt,
           })

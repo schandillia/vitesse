@@ -6,7 +6,7 @@ import { CookieCategories } from "@/components/cookies/cookie-categories"
 import { CookieIcon, SettingsIcon, XIcon } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useCookieConsent } from "@/app/hooks/use-cookie-consent"
+import { useCookieConsent } from "@/hooks/use-cookie-consent"
 
 export function CookieBanner() {
   const pathname = usePathname()

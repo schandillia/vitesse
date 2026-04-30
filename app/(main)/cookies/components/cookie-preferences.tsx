@@ -1,6 +1,6 @@
 "use client"
 
-import { useCookieConsent } from "@/app/hooks/use-cookie-consent"
+import { useCookieConsent } from "@/hooks/use-cookie-consent"
 import { CookieCategories } from "@/components/cookies/cookie-categories"
 import { Button } from "@/components/ui/button"
 import toast from "react-hot-toast"

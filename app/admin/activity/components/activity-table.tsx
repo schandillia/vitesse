@@ -13,7 +13,7 @@ import Image from "next/image"
 export type ActivityRow = {
   id: string
   event: string
-  metadata: string | null
+  metadata: Record<string, any> | null
   createdAt: Date
   user: {
     id: string
@@ -27,7 +27,8 @@ const EVENT_STYLES: Record<string, string> = {
   login: "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
   signup: "bg-blue-100 text-blue-700 hover:bg-blue-100",
   role_change: "bg-amber-100 text-amber-700 hover:bg-amber-100",
-  user_deleted: "bg-red-100 text-red-700 hover:bg-red-100",
+  user_deleted: "bg-zinc-100 text-zinc-700 hover:bg-zinc-100",
+  failed_login_attempt: "bg-red-100 text-red-700 hover:bg-red-100",
 }
 
 const EVENT_LABELS: Record<string, string> = {
@@ -35,28 +36,30 @@ const EVENT_LABELS: Record<string, string> = {
   signup: "Signup",
   role_change: "Role Change",
   user_deleted: "User Deleted",
+  failed_login_attempt: "Failed Login",
 }
 
-function parseDetails(event: string, metadata: string | null): string {
-  if (!metadata) return "—"
+function parseDetails(
+  event: string,
+  metadata: Record<string, any> | null
+): string {
+  if (!metadata) return "-"
 
-  try {
-    const data = JSON.parse(metadata)
-
-    switch (event) {
-      case "login":
-        return data.ipAddress ? `From ${data.ipAddress}` : "Session started"
-      case "signup":
-        return `Joined as ${data.email}`
-      case "role_change":
-        return `${data.previousRole} → ${data.newRole} (${data.targetUserName}, ${data.targetUserEmail})`
-      case "user_deleted":
-        return `${data.deletedUserName} (${data.deletedUserEmail})`
-      default:
-        return "—"
-    }
-  } catch {
-    return "—"
+  switch (event) {
+    case "login":
+      return metadata.ipAddress
+        ? `From ${metadata.ipAddress}`
+        : "Session started"
+    case "signup":
+      return `Joined as ${metadata.email}`
+    case "role_change":
+      return `Changed ${metadata.previousRole} → ${metadata.newRole} (${metadata.targetUserName}, ${metadata.targetUserEmail})`
+    case "user_deleted":
+      return `Deleted ${metadata.deletedUserName} (${metadata.deletedUserEmail})`
+    case "failed_login_attempt":
+      return `Attempted email ${metadata.attemptedEmail} (IP ${metadata.ipAddress || "Unknown"})`
+    default:
+      return "-"
   }
 }
 
@@ -118,6 +121,10 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                         </span>
                       </div>
                     </div>
+                  ) : row.event === "failed_login_attempt" ? (
+                    <span className="text-sm text-muted-foreground">
+                      Unknown user
+                    </span>
                   ) : (
                     <span className="text-sm text-muted-foreground">
                       Deleted user
@@ -137,7 +144,22 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                   {parseDetails(row.event, row.metadata)}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {formatDate(row.createdAt)}
+                  <span suppressHydrationWarning>
+                    {row.createdAt.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
+                  <br />
+                  <span className="text-xs opacity-70" suppressHydrationWarning>
+                    {row.createdAt.toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      timeZoneName: "short",
+                    })}
+                  </span>
                 </TableCell>
               </TableRow>
             ))

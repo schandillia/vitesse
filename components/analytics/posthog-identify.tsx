@@ -1,6 +1,6 @@
 "use client"
 
-import { useAnalytics } from "@/app/hooks/use-analytics"
+import { useAnalytics } from "@/hooks/use-analytics"
 import { useEffect, useRef } from "react"
 
 interface PostHogIdentifyProps {
