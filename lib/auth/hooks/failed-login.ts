@@ -11,23 +11,35 @@ const AUTH_ENDPOINTS = [
   "/callback",
 ]
 
+type ReturnedContext =
+  | {
+      status?: number
+      headers?: { get: (key: string) => string | null }
+      name?: string
+    }
+  | Error
+  | null
+
 export const onFailedLogin = createAuthMiddleware(async (ctx) => {
   const isAuthAttempt = AUTH_ENDPOINTS.some((endpoint) =>
     ctx.path.includes(endpoint)
   )
 
-  const returned = ctx.context.returned as any
+  const returned = ctx.context.returned as ReturnedContext
 
-  const isErrorStatus = returned?.status && returned.status >= 400
+  const status = returned && "status" in returned ? returned.status : undefined
+  const isErrorStatus = status !== undefined && status >= 400
   const isThrownError =
-    returned instanceof Error || returned?.name === "APIError"
+    returned instanceof Error ||
+    (returned !== null && "name" in returned && returned.name === "APIError")
 
-  const locationHeader = returned?.headers?.get
-    ? returned.headers.get("location")
-    : null
+  const headers =
+    returned && "headers" in returned ? returned.headers : undefined
+  const locationHeader = headers?.get ? headers.get("location") : null
   const isErrorRedirect =
-    returned?.status >= 300 &&
-    returned?.status < 400 &&
+    status !== undefined &&
+    status >= 300 &&
+    status < 400 &&
     (locationHeader?.includes("error=") ||
       locationHeader?.includes("error_code="))
 
@@ -35,8 +47,8 @@ export const onFailedLogin = createAuthMiddleware(async (ctx) => {
 
   if (!isAuthAttempt || !isFailure) return
 
-  const body = ctx.body as Record<string, any> | undefined
-  const attemptedEmail = body?.email
+  const body = ctx.body as Record<string, unknown> | undefined
+  const attemptedEmail = body?.email as string | undefined
 
   let targetUserId = null
 
@@ -58,14 +70,14 @@ export const onFailedLogin = createAuthMiddleware(async (ctx) => {
     userId: targetUserId,
     event: "failed_login_attempt",
     metadata: {
-      attemptedEmail: attemptedEmail || "Unknown",
+      attemptedEmail: attemptedEmail ?? "Unknown",
       ipAddress:
         ctx.headers?.get("x-forwarded-for") ||
         ctx.headers?.get("x-real-ip") ||
         null,
       userAgent: ctx.headers?.get("user-agent") || null,
       path: ctx.path,
-      errorStatus: returned?.status || 302,
+      errorStatus: status ?? 302,
     },
     createdAt: new Date(),
     expiresAt: new Date(Date.now() + retentionMs),

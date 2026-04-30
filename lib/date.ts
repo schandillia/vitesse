@@ -15,3 +15,10 @@ export function formatRelativeTime(date: Date | string | number) {
     addSuffix: true,
   })
 }
+
+/**
+ * Full Date + Time: "April 24, 2026, 1:41 PM"
+ */
+export function formatDateTime(date: Date | string | number) {
+  return format(new Date(date), "MMMM d, yyyy, h:mm a zzz")
+}

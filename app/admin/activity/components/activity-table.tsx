@@ -7,13 +7,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { formatDate } from "@/lib/date"
 import Image from "next/image"
+import { formatDateTime } from "@/lib/date"
 
 export type ActivityRow = {
   id: string
   event: string
-  metadata: Record<string, any> | null
+  metadata: Record<string, unknown> | null
   createdAt: Date
   user: {
     id: string
@@ -41,23 +41,23 @@ const EVENT_LABELS: Record<string, string> = {
 
 function parseDetails(
   event: string,
-  metadata: Record<string, any> | null
+  metadata: Record<string, unknown> | null
 ): string {
   if (!metadata) return "-"
 
   switch (event) {
     case "login":
       return metadata.ipAddress
-        ? `From ${metadata.ipAddress}`
+        ? `From ${metadata.ipAddress as string}`
         : "Session started"
     case "signup":
-      return `Joined as ${metadata.email}`
+      return `Joined as ${metadata.email as string}`
     case "role_change":
-      return `Changed ${metadata.previousRole} → ${metadata.newRole} (${metadata.targetUserName}, ${metadata.targetUserEmail})`
+      return `Changed ${metadata.previousRole as string} → ${metadata.newRole as string} (${metadata.targetUserName as string}, ${metadata.targetUserEmail as string})`
     case "user_deleted":
-      return `Deleted ${metadata.deletedUserName} (${metadata.deletedUserEmail})`
+      return `Deleted ${metadata.deletedUserName as string} (${metadata.deletedUserEmail as string})`
     case "failed_login_attempt":
-      return `Attempted email ${metadata.attemptedEmail} (IP ${metadata.ipAddress || "Unknown"})`
+      return `Attempted email ${metadata.attemptedEmail as string} (IP ${(metadata.ipAddress as string) || "Unknown"})`
     default:
       return "-"
   }
@@ -148,22 +148,7 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                   {parseDetails(row.event, row.metadata)}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  <span suppressHydrationWarning>
-                    {row.createdAt.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
-                  <br />
-                  <span className="text-xs opacity-70" suppressHydrationWarning>
-                    {row.createdAt.toLocaleTimeString("en-US", {
-                      hour: "numeric",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      timeZoneName: "short",
-                    })}
-                  </span>
+                  {formatDateTime(row.createdAt)}
                 </TableCell>
               </TableRow>
             ))

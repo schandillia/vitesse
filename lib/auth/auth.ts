@@ -1,5 +1,4 @@
 import { betterAuth } from "better-auth"
-import { createAuthMiddleware } from "better-auth/api"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db, schema } from "@/db/drizzle"
 import { magicLink } from "better-auth/plugins"
@@ -11,8 +10,7 @@ import { nextCookies } from "better-auth/next-js"
 import { renderWelcomeEmail } from "@/emails/welcome"
 import { redis } from "@/lib/redis"
 import { env } from "@/env"
-import { auditLog, user } from "@/db/auth-schema"
-import { eq } from "drizzle-orm"
+import { auditLog } from "@/db/auth-schema"
 import { onFailedLogin } from "@/lib/auth/hooks/failed-login"
 
 export const auth = betterAuth({
