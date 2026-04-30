@@ -121,14 +121,18 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                         </span>
                       </div>
                     </div>
-                  ) : row.event === "failed_login_attempt" ? (
-                    <span className="text-sm text-muted-foreground">
-                      Unknown user
-                    </span>
                   ) : (
-                    <span className="text-sm text-muted-foreground">
-                      Deleted user
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <div
+                        aria-hidden="true"
+                        className="size-8 rounded-full bg-muted flex items-center justify-center"
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        {row.event === "failed_login_attempt"
+                          ? "Unknown user"
+                          : "Deleted user"}
+                      </span>
+                    </div>
                   )}
                 </TableCell>
                 <TableCell>

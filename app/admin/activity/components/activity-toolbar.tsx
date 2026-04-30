@@ -15,6 +15,7 @@ const EVENT_TYPES = [
   { value: "signup", label: "Signup" },
   { value: "role_change", label: "Role change" },
   { value: "user_deleted", label: "User deleted" },
+  { value: "failed_login_attempt", label: "Failed login" },
 ]
 
 export function ActivityToolbar() {
