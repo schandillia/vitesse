@@ -10,6 +10,7 @@ import { nextCookies } from "better-auth/next-js"
 import { renderWelcomeEmail } from "@/emails/welcome"
 import { redis } from "@/lib/redis"
 import { env } from "@/env"
+import { auditLog } from "@/db/auth-schema"
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -77,11 +78,48 @@ export const auth = betterAuth({
           }
         },
         after: async (user) => {
-          await sendEmail({
-            to: user.email,
-            from: `${siteConfig.emails.welcome.sender} <${siteConfig.emails.welcome.fromEmail}>`,
-            subject: `Welcome to ${siteConfig.brand.name}!`,
-            body: await renderWelcomeEmail(user.name || ""),
+          const retentionMs =
+            siteConfig.auditLogs.retentionDays * 24 * 60 * 60 * 1000
+
+          await Promise.all([
+            sendEmail({
+              to: user.email,
+              from: `${siteConfig.emails.welcome.sender} <${siteConfig.emails.welcome.fromEmail}>`,
+              subject: `Welcome to ${siteConfig.brand.name}!`,
+              body: await renderWelcomeEmail(user.name || ""),
+            }),
+            db.insert(auditLog).values({
+              id: crypto.randomUUID(),
+              userId: user.id,
+              event: "signup",
+              metadata: JSON.stringify({
+                email: user.email,
+                name: user.name,
+              }),
+              createdAt: new Date(),
+              expiresAt: new Date(Date.now() + retentionMs),
+            }),
+          ])
+        },
+      },
+    },
+    session: {
+      create: {
+        after: async (session) => {
+          const retentionMs =
+            siteConfig.auditLogs.retentionDays * 24 * 60 * 60 * 1000
+          const expiresAt = new Date(Date.now() + retentionMs)
+
+          await db.insert(auditLog).values({
+            id: crypto.randomUUID(),
+            userId: session.userId,
+            event: "login",
+            metadata: JSON.stringify({
+              ipAddress: session.ipAddress ?? null,
+              userAgent: session.userAgent ?? null,
+            }),
+            createdAt: new Date(),
+            expiresAt,
           })
         },
       },

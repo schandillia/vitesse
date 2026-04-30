@@ -225,6 +225,15 @@ export const siteConfig = {
       },
     },
   },
+
+  auditLogs: {
+    retentionDays: 90,
+    activityFeedLimit: 10,
+  },
+
+  admin: {
+    usersPageSize: 10,
+  },
 }
 
 export type SiteConfig = typeof siteConfig

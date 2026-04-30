@@ -100,11 +100,30 @@ export const passkey = pgTable("passkey", {
   aaguid: t.text("aaguid"),
 })
 
+export const auditLog = pgTable(
+  "audit_log",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    event: text("event").notNull(),
+    metadata: text("metadata"), // JSON string
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+  },
+  (table) => [
+    index("audit_log_userId_idx").on(table.userId),
+    index("audit_log_event_idx").on(table.event),
+    index("audit_log_createdAt_idx").on(table.createdAt),
+    index("audit_log_expiresAt_idx").on(table.expiresAt),
+  ]
+)
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   passkeys: many(passkey),
   posts: many(post),
+  auditLogs: many(auditLog),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -124,6 +143,13 @@ export const accountRelations = relations(account, ({ one }) => ({
 export const passkeyRelations = relations(passkey, ({ one }) => ({
   user: one(user, {
     fields: [passkey.userId],
+    references: [user.id],
+  }),
+}))
+
+export const auditLogRelations = relations(auditLog, ({ one }) => ({
+  user: one(user, {
+    fields: [auditLog.userId],
     references: [user.id],
   }),
 }))
