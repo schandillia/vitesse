@@ -6,17 +6,7 @@ import { PencilIcon, Trash2Icon } from "lucide-react"
 import { deleteCategory } from "@/actions/delete-category"
 import { updateCategory } from "@/actions/update-category"
 import toast from "react-hot-toast"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { ConfirmModal } from "@/components/confirm-modal"
 
 interface CategoryCardProps {
   category: {
@@ -42,6 +32,7 @@ export function CategoryCard({
   onUpdated,
 }: CategoryCardProps) {
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [name, setName] = useState(category.name)
   const [slug, setSlug] = useState(category.slug)
   const [description, setDescription] = useState(category.description || "")
@@ -125,6 +116,7 @@ export function CategoryCard({
       return
     }
 
+    setIsDeleteModalOpen(false)
     toast.success("Category deleted.")
     onDeleted(category.id)
   }
@@ -195,40 +187,16 @@ export function CategoryCard({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                disabled={isDeleting}
-                className="size-8 text-destructive hover:text-destructive/80 hover:bg-transparent"
-              >
-                <Trash2Icon className="size-4" />
-                <span className="sr-only">Delete</span>
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  Delete <span className="italic">{category.name}</span>?
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  Posts in this category will become uncategorized. This cannot
-                  be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  variant="destructive"
-                  onClick={handleDelete}
-                  className="bg-destructive! text-white border-destructive"
-                >
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={isDeleting}
+            className="size-8 text-destructive hover:text-destructive/80 hover:bg-transparent"
+            onClick={() => setIsDeleteModalOpen(true)}
+          >
+            <Trash2Icon className="size-4" />
+            <span className="sr-only">Delete</span>
+          </Button>
         </div>
       </div>
 
@@ -266,6 +234,20 @@ export function CategoryCard({
           <PencilIcon className="size-3 text-muted-foreground ml-2 opacity-30 mt-1 shrink-0" />
         </button>
       )}
+      <ConfirmModal
+        open={isDeleteModalOpen}
+        onOpenChange={setIsDeleteModalOpen}
+        title={
+          <>
+            Delete <span className="italic">{category.name}</span>?
+          </>
+        }
+        description="Posts in this category will become uncategorized. This cannot be undone."
+        confirmLabel="Delete"
+        variant="destructive"
+        onConfirm={handleDelete}
+        isLoading={isDeleting}
+      />
     </div>
   )
 }

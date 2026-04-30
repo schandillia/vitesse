@@ -74,41 +74,52 @@ export function ProtectedPageSidebar({ user }: ProtectedPageSidebarProps) {
       <Sidebar collapsible="icon">
         {/* Header — brand */}
         <SidebarHeader className="flex flex-row items-center justify-between px-2 py-1.5 pt-7 group-data-[collapsible=icon]:justify-center">
-          <Link href="/" className="flex items-center gap-2">
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+            aria-label={`${siteConfig.brand.name} home`}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/brand-logo.svg"
-              alt={siteConfig.brand.name}
+              alt=""
+              aria-hidden="true"
               className="size-6"
             />
             <span className="font-bold text-2xl text-sidebar-foreground group-data-[collapsible=icon]:hidden">
               {siteConfig.brand.name}
             </span>
           </Link>
-          <SidebarTrigger className="group-data-[collapsible=icon]:hidden" />
+          <SidebarTrigger
+            aria-label="Toggle sidebar"
+            className="group-data-[collapsible=icon]:hidden"
+          />
         </SidebarHeader>
 
         {/* Nav links */}
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="space-y-4">
-                {navItems.map(({ href, label, icon: Icon }) => (
-                  <SidebarMenuItem key={href}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={pathname === href}
-                      tooltip={label}
-                      className="rounded-4xl h-10 data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent/20 data-[active=false]:hover:text-sidebar-accent-foreground"
-                    >
-                      <Link href={href}>
-                        <Icon />
-                        <span>{label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
+              <nav aria-label="Main navigation">
+                <SidebarMenu className="space-y-4">
+                  {navItems.map(({ href, label, icon: Icon }) => (
+                    <SidebarMenuItem key={href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === href}
+                        tooltip={label}
+                        className="rounded-4xl h-10 data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent/20 data-[active=false]:hover:text-sidebar-accent-foreground"
+                        aria-current={pathname === href ? "page" : undefined}
+                      >
+                        <Link href={href}>
+                          <Icon />
+                          <span>{label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </nav>
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
@@ -126,6 +137,7 @@ export function ProtectedPageSidebar({ user }: ProtectedPageSidebarProps) {
                     <SidebarMenuButton
                       size="lg"
                       className="cursor-pointer rounded-4xl data-[active=false]:bg-transparent data-[active=false]:hover:bg-sidebar-accent/20 data-[active=false]:hover:text-sidebar-accent-foreground focus-visible:ring-1 focus-visible:ring-sidebar-accent/30"
+                      aria-label={`${user.name ?? "User"} menu`}
                     >
                       <UserAvatar user={user} />
                       <UserInfo

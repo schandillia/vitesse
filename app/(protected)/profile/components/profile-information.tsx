@@ -9,6 +9,8 @@ import { EditableUsername } from "@/app/(protected)/profile/components/editable-
 import { siteConfig } from "@/config/site"
 import { formatDate, formatRelativeTime } from "@/lib/date"
 import { InfoRow } from "@/app/(protected)/profile/components/info-row"
+import { RoleBadge } from "@/components/role-badge"
+import { Role } from "@/lib/auth/roles"
 
 interface ProfileInformationProps {
   user: User
@@ -35,16 +37,11 @@ export function ProfileInformation({ user }: ProfileInformationProps) {
               {/* Header Info: Centered on mobile, left-aligned on desktop */}
               <div className="mb-6 flex flex-col items-center md:items-start min-w-0 w-full">
                 {user.role && (
-                  <Badge
-                    className={`gap-1.5 px-3 py-1 mb-2 capitalize ${
-                      user.role === "admin"
-                        ? "bg-linear-to-r from-amber-400 via-yellow-300 to-amber-500 text-amber-950 font-medium border border-amber-300/50 shadow-md shadow-amber-500/30 dark:from-amber-300 dark:via-yellow-200 dark:to-amber-400 dark:text-amber-950 dark:border-amber-200/50"
-                        : ""
-                    }`}
-                  >
-                    <ShieldIcon className="size-3" aria-hidden="true" />
-                    {user.role}
-                  </Badge>
+                  <RoleBadge
+                    role={user.role as Role}
+                    showIcon
+                    className="mb-2"
+                  />
                 )}
                 <EditableName initialName={defaultName} />
                 <EditableUsername initialUsername={user.username ?? ""} />{" "}

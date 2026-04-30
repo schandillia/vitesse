@@ -15,7 +15,7 @@ interface ConfirmModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 
-  title: string
+  title: React.ReactNode
   description?: string
 
   confirmLabel?: string

@@ -15,9 +15,7 @@ export function GatedPageTitle({ title, description }: GatedPageTitleProps) {
         </SidebarTrigger>
         <h1 className="text-3xl font-bold">{title}</h1>
       </div>
-      {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
-      )}
+      {description && <p className="text-muted-foreground">{description}</p>}
     </div>
   )
 }

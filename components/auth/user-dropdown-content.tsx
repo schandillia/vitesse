@@ -31,7 +31,7 @@ const menuItems = [
   { href: "/settings", label: "Settings", icon: SettingsIcon },
 ]
 
-const baseItemClass = "rounded-4xl focus:bg-sidebar-accent/20 cursor-pointer"
+const baseItemClass = "rounded-md cursor-pointer"
 
 export function UserDropdownContent({
   user,

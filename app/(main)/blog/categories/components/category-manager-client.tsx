@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { PlusIcon } from "lucide-react"
-import { CategoryCard } from "@/app/(main)/blog/components/category-card"
-import { CategoryFormModal } from "@/app/(main)/blog/components/category-form-modal"
+import { CategoryCard } from "@/app/(main)/blog/categories/components/category-card"
+import { CategoryFormModal } from "@/app/(main)/blog/categories/components/category-form-modal"
 import type { CategoryOption } from "@/actions/get-categories"
 
 interface CategoryManagerClientProps {
