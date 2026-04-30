@@ -9,6 +9,11 @@ import {
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 import { formatDateTime } from "@/lib/date"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export type ActivityRow = {
   id: string
@@ -43,7 +48,7 @@ function parseDetails(
   event: string,
   metadata: Record<string, unknown> | null
 ): string {
-  if (!metadata) return "-"
+  if (!metadata) return "—"
 
   switch (event) {
     case "login":
@@ -59,7 +64,7 @@ function parseDetails(
     case "failed_login_attempt":
       return `Attempted email ${metadata.attemptedEmail as string} (IP ${(metadata.ipAddress as string) || "Unknown"})`
     default:
-      return "-"
+      return "—"
   }
 }
 
@@ -69,14 +74,14 @@ interface ActivityTableProps {
 
 export function ActivityTable({ rows }: ActivityTableProps) {
   return (
-    <div className="rounded-xl border">
-      <Table aria-label="Activity log">
+    <div className="rounded-xl border overflow-hidden">
+      <Table aria-label="Activity log" className="table-fixed">
         <TableHeader>
           <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead>Event</TableHead>
+            <TableHead className="w-[200px]">User</TableHead>
+            <TableHead className="w-[130px]">Event</TableHead>
             <TableHead>Details</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead className="w-[250px]">Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -94,7 +99,7 @@ export function ActivityTable({ rows }: ActivityTableProps) {
               <TableRow key={row.id}>
                 <TableCell>
                   {row.user ? (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       {row.user.image ? (
                         <Image
                           src={row.user.image}
@@ -102,30 +107,35 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                           aria-hidden="true"
                           width={32}
                           height={32}
-                          className="rounded-full size-8 object-cover"
+                          className="rounded-full size-8 object-cover shrink-0"
                         />
                       ) : (
                         <div
                           aria-hidden="true"
-                          className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-medium"
+                          className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-medium shrink-0"
                         >
                           {row.user.name.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-medium truncate">
                           {row.user.name}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          {row.user.email}
-                        </span>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="text-xs text-muted-foreground truncate block">
+                              {row.user.email}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>{row.user.email}</TooltipContent>
+                        </Tooltip>
                       </div>
                     </div>
                   ) : (
                     <div className="flex items-center gap-3">
                       <div
                         aria-hidden="true"
-                        className="size-8 rounded-full bg-muted flex items-center justify-center"
+                        className="size-8 rounded-full bg-muted flex items-center justify-center shrink-0"
                       />
                       <span className="text-sm text-muted-foreground">
                         {row.event === "failed_login_attempt"
@@ -144,8 +154,17 @@ export function ActivityTable({ rows }: ActivityTableProps) {
                     {EVENT_LABELS[row.event] ?? row.event}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {parseDetails(row.event, row.metadata)}
+                <TableCell className="text-sm text-muted-foreground truncate max-w-0">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="truncate block">
+                        {parseDetails(row.event, row.metadata)}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {parseDetails(row.event, row.metadata)}
+                    </TooltipContent>
+                  </Tooltip>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {formatDateTime(row.createdAt)}
