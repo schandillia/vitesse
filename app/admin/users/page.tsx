@@ -6,7 +6,7 @@ import { UsersToolbar } from "@/app/admin/users/components/users-toolbar"
 import { Pagination } from "@/app/admin/users/components/pagination"
 import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
-import { count, ilike, or, eq } from "drizzle-orm"
+import { count, ilike, or, eq, and } from "drizzle-orm"
 import { ROLES, type Role } from "@/lib/auth/roles"
 import { getServerSession } from "@/lib/auth/get-server-session"
 
@@ -52,10 +52,7 @@ async function getUsers({
     filters.push(eq(user.role, role))
   }
 
-  const where =
-    filters.length > 0
-      ? filters.reduce((acc, filter) => acc && filter)
-      : undefined
+  const where = filters.length > 0 ? and(...filters) : undefined
 
   const [users, totalResult] = await Promise.all([
     db
