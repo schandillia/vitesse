@@ -85,7 +85,7 @@ export function AppSidebar({ user, navItems }: AppSidebarProps) {
           />
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="mt-5">
           <SidebarGroup>
             <SidebarGroupContent>
               <nav aria-label="Main navigation">
