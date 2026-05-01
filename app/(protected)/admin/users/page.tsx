@@ -1,14 +1,15 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
 import { GatedPageTitle } from "@/components/layout/gated-page-title"
-import { UsersTable } from "@/app/admin/users/components/users-table"
-import { UsersToolbar } from "@/app/admin/users/components/users-toolbar"
-import { Pagination } from "@/app/admin/users/components/pagination"
+import { UsersTable } from "@/app/(protected)/admin/users/components/users-table"
+import { UsersToolbar } from "@/app/(protected)/admin/users/components/users-toolbar"
+import { Pagination } from "@/app/(protected)/admin/users/components/pagination"
 import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
 import { count, ilike, or, eq, and } from "drizzle-orm"
 import { ROLES, type Role } from "@/lib/auth/roles"
 import { getServerSession } from "@/lib/auth/get-server-session"
+import { redirect, unauthorized } from "next/navigation"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.users.title,
@@ -84,6 +85,15 @@ export default async function AdminUsersPage({
   searchParams,
 }: AdminUsersPageProps) {
   const session = await getServerSession()
+  const user = session?.user
+
+  if (!session || !user) {
+    redirect("/login")
+  }
+  if (user.role !== ROLES.ADMIN) {
+    unauthorized()
+  }
+
   const { page, search, role } = await searchParams
 
   const currentPage = Math.max(1, parseInt(page ?? "1"))

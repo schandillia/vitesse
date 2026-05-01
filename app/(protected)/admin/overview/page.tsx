@@ -1,13 +1,16 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
 import { GatedPageTitle } from "@/components/layout/gated-page-title"
-import { UserStats } from "@/app/admin/overview/components/user-stats"
-import { SessionStats } from "@/app/admin/overview/components/session-stats"
-import { RoleStats } from "@/app/admin/overview/components/role-stats"
+import { UserStats } from "@/app/(protected)/admin/overview/components/user-stats"
+import { SessionStats } from "@/app/(protected)/admin/overview/components/session-stats"
+import { RoleStats } from "@/app/(protected)/admin/overview/components/role-stats"
 import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
 import { count, gte } from "drizzle-orm"
 import { redis } from "@/lib/redis"
+import { getServerSession } from "@/lib/auth/get-server-session"
+import { redirect, unauthorized } from "next/navigation"
+import { ROLES } from "@/lib/auth/roles"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.overview.title,
@@ -63,6 +66,16 @@ async function getOverviewData() {
 }
 
 export default async function AdminOverviewPage() {
+  const session = await getServerSession()
+  const user = session?.user
+
+  if (!session || !user) {
+    redirect("/login")
+  }
+  if (user.role !== ROLES.ADMIN) {
+    unauthorized()
+  }
+
   const data = await getOverviewData()
 
   return (

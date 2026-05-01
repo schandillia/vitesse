@@ -1,4 +1,4 @@
-import { StatCard } from "@/app/admin/overview/components/stat-card"
+import { StatCard } from "@/app/(protected)/admin/overview/components/stat-card"
 import { ActivityIcon } from "lucide-react"
 
 interface SessionStatsProps {

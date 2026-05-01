@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { RoleBadge } from "@/components/role-badge"
-import { UserActions } from "@/app/admin/users/components/user-actions"
+import { UserActions } from "@/app/(protected)/admin/users/components/user-actions"
 import { CheckCircle2Icon, XCircleIcon } from "lucide-react"
 import { formatDate } from "@/lib/date"
 import { type Role } from "@/lib/auth/roles"

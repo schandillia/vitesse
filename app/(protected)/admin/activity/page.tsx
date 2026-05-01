@@ -4,12 +4,15 @@ import { GatedPageTitle } from "@/components/layout/gated-page-title"
 import {
   ActivityTable,
   type ActivityRow,
-} from "@/app/admin/activity/components/activity-table"
-import { ActivityToolbar } from "@/app/admin/activity/components/activity-toolbar"
-import { Pagination } from "@/app/admin/users/components/pagination"
+} from "@/app/(protected)/admin/activity/components/activity-table"
+import { ActivityToolbar } from "@/app/(protected)/admin/activity/components/activity-toolbar"
+import { Pagination } from "@/app/(protected)/admin/users/components/pagination"
 import { db } from "@/db/drizzle"
 import { auditLog, user } from "@/db/auth-schema"
 import { desc, eq, count, gte, lte, and } from "drizzle-orm"
+import { redirect, unauthorized } from "next/navigation"
+import { getServerSession } from "@/lib/auth/get-server-session"
+import { ROLES } from "@/lib/auth/roles"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.activity.title,
@@ -85,6 +88,16 @@ async function getActivity({
 export default async function AdminActivityPage({
   searchParams,
 }: AdminActivityPageProps) {
+  const session = await getServerSession()
+  const user = session?.user
+
+  if (!session || !user) {
+    redirect("/login")
+  }
+  if (user.role !== ROLES.ADMIN) {
+    unauthorized()
+  }
+
   const { page, event, from, to } = await searchParams
 
   const currentPage = Math.max(1, parseInt(page ?? "1"))

@@ -1,6 +1,6 @@
 import { ShieldUserIcon, UserIcon } from "lucide-react"
 import { ROLES, type Role } from "@/lib/auth/roles"
-import { StatCard } from "@/app/admin/overview/components/stat-card"
+import { StatCard } from "@/app/(protected)/admin/overview/components/stat-card"
 
 const ROLE_ICONS: Record<
   string,

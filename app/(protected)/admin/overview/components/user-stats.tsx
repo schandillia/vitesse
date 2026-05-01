@@ -1,4 +1,4 @@
-import { StatCard } from "@/app/admin/overview/components/stat-card"
+import { StatCard } from "@/app/(protected)/admin/overview/components/stat-card"
 import { UsersIcon, UserPlusIcon, CalendarIcon } from "lucide-react"
 
 interface UserStatsProps {

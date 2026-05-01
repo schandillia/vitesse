@@ -6,7 +6,7 @@ import { RefreshCwIcon } from "lucide-react"
 import {
   HealthCard,
   HealthLegend,
-} from "@/app/admin/system/components/health-card"
+} from "@/app/(protected)/admin/system/components/health-card"
 
 const DB_THRESHOLDS = { good: 200, degraded: 500 }
 const CACHE_THRESHOLDS = { good: 50, degraded: 150 }

@@ -1,8 +1,8 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { AdminPageSidebar } from "@/components/layout/admin-page-sidebar"
 import { redirect, unauthorized } from "next/navigation"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { PostHogIdentify } from "@/components/analytics/posthog-identify"
+import { AdminPageSidebar } from "@/app/(protected)/admin/components/admin-page-sidebar"
 
 export default async function ProtectedLayout({
   children,

@@ -1,12 +1,15 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
 import { GatedPageTitle } from "@/components/layout/gated-page-title"
-import { EnvInfo } from "@/app/admin/system/components/env-info"
-import { InfrastructureHealth } from "@/app/admin/system/components/infrastructure-health"
+import { EnvInfo } from "@/app/(protected)/admin/system/components/env-info"
+import { InfrastructureHealth } from "@/app/(protected)/admin/system/components/infrastructure-health"
 import { db } from "@/db/drizzle"
 import { redis } from "@/lib/redis"
 import { sql } from "drizzle-orm"
 import packageJson from "@/package.json"
+import { getServerSession } from "@/lib/auth/get-server-session"
+import { redirect, unauthorized } from "next/navigation"
+import { ROLES } from "@/lib/auth/roles"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.system.title,
@@ -48,6 +51,16 @@ async function checkRedis() {
 }
 
 export default async function AdminSystemPage() {
+  const session = await getServerSession()
+  const user = session?.user
+
+  if (!session || !user) {
+    redirect("/login")
+  }
+  if (user.role !== ROLES.ADMIN) {
+    unauthorized()
+  }
+
   const [dbHealth, cacheHealth] = await Promise.all([
     checkDatabase(),
     checkRedis(),
