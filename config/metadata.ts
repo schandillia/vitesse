@@ -104,3 +104,5 @@ export const metaData = {
     },
   },
 }
+
+export type MetaData = typeof metaData
