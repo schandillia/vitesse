@@ -51,6 +51,7 @@ export const siteConfig = {
   },
 
   emails: {
+    provider: "resend", // or sendgrid or nodemailer
     support: {
       sender: `Team ${BRANDNAME}`,
       email: "onboarding@resend.dev",

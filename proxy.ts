@@ -9,6 +9,7 @@ import {
   adminPrefixes,
   authRoutes,
   DEFAULT_LOGIN_REDIRECT,
+  routeRedirects,
 } from "@/routes"
 import { siteConfig } from "@/config/site"
 
@@ -20,9 +21,9 @@ export async function proxy(request: NextRequest) {
 
   let response = NextResponse.next()
 
-  // Redirect /admin → /admin/overview
-  if (pathname === "/admin") {
-    return NextResponse.redirect(createUrl("/admin/overview", nextUrl))
+  const redirect = routeRedirects[pathname]
+  if (redirect) {
+    return NextResponse.redirect(createUrl(redirect, nextUrl))
   }
 
   const isPublicRoute =

@@ -37,6 +37,18 @@ export const publicPrefixes = ["/blog/", "/docs/"]
  */
 export const adminPrefixes = ["/admin"]
 
+/**
+ * Maps root routes to their default subroutes.
+ * Visiting a root route redirects to its first subroute instead of rendering a blank page.
+ */
+export const routeRedirects: Record<string, string> = {
+  "/admin": "/admin/overview",
+  "/profile": "/profile/general",
+  "/dashboard": "/dashboard/general",
+  "/security": "/security/general",
+  "/settings": "/settings/general",
+}
+
 export const authRoutes = new Set(["/login"])
 
 /**

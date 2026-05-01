@@ -48,7 +48,9 @@ export function UserDropdownContent({
   const side = isSidebar ? "top" : "bottom"
 
   const pathname = usePathname()
-  const filteredItems = menuItems.filter((item) => item.href !== pathname)
+  const filteredItems = menuItems.filter(
+    (item) => !pathname.startsWith(item.href)
+  )
 
   return (
     <DropdownMenuContent align={align} side={side} className="w-48 space-y-2">
@@ -74,7 +76,7 @@ export function UserDropdownContent({
         )
       })}
 
-      {user.role === ROLES.ADMIN && (
+      {user.role === ROLES.ADMIN && !pathname.startsWith("/admin") && (
         <DropdownMenuItem asChild className={baseItemClass}>
           <Link href="/admin" className="flex items-center gap-2">
             <ShieldUserIcon className="size-4" />

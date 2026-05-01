@@ -1,10 +1,10 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { AdminPageSidebar } from "@/components/layout/admin-page-sidebar"
-import { redirect, unauthorized } from "next/navigation"
+import { redirect } from "next/navigation"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { PostHogIdentify } from "@/components/analytics/posthog-identify"
+import { DashboardPageSidebar } from "@/app/(protected)/dashboard/components/dashboard-page-sidebar"
 
-export default async function ProtectedLayout({
+export default async function ProtectedDashboardLayout({
   children,
 }: {
   children: React.ReactNode
@@ -15,14 +15,11 @@ export default async function ProtectedLayout({
   if (!session || !user) {
     redirect("/login")
   }
-  if (user.role !== "admin") {
-    unauthorized()
-  }
 
   return (
     <SidebarProvider>
       <PostHogIdentify userId={user.id} email={user.email} name={user.name} />
-      <AdminPageSidebar user={user} />
+      <DashboardPageSidebar user={user} />
       <SidebarInset>
         {/* Top bar */}
         <div className="flex flex-1 flex-col gap-6 p-6">{children}</div>
