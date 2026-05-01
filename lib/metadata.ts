@@ -21,11 +21,9 @@ export const baseMetadata: Metadata = {
 
   verification: {
     google: siteConfig.seo.verification.google || undefined,
-    other: {
-      ...(siteConfig.seo.verification.bing
-        ? { "msvalidate.01": siteConfig.seo.verification.bing }
-        : {}),
-    },
+    other: siteConfig.seo.verification.bing
+      ? { "msvalidate.01": siteConfig.seo.verification.bing }
+      : undefined,
   },
 
   robots: {
