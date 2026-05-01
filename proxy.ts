@@ -19,6 +19,12 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = nextUrl
 
   let response = NextResponse.next()
+
+  // Redirect /admin → /admin/overview
+  if (pathname === "/admin") {
+    return NextResponse.redirect(createUrl("/admin/overview", nextUrl))
+  }
+
   const isPublicRoute =
     publicRoutes.has(pathname) ||
     publicPrefixes.some((prefix) => pathname.startsWith(prefix))
