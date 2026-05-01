@@ -9,7 +9,7 @@ import { createCategory } from "@/actions/create-category"
 import { updateCategory } from "@/actions/update-category"
 import toast from "react-hot-toast"
 import { siteConfig } from "@/config/site"
-import { FormField } from "@/app/(main)/blog/components/form-field"
+import { FormField } from "@/app/blog/components/form-field"
 
 interface CategoryFormProps {
   /** Pass a category to put the form in edit mode. Omit for create mode. */

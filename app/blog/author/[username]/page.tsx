@@ -2,8 +2,8 @@ import { buildAuthorMetadata } from "@/lib/build-author-metadata"
 import { buildAuthorJsonLd } from "@/lib/build-author-jsonld"
 import { siteConfig } from "@/config/site"
 import { getPostsByAuthor } from "@/actions/get-posts-by-author"
-import { BlogBreadcrumbs } from "@/app/(main)/blog/components/blog-breadcrumbs"
-import { BlogFeed } from "@/app/(main)/blog/components/blog-feed"
+import { BlogBreadcrumbs } from "@/app/blog/components/blog-breadcrumbs"
+import { BlogFeed } from "@/app/blog/components/blog-feed"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { buildBreadcrumbJsonLd } from "@/lib/build-breadcrumb-jsonld"
@@ -72,7 +72,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
       />
 
       <BlogBreadcrumbs authorName={authorName} />
-      <section className="flex flex-col gap-20 mx-auto">
+      <section className="flex flex-col gap-20 mx-auto max-w-6xl px-4 md:px-8 py-10">
         <header className="font-bold text-foreground text-center space-y-4">
           <h1 className="text-4xl/tight md:text-6xl">{authorName}</h1>
           <h2 className="text-2xl/tight md:text-4xl text-muted-foreground">

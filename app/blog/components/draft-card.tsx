@@ -10,7 +10,7 @@ import { updatePost } from "@/actions/update-post"
 import { type DraftPost } from "@/actions/get-drafts"
 import { SendIcon } from "lucide-react"
 import toast from "react-hot-toast"
-import { DeletePostButton } from "@/app/(main)/blog/components/delete-post-button"
+import { DeletePostButton } from "@/app/blog/components/delete-post-button"
 
 interface DraftCardProps {
   draft: DraftPost

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import { requireAdmin } from "@/lib/blog-utils"
 import { getDrafts } from "@/actions/get-drafts"
-import { DraftsList } from "@/app/(main)/blog/components/drafts-list"
+import { DraftsList } from "@/app/blog/components/drafts-list"
 
 export default async function DraftsPage() {
   const { authorized } = await requireAdmin()

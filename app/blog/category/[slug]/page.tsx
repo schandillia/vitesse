@@ -3,8 +3,8 @@ import { buildBreadcrumbJsonLd } from "@/lib/build-breadcrumb-jsonld"
 import { buildCategoryMetadata } from "@/lib/build-category-metadata"
 import { siteConfig } from "@/config/site"
 import { getPostsByCategory } from "@/actions/get-posts-by-category"
-import { BlogBreadcrumbs } from "@/app/(main)/blog/components/blog-breadcrumbs"
-import { BlogFeed } from "@/app/(main)/blog/components/blog-feed"
+import { BlogBreadcrumbs } from "@/app/blog/components/blog-breadcrumbs"
+import { BlogFeed } from "@/app/blog/components/blog-feed"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -74,7 +74,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       />
 
       <BlogBreadcrumbs categoryName={categoryName} />
-      <section className="flex flex-col gap-20 mx-auto">
+      <section className="flex flex-col gap-20 mx-auto max-w-6xl px-4 md:px-8 py-10">
         <header className="font-bold text-foreground text-center space-y-4">
           <h1 className="text-4xl/tight md:text-6xl">{categoryName}</h1>
           <h2 className="text-2xl/tight md:text-4xl text-muted-foreground">

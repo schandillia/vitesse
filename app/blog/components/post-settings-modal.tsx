@@ -22,8 +22,8 @@ import { type CategoryOption } from "@/actions/get-categories"
 import toast from "react-hot-toast"
 import { siteConfig } from "@/config/site"
 import { LoadingSwap } from "@/components/ui/loading-swap"
-import { CoverImageField } from "@/app/(main)/blog/components/cover-image-field"
-import { FormField } from "@/app/(main)/blog/components/form-field"
+import { CoverImageField } from "@/app/blog/components/cover-image-field"
+import { FormField } from "@/app/blog/components/form-field"
 
 interface PostSettingsModalProps {
   open: boolean

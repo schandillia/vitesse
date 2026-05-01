@@ -28,7 +28,7 @@ function PostCardSkeleton() {
 
 export function BlogPageSkeleton() {
   return (
-    <section className="flex flex-col gap-20 mx-auto">
+    <section className="flex flex-col gap-20 mx-auto max-w-6xl px-4 md:px-8 py-10">
       <header className="flex flex-col items-center gap-4 text-center">
         <Skeleton className="h-14 w-2/3 md:h-20" />
         <Skeleton className="h-8 w-1/2 md:h-12" />

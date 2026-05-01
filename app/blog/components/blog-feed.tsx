@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useTransition, useCallback } from "react"
 import { getPosts, type PostWithRelations } from "@/actions/get-posts"
-import { PostCard } from "@/app/(main)/blog/components/post-card"
-import { PostCardSkeletonGrid } from "@/app/(main)/blog/components/post-card-skeleton"
+import { PostCard } from "@/app/blog/components/post-card"
+import { PostCardSkeletonGrid } from "@/app/blog/components/post-card-skeleton"
 import { Loader2 } from "lucide-react"
 import { BackToTop } from "@/components/back-to-top"
 

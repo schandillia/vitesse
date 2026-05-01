@@ -1,4 +1,4 @@
-import { DraftCardSkeletonGrid } from "@/app/(main)/blog/components/draft-card-skeleton"
+import { DraftCardSkeletonGrid } from "@/app/blog/components/draft-card-skeleton"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function DraftsLoading() {

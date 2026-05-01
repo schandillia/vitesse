@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { CategoryForm } from "@/app/(main)/blog/categories/components/category-form"
+import { CategoryForm } from "@/app/blog/categories/components/category-form"
 
 interface CategoryFormModalProps {
   open: boolean

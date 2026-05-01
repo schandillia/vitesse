@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Trash2Icon } from "lucide-react"
-import { DeletePostModal } from "@/app/(main)/blog/components/delete-post-modal"
+import { DeletePostModal } from "@/app/blog/components/delete-post-modal"
 
 interface DeletePostButtonProps {
   postId: string

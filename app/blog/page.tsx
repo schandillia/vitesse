@@ -1,5 +1,5 @@
 import { getPosts } from "@/actions/get-posts"
-import { BlogFeed } from "@/app/(main)/blog/components/blog-feed"
+import { BlogFeed } from "@/app/blog/components/blog-feed"
 import { Button } from "@/components/ui/button"
 import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
@@ -31,7 +31,7 @@ export default async function BlogPage() {
   const { posts, nextCursor, hasMore } = await getPosts()
 
   return (
-    <section className="flex flex-col gap-20 mx-auto">
+    <section className="flex flex-col gap-20 mx-auto max-w-6xl px-4 md:px-8 py-10">
       <header className="font-bold text-foreground text-center space-y-4">
         <h1 className="text-4xl/tight md:text-6xl">
           {siteConfig.blog.pageHeading}

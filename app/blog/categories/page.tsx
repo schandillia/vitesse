@@ -2,7 +2,7 @@ import { requireAdmin } from "@/lib/blog-utils"
 import { getCategories } from "@/actions/get-categories"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
-import { CategoryManagerClient } from "@/app/(main)/blog/categories/components/category-manager-client"
+import { CategoryManagerClient } from "@/app/blog/categories/components/category-manager-client"
 
 export const metadata: Metadata = {
   title: "Manage Categories",

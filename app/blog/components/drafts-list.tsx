@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { type DraftPost } from "@/actions/get-drafts"
 import { FileTextIcon } from "lucide-react"
-import { DraftCard } from "@/app/(main)/blog/components/draft-card"
+import { DraftCard } from "@/app/blog/components/draft-card"
 
 interface DraftsListProps {
   drafts: DraftPost[]

@@ -1,7 +1,7 @@
 import { Image } from "@tiptap/extension-image"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model"
-import { ImageNodeView } from "@/app/(main)/blog/components/image-node-view"
+import { ImageNodeView } from "@/app/blog/components/image-node-view"
 
 interface MarkdownSerializerState {
   write: (string: string) => void

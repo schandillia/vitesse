@@ -6,7 +6,7 @@ import { uploadBlogImageAction } from "@/actions/upload-blog-image"
 import { blogImageSchema } from "@/lib/validations/blog-image-schema"
 import { ImageIcon, XIcon } from "lucide-react"
 import toast from "react-hot-toast"
-import { FormField } from "@/app/(main)/blog/components/form-field"
+import { FormField } from "@/app/blog/components/form-field"
 
 interface CoverImageFieldProps {
   coverImage: string
