@@ -5,12 +5,12 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: siteConfig.seo.metaData.settings.title,
-  description: siteConfig.seo.metaData.settings.description,
-  robots: siteConfig.seo.metaData.settings.robots,
+  title: siteConfig.seo.metaData.profile.title,
+  description: siteConfig.seo.metaData.profile.description,
+  robots: siteConfig.seo.metaData.profile.robots,
 }
 
-export default async function SettingsGeneralPage() {
+export default async function ProfileAccessibilityPage() {
   const session = await getServerSession()
   const user = session?.user
 
@@ -21,10 +21,9 @@ export default async function SettingsGeneralPage() {
   return (
     <div className="container space-y-5">
       <GatedPageTitle
-        title="Settings"
-        description="Manage your passkeys and active sessions"
+        title="Accessibility"
+        description="Update your personal information and public profile"
       />
-      <p>TBD</p>
     </div>
   )
 }

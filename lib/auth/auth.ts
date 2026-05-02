@@ -10,8 +10,10 @@ import { nextCookies } from "better-auth/next-js"
 import { renderWelcomeEmail } from "@/emails/welcome"
 import { redis } from "@/lib/redis"
 import { env } from "@/env"
-import { auditLog } from "@/db/auth-schema"
+import { auditLog, user } from "@/db/auth-schema"
 import { onFailedLogin } from "@/lib/auth/hooks/failed-login"
+import { MODES } from "@/lib/auth/modes"
+import { eq } from "drizzle-orm"
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -23,6 +25,12 @@ export const auth = betterAuth({
         required: true,
         input: false,
       },
+      preferredMode: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+
       username: {
         type: "string",
         required: true,
@@ -87,6 +95,16 @@ export const auth = betterAuth({
           const retentionMs =
             siteConfig.auditLogs.retentionDays * 24 * 60 * 60 * 1000
 
+          const { cookies } = await import("next/headers")
+          const cookieStore = await cookies()
+          cookieStore.set("preferred-mode", MODES.SYSTEM, {
+            httpOnly: false,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+          })
+
           await Promise.all([
             sendEmail({
               to: user.email,
@@ -115,6 +133,24 @@ export const auth = betterAuth({
           const retentionMs =
             siteConfig.auditLogs.retentionDays * 24 * 60 * 60 * 1000
           const expiresAt = new Date(Date.now() + retentionMs)
+
+          const userData = await db
+            .select({ preferredMode: user.preferredMode })
+            .from(user)
+            .where(eq(user.id, session.userId))
+            .limit(1)
+
+          const preferredMode = userData[0]?.preferredMode ?? MODES.SYSTEM
+
+          const { cookies } = await import("next/headers")
+          const cookieStore = await cookies()
+          cookieStore.set("preferred-mode", preferredMode, {
+            httpOnly: false,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+          })
 
           await db.insert(auditLog).values({
             id: crypto.randomUUID(),

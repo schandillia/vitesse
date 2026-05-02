@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { publicRoutes } from "@/routes"
 import { useAnalytics } from "@/hooks/use-analytics"
 import { authChannel } from "@/lib/auth/broadcast"
+import { clearPreferredMode } from "@/actions/clear-preferred-mode"
 
 export function useAuthActions() {
   const pathname = usePathname()
@@ -14,6 +15,7 @@ export function useAuthActions() {
   async function handleSignOut() {
     reset()
     authChannel?.postMessage({ type: "LOGOUT" })
+    await clearPreferredMode()
     await authClient.signOut()
 
     if (publicRoutes.has(pathname)) {

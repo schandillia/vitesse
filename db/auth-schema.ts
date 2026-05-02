@@ -1,8 +1,15 @@
 import { post } from "@/db/blog-schema"
 import { ROLES, type Role } from "@/lib/auth/roles"
+import { MODES } from "@/lib/auth/modes"
 import { relations } from "drizzle-orm"
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
 import * as t from "drizzle-orm/pg-core"
+
+export const themeModeEnum = t.pgEnum("theme_mode", [
+  MODES.LIGHT,
+  MODES.DARK,
+  MODES.SYSTEM,
+])
 
 export const user = pgTable(
   "user",
@@ -15,6 +22,7 @@ export const user = pgTable(
     emailVerified: boolean("email_verified").default(false).notNull(),
     image: text("image"),
     role: text("role").$type<Role>().default(ROLES.USER).notNull(),
+    preferredMode: themeModeEnum("preferred_mode").default(MODES.SYSTEM),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

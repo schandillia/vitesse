@@ -15,9 +15,13 @@ const THEMES = [
 
 interface ModeToggleProps {
   expanded?: boolean
+  onThemeChange?: (mode: string) => void
 }
 
-export function ModeToggle({ expanded = false }: ModeToggleProps) {
+export function ModeToggle({
+  expanded = false,
+  onThemeChange,
+}: ModeToggleProps) {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -26,14 +30,15 @@ export function ModeToggle({ expanded = false }: ModeToggleProps) {
   }, [])
 
   function cycleTheme() {
-    if (theme === "light") setTheme("dark")
-    else if (theme === "dark") setTheme("system")
-    else setTheme("light")
+    const next =
+      theme === "light" ? "dark" : theme === "dark" ? "system" : "light"
+    setTheme(next)
+    onThemeChange?.(next)
   }
 
   if (!mounted) {
     return expanded ? (
-      <div className="h-9 w-full rounded-md bg-sidebar-accent/50 opacity-50" />
+      <div className="h-9 w-[100px] rounded-full bg-sidebar-accent/50 opacity-50" />
     ) : (
       <Button variant="ghost" size="icon" className="opacity-0" />
     )
@@ -43,13 +48,13 @@ export function ModeToggle({ expanded = false }: ModeToggleProps) {
     return (
       <Tabs value={theme} onValueChange={setTheme}>
         <TabsList className="grid grid-cols-3 rounded-full bg-sidebar-accent/50 p-1">
-          {/* 2. Map over the config for Tabs */}
           {THEMES.map(({ value, Icon }) => (
             <TabsTrigger
               key={value}
               value={value}
               className="cursor-pointer rounded-full p-1 data-[state=active]:bg-background"
               aria-label={`Theme: ${value}`}
+              onClick={() => onThemeChange?.(value)}
             >
               <Icon className="size-[18px]" />
             </TabsTrigger>
