@@ -2,8 +2,8 @@
 
 import {
   BellIcon,
-  GlobeIcon,
   HardDriveDownloadIcon,
+  IdCardIcon,
   PersonStandingIcon,
   SlidersHorizontalIcon,
 } from "lucide-react"
@@ -11,7 +11,7 @@ import type { auth } from "@/lib/auth/auth"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 
 const navItems = [
-  { href: "/profile/general", label: "General", icon: GlobeIcon },
+  { href: "/profile/general", label: "General", icon: IdCardIcon },
   {
     href: "/profile/preferences",
     label: "Preferences",
