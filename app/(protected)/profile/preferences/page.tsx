@@ -37,7 +37,7 @@ export default async function ProfilePreferencesPage() {
   const preferredFontSize = userData[0]?.preferredFontSize ?? "16"
 
   return (
-    <div className="container space-y-5">
+    <div className="container space-y-8">
       <GatedPageTitle
         title="Preferences"
         description="Customize your experience"
