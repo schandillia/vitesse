@@ -11,6 +11,14 @@ export const themeModeEnum = t.pgEnum("theme_mode", [
   MODES.SYSTEM,
 ])
 
+export const fontSizeEnum = t.pgEnum("font_size", [
+  "14",
+  "15",
+  "16",
+  "18",
+  "20",
+])
+
 export const user = pgTable(
   "user",
   {
@@ -23,6 +31,7 @@ export const user = pgTable(
     image: text("image"),
     role: text("role").$type<Role>().default(ROLES.USER).notNull(),
     preferredMode: themeModeEnum("preferred_mode").default(MODES.SYSTEM),
+    preferredFontSize: fontSizeEnum("preferred_font_size").default("16"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

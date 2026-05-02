@@ -8,6 +8,7 @@ import { PreferencesModeToggle } from "@/app/(protected)/profile/preferences/com
 import { db } from "@/db/drizzle"
 import { user as userTable } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
+import { FontSizeSelector } from "@/app/(protected)/profile/preferences/components/font-size-selector"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.profile.title,
@@ -24,12 +25,16 @@ export default async function ProfilePreferencesPage() {
   }
 
   const userData = await db
-    .select({ preferredMode: userTable.preferredMode })
+    .select({
+      preferredMode: userTable.preferredMode,
+      preferredFontSize: userTable.preferredFontSize,
+    })
     .from(userTable)
     .where(eq(userTable.id, user.id))
     .limit(1)
 
   const preferredMode = (userData[0]?.preferredMode ?? MODES.SYSTEM) as Mode
+  const preferredFontSize = userData[0]?.preferredFontSize ?? "16"
 
   return (
     <div className="container space-y-5">
@@ -37,7 +42,8 @@ export default async function ProfilePreferencesPage() {
         title="Preferences"
         description="Customize your experience"
       />
-      <PreferencesModeToggle initialMode={preferredMode} />
+      <PreferencesModeToggle initialMode={preferredMode} />{" "}
+      <FontSizeSelector initialSize={preferredFontSize} />
     </div>
   )
 }

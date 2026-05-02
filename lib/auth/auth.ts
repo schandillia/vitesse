@@ -30,6 +30,11 @@ export const auth = betterAuth({
         required: false,
         input: true,
       },
+      preferredFontSize: {
+        type: "string",
+        required: false,
+        input: true,
+      },
 
       username: {
         type: "string",
@@ -104,6 +109,13 @@ export const auth = betterAuth({
             path: "/",
             maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
           })
+          cookieStore.set("preferred-font-size", "16", {
+            httpOnly: false,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+          })
 
           await Promise.all([
             sendEmail({
@@ -135,16 +147,27 @@ export const auth = betterAuth({
           const expiresAt = new Date(Date.now() + retentionMs)
 
           const userData = await db
-            .select({ preferredMode: user.preferredMode })
+            .select({
+              preferredMode: user.preferredMode,
+              preferredFontSize: user.preferredFontSize,
+            })
             .from(user)
             .where(eq(user.id, session.userId))
             .limit(1)
 
           const preferredMode = userData[0]?.preferredMode ?? MODES.SYSTEM
+          const preferredFontSize = userData[0]?.preferredFontSize ?? "16"
 
           const { cookies } = await import("next/headers")
           const cookieStore = await cookies()
           cookieStore.set("preferred-mode", preferredMode, {
+            httpOnly: false,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+          })
+          cookieStore.set("preferred-font-size", preferredFontSize, {
             httpOnly: false,
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production",

@@ -9,6 +9,8 @@ export async function ThemeProviderWrapper({
 }) {
   const cookieStore = await cookies()
   const preferredMode = cookieStore.get("preferred-mode")?.value ?? MODES.SYSTEM
+  const preferredFontSize =
+    cookieStore.get("preferred-font-size")?.value ?? "16"
 
   return (
     <ThemeProvider
@@ -17,6 +19,7 @@ export async function ThemeProviderWrapper({
       enableSystem
       disableTransitionOnChange
     >
+      <style>{`html { font-size: ${preferredFontSize}px; }`}</style>
       {children}
     </ThemeProvider>
   )
