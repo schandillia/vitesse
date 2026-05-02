@@ -1,15 +1,13 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
-import { GatedPageTitle } from "@/components/layout/gated-page-title"
-import { UsersTable } from "@/app/(protected)/admin/users/components/users-table"
-import { UsersToolbar } from "@/app/(protected)/admin/users/components/users-toolbar"
-import { Pagination } from "@/app/(protected)/admin/users/components/pagination"
+import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
 import { count, ilike, or, eq, and } from "drizzle-orm"
 import { ROLES, type Role } from "@/lib/auth/roles"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { redirect, unauthorized } from "next/navigation"
+import { UsersSection } from "@/app/(protected)/admin/users/components/users-section"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.users.title,
@@ -108,14 +106,17 @@ export default async function AdminUsersPage({
   })
 
   return (
-    <div className="container space-y-6">
+    <div className="container space-y-8">
       <GatedPageTitle
         title="Manage Users"
         description="View and manage platform users, assign roles, and control account access"
       />
-      <UsersToolbar />
-      <UsersTable users={users} currentUserId={session?.user.id ?? ""} />
-      <Pagination currentPage={currentPage} totalPages={totalPages} />
+      <UsersSection
+        users={users}
+        currentUserId={session?.user.id ?? ""}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
     </div>
   )
 }

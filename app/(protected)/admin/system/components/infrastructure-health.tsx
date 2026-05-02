@@ -7,6 +7,7 @@ import {
   HealthCard,
   HealthLegend,
 } from "@/app/(protected)/admin/system/components/health-card"
+import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 
 const DB_THRESHOLDS = { good: 200, degraded: 500 }
 const CACHE_THRESHOLDS = { good: 50, degraded: 150 }
@@ -48,36 +49,38 @@ export function InfrastructureHealth({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Infrastructure</h2>
-        <div className="flex items-center gap-3">
-          {checkedAt && (
-            <p className="text-xs text-muted-foreground">
-              Last checked{" "}
-              {checkedAt.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
-            </p>
-          )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isPending}
-          >
-            <RefreshCwIcon
-              className={`size-3.5 ${isPending ? "animate-spin" : ""}`}
-            />
-            Refresh
-          </Button>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <GatedPageSubheading text="Infrastructure" />
+          <div className="flex items-center gap-3">
+            {checkedAt && (
+              <p className="text-xs text-muted-foreground">
+                Last checked{" "}
+                {checkedAt.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              </p>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isPending}
+            >
+              <RefreshCwIcon
+                className={`size-3.5 ${isPending ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <HealthCard name="Database" {...db} thresholds={DB_THRESHOLDS} />
-        <HealthCard name="Cache" {...cache} thresholds={CACHE_THRESHOLDS} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <HealthCard name="Database" {...db} thresholds={DB_THRESHOLDS} />
+          <HealthCard name="Cache" {...cache} thresholds={CACHE_THRESHOLDS} />
+        </div>
       </div>
 
       <HealthLegend

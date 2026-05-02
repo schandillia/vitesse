@@ -1,3 +1,5 @@
+import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
+
 interface EnvInfoProps {
   items: { label: string; value: string }[]
 }
@@ -32,9 +34,12 @@ export function EnvInfo({ items }: EnvInfoProps) {
   const right = items.slice(mid)
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <EnvInfoColumn items={left} />
-      <EnvInfoColumn items={right} />
+    <div className="space-y-2">
+      <GatedPageSubheading text="Environment" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <EnvInfoColumn items={left} />
+        <EnvInfoColumn items={right} />
+      </div>
     </div>
   )
 }

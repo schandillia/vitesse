@@ -10,6 +10,7 @@ import {
 import { MonitorIcon } from "lucide-react"
 import { SessionCard } from "@/app/(protected)/security/components/session-card"
 import { type SessionItem } from "@/actions/get-sessions"
+import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 
 interface SessionManagementProps {
   initialSessions: SessionItem[]
@@ -27,8 +28,8 @@ export function SessionManagement({
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <h3 className="text-lg font-medium">Active Sessions</h3>
+    <div className="space-y-2 max-w-2xl">
+      <GatedPageSubheading text="Active Sessions" />
 
       {sessions.length === 0 ? (
         <Card className="border-muted/60 shadow-xs">

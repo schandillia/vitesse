@@ -10,6 +10,7 @@ import { formatDate, formatRelativeTime } from "@/lib/date"
 import { InfoRow } from "@/app/(protected)/profile/components/info-row"
 import { RoleBadge } from "@/components/role-badge"
 import { Role } from "@/lib/auth/roles"
+import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 
 interface ProfileInformationProps {
   user: User
@@ -19,7 +20,8 @@ export function ProfileInformation({ user }: ProfileInformationProps) {
   const defaultName = user.name || siteConfig.users.defaultName
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
+      <GatedPageSubheading text="Basic Info" />
       <Card className="max-w-2xl border-muted/60 shadow-xs">
         <CardContent className="p-6 md:p-10">
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-12">

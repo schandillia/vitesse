@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useTheme } from "next-themes"
 import { updatePreferredMode } from "@/actions/update-preferred-mode"
 import { MODES, type Mode } from "@/lib/auth/modes"
-import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 
 const THEMES = [
   {
@@ -111,18 +111,16 @@ export function PreferencesModeToggle({
 }: PreferencesModeToggleProps) {
   const [mode, setMode] = useState<Mode>(initialMode)
   const { setTheme } = useTheme()
-  const router = useRouter()
 
   async function handleChange(value: Mode) {
     setMode(value)
     setTheme(value)
     await updatePreferredMode(value)
-    router.refresh()
   }
 
   return (
     <div className="space-y-2">
-      <h2 className="text-lg font-medium">Display Mode</h2>
+      <GatedPageSubheading text="Display Mode" />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {THEMES.map((theme) => {
           const isSelected = mode === theme.value

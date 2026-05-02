@@ -24,14 +24,13 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-  (function() {
-    function clearIfCookieExists() {
-      var cookie = document.cookie.split('; ').find(function(r) { return r.startsWith('preferred-mode=') });
-      if (cookie) { localStorage.removeItem('theme'); }
-    }
-    clearIfCookieExists();
-    window.addEventListener('storage', clearIfCookieExists);
-  })();
+(function() {
+  var cookie = document.cookie.split('; ').find(function(r) { return r.startsWith('preferred-mode=') });
+  if (cookie) {
+    var mode = cookie.split('=')[1];
+    localStorage.setItem('theme', mode);
+  }
+})();
 `,
           }}
         />

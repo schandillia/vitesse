@@ -1,5 +1,5 @@
 import { getSessions } from "@/actions/get-sessions"
-import { GatedPageTitle } from "@/components/layout/gated-page-title"
+import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { PasskeyManagement } from "@/app/(protected)/security/components/passkey-management"
 import { SessionManagement } from "@/app/(protected)/security/components/session-management"
 import { LogOutEverywhereButton } from "@/app/(protected)/settings/components/log-out-everywhere-button"
@@ -29,19 +29,19 @@ export default async function SecurityGeneralPage() {
   const passkeys = await auth.api.listPasskeys({ headers: await headers() })
 
   return (
-    <div className="container space-y-5">
+    <div className="container space-y-8">
       <GatedPageTitle
         title="Security"
         description="Manage your passkeys and active sessions"
       />
       <PasskeyManagement passkeys={passkeys} />
-      <LogOutEverywhereButton />
       {sessionsResult.success && (
         <SessionManagement
           initialSessions={sessionsResult.sessions}
           currentToken={sessionsResult.currentToken}
         />
       )}
+      <LogOutEverywhereButton />
     </div>
   )
 }

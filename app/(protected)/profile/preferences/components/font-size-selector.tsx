@@ -5,6 +5,7 @@ import { updatePreferredFontSize } from "@/actions/update-preferred-font-size"
 import { FONT_SIZES } from "@/lib/auth/font-sizes"
 import { useRouter } from "next/navigation"
 import { Slider } from "@/components/ui/slider"
+import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 
 const STEPS = [
   { label: "XS", description: "Extra Small", value: String(FONT_SIZES.XS) },
@@ -40,10 +41,8 @@ export function FontSizeSelector({ initialSize }: FontSizeSelectorProps) {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium">Font Size</h2>
-      </div>
+    <div className="space-y-2">
+      <GatedPageSubheading text="Font Size" />
 
       <div className="space-y-1">
         <div className="flex items-center gap-4 w-full max-w-sm">
@@ -67,9 +66,9 @@ export function FontSizeSelector({ initialSize }: FontSizeSelectorProps) {
           </span>
         </div>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-foreground">
           Size selected:{" "}
-          <span className="font-medium text-foreground">
+          <span className="font-medium text-muted-foreground">
             {STEPS[safeIndex].description}
           </span>
         </p>

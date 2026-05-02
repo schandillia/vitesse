@@ -1,4 +1,4 @@
-import { GatedPageTitle } from "@/components/layout/gated-page-title"
+import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { BioCard } from "@/app/(protected)/profile/components/bio-card"
 import { ProfileInformation } from "@/app/(protected)/profile/components/profile-information"
 import { siteConfig } from "@/config/site"
@@ -21,7 +21,7 @@ export default async function ProfileGeneralPage() {
   }
 
   return (
-    <div className="container space-y-5">
+    <div className="container space-y-8">
       <GatedPageTitle
         title="Profile"
         description="Update your personal information and public profile"

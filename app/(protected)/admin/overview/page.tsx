@@ -1,8 +1,7 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
-import { GatedPageTitle } from "@/components/layout/gated-page-title"
+import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { UserStats } from "@/app/(protected)/admin/overview/components/user-stats"
-import { SessionStats } from "@/app/(protected)/admin/overview/components/session-stats"
 import { RoleStats } from "@/app/(protected)/admin/overview/components/role-stats"
 import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
@@ -84,21 +83,13 @@ export default async function AdminOverviewPage() {
         title="Overview"
         description="High-level statistics and user distribution for your application"
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <UserStats
-          total={data.total}
-          thisWeek={data.thisWeek}
-          thisMonth={data.thisMonth}
-        />
-        <SessionStats activeSessions={data.activeSessions} />
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-lg font-medium">Role Summary</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <RoleStats roleCounts={data.roleCounts} />
-        </div>
-      </div>
+      <UserStats
+        total={data.total}
+        thisWeek={data.thisWeek}
+        thisMonth={data.thisMonth}
+        activeSessions={data.activeSessions}
+      />
+      <RoleStats roleCounts={data.roleCounts} />
     </div>
   )
 }

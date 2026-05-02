@@ -1,4 +1,4 @@
-import { GatedPageTitle } from "@/components/layout/gated-page-title"
+import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"

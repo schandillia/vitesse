@@ -1,18 +1,14 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
-import { GatedPageTitle } from "@/components/layout/gated-page-title"
-import {
-  ActivityTable,
-  type ActivityRow,
-} from "@/app/(protected)/admin/activity/components/activity-table"
-import { ActivityToolbar } from "@/app/(protected)/admin/activity/components/activity-toolbar"
-import { Pagination } from "@/app/(protected)/admin/users/components/pagination"
+import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
+import { type ActivityRow } from "@/app/(protected)/admin/activity/components/activity-table"
 import { db } from "@/db/drizzle"
 import { auditLog, user } from "@/db/auth-schema"
 import { desc, eq, count, gte, lte, and } from "drizzle-orm"
 import { redirect, unauthorized } from "next/navigation"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { ROLES } from "@/lib/auth/roles"
+import { ActivitySection } from "@/app/(protected)/admin/users/components/activity-section"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.activity.title,
@@ -113,14 +109,16 @@ export default async function AdminActivityPage({
   })
 
   return (
-    <div className="container space-y-6">
+    <div className="container space-y-8">
       <GatedPageTitle
         title="Activity"
         description="Monitor platform events and user activity"
       />
-      <ActivityToolbar />
-      <ActivityTable rows={rows} />
-      <Pagination currentPage={currentPage} totalPages={totalPages} />
+      <ActivitySection
+        rows={rows}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
     </div>
   )
 }

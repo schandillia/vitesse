@@ -1,6 +1,6 @@
 import { siteConfig } from "@/config/site"
 import { Metadata } from "next"
-import { GatedPageTitle } from "@/components/layout/gated-page-title"
+import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { EnvInfo } from "@/app/(protected)/admin/system/components/env-info"
 import { InfrastructureHealth } from "@/app/(protected)/admin/system/components/infrastructure-health"
 import { db } from "@/db/drizzle"
@@ -105,16 +105,8 @@ export default async function AdminSystemPage() {
         description="View environment configurations and real-time infrastructure health checks."
       />
 
-      {/* Environment */}
-      <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold">Environment</h2>
-        <EnvInfo items={envItems} />
-      </section>
-
-      {/* Infrastructure */}
-      <section>
-        <InfrastructureHealth initialDb={dbHealth} initialCache={cacheHealth} />
-      </section>
+      <EnvInfo items={envItems} />
+      <InfrastructureHealth initialDb={dbHealth} initialCache={cacheHealth} />
     </div>
   )
 }

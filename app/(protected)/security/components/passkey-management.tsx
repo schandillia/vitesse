@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/dialog"
 import { DestructiveActionButton } from "@/components/auth/destructive-action-button"
 import { formatDate } from "@/lib/date"
+import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 
 const passkeySchema = z.object({
   name: z.string().min(1, "Please name your device (e.g., 'Work Laptop')"),
@@ -66,9 +67,9 @@ export function PasskeyManagement({ passkeys }: { passkeys: Passkey[] }) {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-2 max-w-2xl">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Passkeys</h3>
+        <GatedPageSubheading text="Passkeys" />
         <Dialog
           open={isDialogOpen}
           onOpenChange={(open) => {
