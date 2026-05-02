@@ -8,7 +8,7 @@ import {
   CardDescription,
 } from "@/components/ui/card"
 import { MonitorIcon } from "lucide-react"
-import { SessionCard } from "@/app/(protected)/security/components/session-card"
+import { SessionCard } from "@/app/(protected)/security/sessions/components/session-card"
 import { type SessionItem } from "@/actions/get-sessions"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 

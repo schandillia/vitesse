@@ -1,6 +1,6 @@
 import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
-import { BioCard } from "@/app/(protected)/profile/components/bio-card"
-import { ProfileInformation } from "@/app/(protected)/profile/components/profile-information"
+import { BioCard } from "@/app/(protected)/profile/general/components/bio-card"
+import { ProfileInformation } from "@/app/(protected)/profile/general/components/profile-information"
 import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"

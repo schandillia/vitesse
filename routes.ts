@@ -44,9 +44,10 @@ export const adminPrefixes = ["/admin"]
 export const routeRedirects: Record<string, string> = {
   "/admin": "/admin/overview",
   "/profile": "/profile/general",
+  "/preferences": "/preferences/display",
+  "/security": "/security/authentication",
+  "/settings": "/settings/account",
   "/dashboard": "/dashboard/general",
-  "/security": "/security/general",
-  "/settings": "/settings/general",
 }
 
 export const authRoutes = new Set(["/login"])

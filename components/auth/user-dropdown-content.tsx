@@ -12,6 +12,7 @@ import {
   LogOutIcon,
   SettingsIcon,
   ShieldUserIcon,
+  SlidersHorizontalIcon,
   UserIcon,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
@@ -31,6 +32,7 @@ interface UserDropdownContentProps {
 const menuItems = [
   { href: "/profile", label: "Profile", icon: UserIcon },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboardIcon },
+  { href: "/preferences", label: "Preferences", icon: SlidersHorizontalIcon },
   { href: "/settings", label: "Settings", icon: SettingsIcon },
   { href: "/security", label: "Security", icon: GlobeLockIcon },
 ]
