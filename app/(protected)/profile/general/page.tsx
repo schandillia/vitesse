@@ -7,9 +7,9 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: siteConfig.seo.metaData.profile.title,
-  description: siteConfig.seo.metaData.profile.description,
-  robots: siteConfig.seo.metaData.profile.robots,
+  title: siteConfig.seo.metaData.profile.general.title,
+  description: siteConfig.seo.metaData.profile.general.description,
+  robots: siteConfig.seo.metaData.profile.general.robots,
 }
 
 export default async function ProfileGeneralPage() {
@@ -23,8 +23,8 @@ export default async function ProfileGeneralPage() {
   return (
     <div className="container space-y-8">
       <GatedPageTitle
-        title="Profile"
-        description="Update your personal information and public profile"
+        title="Basic Profile"
+        description="Update your basic personal information and bio"
       />
       <ProfileInformation user={user} />
       <BioCard initialBio={session.user.bio ?? null} />

@@ -8,9 +8,9 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: siteConfig.seo.metaData.security.title,
-  description: siteConfig.seo.metaData.security.description,
-  robots: siteConfig.seo.metaData.security.robots,
+  title: siteConfig.seo.metaData.security.authentication.title,
+  description: siteConfig.seo.metaData.security.authentication.description,
+  robots: siteConfig.seo.metaData.security.authentication.robots,
 }
 
 export default async function SecurityAuthenticationPage() {

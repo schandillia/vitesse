@@ -9,9 +9,9 @@ import { user as userTable } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
 
 export const metadata: Metadata = {
-  title: siteConfig.seo.metaData.profile.title,
-  description: siteConfig.seo.metaData.profile.description,
-  robots: siteConfig.seo.metaData.profile.robots,
+  title: siteConfig.seo.metaData.preferences.accessibility.title,
+  description: siteConfig.seo.metaData.preferences.accessibility.description,
+  robots: siteConfig.seo.metaData.preferences.accessibility.robots,
 }
 
 export default async function PreferencesAccessibilityPage() {
@@ -36,8 +36,8 @@ export default async function PreferencesAccessibilityPage() {
   return (
     <div className="container space-y-5">
       <GatedPageTitle
-        title="Accessibility"
-        description="Update your personal information and public profile"
+        title="Accessibility Preferences"
+        description="Adjust font size and motion settings to suit your needs"
       />
       <FontSizeSelector initialSize={preferredFontSize} />
     </div>

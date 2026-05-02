@@ -10,9 +10,9 @@ import { user as userTable } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
 
 export const metadata: Metadata = {
-  title: siteConfig.seo.metaData.profile.title,
-  description: siteConfig.seo.metaData.profile.description,
-  robots: siteConfig.seo.metaData.profile.robots,
+  title: siteConfig.seo.metaData.preferences.display.title,
+  description: siteConfig.seo.metaData.preferences.display.description,
+  robots: siteConfig.seo.metaData.preferences.display.robots,
 }
 
 export default async function PreferencesDisplayPage() {
@@ -37,8 +37,8 @@ export default async function PreferencesDisplayPage() {
   return (
     <div className="container space-y-8">
       <GatedPageTitle
-        title="Preferences"
-        description="Customize your experience"
+        title="Display Preferences"
+        description="Customize your display mode and visual experience"
       />
       <PreferencesModeToggle initialMode={preferredMode} />
     </div>

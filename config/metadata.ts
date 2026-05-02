@@ -14,19 +14,39 @@ export const metaData = {
     },
   },
   profile: {
-    title: "Profile",
-    description: "Manage your profile data.",
-    robots: {
-      index: false,
-      follow: false,
+    general: {
+      title: "General | Profile",
+      description: "Manage your personal information and avatar",
+      robots: { index: false, follow: false },
+    },
+    additionalInformation: {
+      title: "Additional Information | Profile",
+      description: "Manage your public profile and social presence",
+      robots: { index: false, follow: false },
+    },
+  },
+  preferences: {
+    display: {
+      title: "Display | Preferences",
+      description: "Customize your theme, font size, and language",
+      robots: { index: false, follow: false },
+    },
+    accessibility: {
+      title: "Accessibility | Preferences",
+      description: "Customize motion and accessibility settings",
+      robots: { index: false, follow: false },
     },
   },
   security: {
-    title: "Security",
-    description: "Manage your account security.",
-    robots: {
-      index: false,
-      follow: false,
+    authentication: {
+      title: "Authentication | Security",
+      description: "Manage your passkeys and sign-in methods",
+      robots: { index: false, follow: false },
+    },
+    sessions: {
+      title: "Sessions | Security",
+      description: "Manage your active sessions and devices",
+      robots: { index: false, follow: false },
     },
   },
   settings: {
