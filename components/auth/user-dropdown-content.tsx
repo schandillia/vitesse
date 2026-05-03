@@ -79,12 +79,15 @@ export function UserDropdownContent({
       })}
 
       {user.role === ROLES.ADMIN && !pathname.startsWith("/admin") && (
-        <DropdownMenuItem asChild className={baseItemClass}>
-          <Link href="/admin" className="flex items-center gap-2">
-            <ShieldUserIcon className="size-4" />
-            <span>Admin</span>
-          </Link>
-        </DropdownMenuItem>
+        <>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild className={baseItemClass}>
+            <Link href="/admin" className="flex items-center gap-2">
+              <ShieldUserIcon className="size-4" />
+              <span>Admin</span>
+            </Link>
+          </DropdownMenuItem>
+        </>
       )}
 
       <DropdownMenuSeparator />

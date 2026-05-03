@@ -1,7 +1,7 @@
 import { cookies } from "next/headers"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 
-export async function ThemeProviderWrapper({
+export async function PreferencesProvider({
   children,
 }: {
   children: React.ReactNode

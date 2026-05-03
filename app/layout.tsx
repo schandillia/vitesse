@@ -9,7 +9,7 @@ import { ConsentProvider } from "@/components/providers/consent-provider"
 import { CookieBanner } from "@/components/cookies/cookie-banner"
 import { siteConfig } from "@/config/site"
 import { JsonLd } from "@/app/json-ld"
-import { ThemeProviderWrapper } from "@/components/providers/theme-provider-wrapper"
+import { PreferencesProvider } from "@/components/providers/preferences-provider"
 
 export const metadata: Metadata = baseMetadata
 
@@ -39,7 +39,7 @@ export default function RootLayout({
         <JsonLd />
         <ConsentProvider>
           <PostHogProvider>
-            <ThemeProviderWrapper>
+            <PreferencesProvider>
               <TooltipProvider>
                 {siteConfig.authAndSession.enableSessionWatcher && (
                   <SessionWatcher />
@@ -48,7 +48,7 @@ export default function RootLayout({
                 <Toaster position="top-right" />
                 <CookieBanner />
               </TooltipProvider>
-            </ThemeProviderWrapper>
+            </PreferencesProvider>
           </PostHogProvider>
         </ConsentProvider>
       </body>
