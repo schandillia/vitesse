@@ -7,8 +7,8 @@ import { AppSidebar } from "@/components/layout/app-sidebar"
 const navItems = [
   { href: "/profile/general", label: "General", icon: IdCardIcon },
   {
-    href: "/profile/additional-information",
-    label: "Additional Information",
+    href: "/profile/more",
+    label: "More Information",
     icon: UserCircleIcon,
   },
 ]

@@ -1,5 +1,6 @@
 import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { FontSizeSelector } from "@/app/(protected)/preferences/accessibility/components/font-size-selector"
+import { ReduceMotionToggle } from "@/app/(protected)/preferences/accessibility/components/reduce-motion-toggle"
 import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
@@ -24,22 +25,24 @@ export default async function PreferencesAccessibilityPage() {
 
   const userData = await db
     .select({
-      preferredMode: userTable.preferredMode,
       preferredFontSize: userTable.preferredFontSize,
+      reduceMotion: userTable.reduceMotion,
     })
     .from(userTable)
     .where(eq(userTable.id, user.id))
     .limit(1)
 
   const preferredFontSize = userData[0]?.preferredFontSize ?? "16"
+  const reduceMotion = userData[0]?.reduceMotion ?? false
 
   return (
-    <div className="container space-y-5">
+    <div className="container space-y-8">
       <GatedPageTitle
-        title="Accessibility Preferences"
+        title="Accessibility"
         description="Adjust font size and motion settings to suit your needs"
       />
       <FontSizeSelector initialSize={preferredFontSize} />
+      <ReduceMotionToggle initialValue={reduceMotion} />
     </div>
   )
 }

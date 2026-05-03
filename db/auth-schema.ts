@@ -32,6 +32,7 @@ export const user = pgTable(
     role: text("role").$type<Role>().default(ROLES.USER).notNull(),
     preferredMode: themeModeEnum("preferred_mode").default(MODES.SYSTEM),
     preferredFontSize: fontSizeEnum("preferred_font_size").default("16"),
+    reduceMotion: t.boolean("reduce_motion").default(false),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

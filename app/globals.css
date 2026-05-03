@@ -218,3 +218,18 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+/* For Shadcn Switch. DO NOT REMOVE! */
+
+[data-slot="switch"][data-state="checked"] {
+  background-color: var(--primary);
+}
+[data-slot="switch"][data-state="unchecked"] {
+  background-color: var(--input);
+}
+[data-slot="switch-thumb"][data-state="checked"] {
+  transform: translateX(calc(100% - 2px));
+}
+[data-slot="switch-thumb"][data-state="unchecked"] {
+  transform: translateX(0);
+}

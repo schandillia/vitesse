@@ -5,13 +5,12 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: siteConfig.seo.metaData.profile.additionalInformation.title,
-  description:
-    siteConfig.seo.metaData.profile.additionalInformation.description,
-  robots: siteConfig.seo.metaData.profile.additionalInformation.robots,
+  title: siteConfig.seo.metaData.profile.more.title,
+  description: siteConfig.seo.metaData.profile.more.description,
+  robots: siteConfig.seo.metaData.profile.more.robots,
 }
 
-export default async function ProfileAdditionalInformationPage() {
+export default async function ProfileMorePage() {
   const session = await getServerSession()
   const user = session?.user
 
@@ -22,7 +21,7 @@ export default async function ProfileAdditionalInformationPage() {
   return (
     <div className="container space-y-8">
       <GatedPageTitle
-        title="Additional Information"
+        title="More Information"
         description="Update additional information about your profile"
       />
     </div>

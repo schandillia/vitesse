@@ -6,4 +6,5 @@ export async function clearPreferredMode() {
   const cookieStore = await cookies()
   cookieStore.delete("preferred-mode")
   cookieStore.delete("preferred-font-size")
+  cookieStore.delete("reduce-motion")
 }

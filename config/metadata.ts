@@ -19,7 +19,7 @@ export const metaData = {
       description: "Manage your personal information and avatar",
       robots: { index: false, follow: false },
     },
-    additionalInformation: {
+    more: {
       title: "Additional Information | Profile",
       description: "Manage your public profile and social presence",
       robots: { index: false, follow: false },

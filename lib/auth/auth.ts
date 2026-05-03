@@ -35,6 +35,11 @@ export const auth = betterAuth({
         required: false,
         input: true,
       },
+      reduceMotion: {
+        type: "boolean",
+        required: false,
+        input: true,
+      },
 
       username: {
         type: "string",
@@ -116,6 +121,13 @@ export const auth = betterAuth({
             path: "/",
             maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
           })
+          cookieStore.set("reduce-motion", "false", {
+            httpOnly: false,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+          })
 
           await Promise.all([
             sendEmail({
@@ -150,6 +162,7 @@ export const auth = betterAuth({
             .select({
               preferredMode: user.preferredMode,
               preferredFontSize: user.preferredFontSize,
+              reduceMotion: user.reduceMotion,
             })
             .from(user)
             .where(eq(user.id, session.userId))
@@ -157,6 +170,7 @@ export const auth = betterAuth({
 
           const preferredMode = userData[0]?.preferredMode ?? MODES.SYSTEM
           const preferredFontSize = userData[0]?.preferredFontSize ?? "16"
+          const reduceMotion = userData[0]?.reduceMotion ?? false
 
           const { cookies } = await import("next/headers")
           const cookieStore = await cookies()
@@ -168,6 +182,13 @@ export const auth = betterAuth({
             maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
           })
           cookieStore.set("preferred-font-size", preferredFontSize, {
+            httpOnly: false,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            maxAge: siteConfig.authAndSession.expiresInDays * 24 * 60 * 60,
+          })
+          cookieStore.set("reduce-motion", String(reduceMotion), {
             httpOnly: false,
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production",

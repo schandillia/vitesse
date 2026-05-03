@@ -9,6 +9,7 @@ export async function ThemeProviderWrapper({
   const cookieStore = await cookies()
   const preferredFontSize =
     cookieStore.get("preferred-font-size")?.value ?? "16"
+  const reduceMotion = cookieStore.get("reduce-motion")?.value === "true"
 
   return (
     <ThemeProvider
@@ -17,7 +18,20 @@ export async function ThemeProviderWrapper({
       enableSystem
       disableTransitionOnChange
     >
-      <style>{`html { font-size: ${preferredFontSize}px; }`}</style>
+      <style>{`
+  html { font-size: ${preferredFontSize}px; }
+${
+  reduceMotion
+    ? `
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+`
+    : ""
+}
+`}</style>
       {children}
     </ThemeProvider>
   )
