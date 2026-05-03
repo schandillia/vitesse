@@ -7,7 +7,7 @@ import { auditLog, user } from "@/db/auth-schema"
 import { desc, eq, count, gte, lte, and } from "drizzle-orm"
 import { redirect, unauthorized } from "next/navigation"
 import { getServerSession } from "@/lib/auth/get-server-session"
-import { ROLES } from "@/lib/auth/roles"
+import { ROLES } from "@/db/types/roles"
 import { ActivitySection } from "@/app/(protected)/admin/users/components/activity-section"
 
 export const metadata: Metadata = {

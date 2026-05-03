@@ -1,15 +1,20 @@
 "use client"
 
-import { IdCardIcon, UserCircleIcon } from "lucide-react"
+import { BriefcaseBusinessIcon, IdCardIcon, UserCircleIcon } from "lucide-react"
 import type { auth } from "@/lib/auth/auth"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 
 const navItems = [
   { href: "/profile/general", label: "General", icon: IdCardIcon },
   {
-    href: "/profile/more",
-    label: "More Information",
+    href: "/profile/personal",
+    label: "Personal",
     icon: UserCircleIcon,
+  },
+  {
+    href: "/profile/professional",
+    label: "Professional",
+    icon: BriefcaseBusinessIcon,
   },
 ]
 

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { updatePreferredMode } from "@/actions/update-preferred-mode"
-import { MODES, type Mode } from "@/lib/auth/modes"
+import { MODES, type Mode } from "@/db/types/modes"
 import { cn } from "@/lib/utils"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 

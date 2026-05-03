@@ -19,9 +19,15 @@ export const metaData = {
       description: "Manage your personal information and avatar",
       robots: { index: false, follow: false },
     },
-    more: {
-      title: "Additional Information | Profile",
-      description: "Manage your public profile and social presence",
+    personal: {
+      title: "Additional Personal Information | Profile",
+      description:
+        "Update your personal details, location, and online presence.",
+      robots: { index: false, follow: false },
+    },
+    professional: {
+      title: "Professional Information | Profile",
+      description: "Update your job title, company, and professional details.",
       robots: { index: false, follow: false },
     },
   },

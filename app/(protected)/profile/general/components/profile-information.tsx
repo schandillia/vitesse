@@ -9,7 +9,7 @@ import { siteConfig } from "@/config/site"
 import { formatDate, formatRelativeTime } from "@/lib/date"
 import { InfoRow } from "@/app/(protected)/profile/general/components/info-row"
 import { RoleBadge } from "@/components/role-badge"
-import { Role } from "@/lib/auth/roles"
+import { Role } from "@/db/types/roles"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 
 interface ProfileInformationProps {

@@ -1,5 +1,5 @@
 import { ShieldUserIcon, UserIcon } from "lucide-react"
-import { ROLES, type Role } from "@/lib/auth/roles"
+import { ROLES, type Role } from "@/db/types/roles"
 import { StatCard } from "@/app/(protected)/admin/overview/components/stat-card"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 

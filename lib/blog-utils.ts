@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth/auth"
 import { headers } from "next/headers"
-import { ROLES } from "@/lib/auth/roles"
+import { ROLES } from "@/db/types/roles"
 
 export async function requireAdmin() {
   const session = await auth.api.getSession({

@@ -9,7 +9,7 @@ import { sql } from "drizzle-orm"
 import packageJson from "@/package.json"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { redirect, unauthorized } from "next/navigation"
-import { ROLES } from "@/lib/auth/roles"
+import { ROLES } from "@/db/types/roles"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.system.title,

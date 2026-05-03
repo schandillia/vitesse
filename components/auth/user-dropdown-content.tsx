@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { UserInfo } from "@/components/auth/user-info"
-import { ROLES } from "@/lib/auth/roles"
+import { ROLES } from "@/db/types/roles"
 
 interface UserDropdownContentProps {
   user: {

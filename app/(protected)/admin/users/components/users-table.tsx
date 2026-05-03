@@ -10,7 +10,7 @@ import { RoleBadge } from "@/components/role-badge"
 import { UserActions } from "@/app/(protected)/admin/users/components/user-actions"
 import { CheckCircle2Icon, XCircleIcon } from "lucide-react"
 import { formatDate } from "@/lib/date"
-import { type Role } from "@/lib/auth/roles"
+import { type Role } from "@/db/types/roles"
 import Image from "next/image"
 
 export type UserRow = {

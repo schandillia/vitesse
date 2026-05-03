@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { MoreHorizontalIcon, ShieldUserIcon, Trash2Icon } from "lucide-react"
-import { ROLES, type Role } from "@/lib/auth/roles"
+import { ROLES, type Role } from "@/db/types/roles"
 import { changeRole } from "@/actions/change-role"
 import { deleteUser } from "@/actions/delete-user"
 import { ConfirmModal } from "@/components/confirm-modal"

@@ -1,6 +1,8 @@
 import { post } from "@/db/blog-schema"
-import { ROLES, type Role } from "@/lib/auth/roles"
-import { MODES } from "@/lib/auth/modes"
+import { ROLES, type Role } from "@/db/types/roles"
+import { MODES } from "@/db/types/modes"
+import { FONT_SIZES } from "@/db/types/font-sizes"
+import { type Socials } from "@/db/types/socials"
 import { relations } from "drizzle-orm"
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
 import * as t from "drizzle-orm/pg-core"
@@ -10,14 +12,7 @@ export const themeModeEnum = t.pgEnum("theme_mode", [
   MODES.DARK,
   MODES.SYSTEM,
 ])
-
-export const fontSizeEnum = t.pgEnum("font_size", [
-  "14",
-  "15",
-  "16",
-  "18",
-  "20",
-])
+export const fontSizeEnum = t.pgEnum("font_size", FONT_SIZES)
 
 export const user = pgTable(
   "user",
@@ -33,6 +28,13 @@ export const user = pgTable(
     preferredMode: themeModeEnum("preferred_mode").default(MODES.SYSTEM),
     preferredFontSize: fontSizeEnum("preferred_font_size").default("16"),
     reduceMotion: t.boolean("reduce_motion").default(false),
+    website: text("website"),
+    location: text("location"),
+    socials: t.jsonb("socials").$type<Socials>(),
+    jobTitle: text("job_title"),
+    company: text("company"),
+    dateOfBirth: t.date("date_of_birth", { mode: "date" }),
+    locale: text("locale").default("en-US"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

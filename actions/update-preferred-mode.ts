@@ -5,7 +5,7 @@ import { user } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
 import { cookies } from "next/headers"
 import { getServerSession } from "@/lib/auth/get-server-session"
-import { MODES, type Mode } from "@/lib/auth/modes"
+import { MODES, type Mode } from "@/db/types/modes"
 import { siteConfig } from "@/config/site"
 
 export async function updatePreferredMode(mode: Mode) {

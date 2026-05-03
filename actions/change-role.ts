@@ -3,7 +3,7 @@
 import { db } from "@/db/drizzle"
 import { user, auditLog } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
-import { ROLES, type Role } from "@/lib/auth/roles"
+import { ROLES, type Role } from "@/db/types/roles"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { revalidatePath } from "next/cache"
 import { siteConfig } from "@/config/site"

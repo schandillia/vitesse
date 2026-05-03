@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { auth } from "@/lib/auth/auth"
 import { CSP } from "@/lib/csp"
-import { ROLES } from "@/lib/auth/roles"
+import { ROLES } from "@/db/types/roles"
 import {
   publicRoutes,
   publicPrefixes,

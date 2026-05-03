@@ -12,7 +12,7 @@ import { redis } from "@/lib/redis"
 import { env } from "@/env"
 import { auditLog, user } from "@/db/auth-schema"
 import { onFailedLogin } from "@/lib/auth/hooks/failed-login"
-import { MODES } from "@/lib/auth/modes"
+import { MODES } from "@/db/types/modes"
 import { eq } from "drizzle-orm"
 
 export const auth = betterAuth({
@@ -48,6 +48,41 @@ export const auth = betterAuth({
         unique: true,
       },
       bio: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      website: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      location: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      socials: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      jobTitle: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      company: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      dateOfBirth: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      locale: {
         type: "string",
         required: false,
         input: true,

@@ -9,7 +9,7 @@ import { count, gte } from "drizzle-orm"
 import { redis } from "@/lib/redis"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { redirect, unauthorized } from "next/navigation"
-import { ROLES } from "@/lib/auth/roles"
+import { ROLES } from "@/db/types/roles"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.admin.overview.title,

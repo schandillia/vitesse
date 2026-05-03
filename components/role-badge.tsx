@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { ShieldUserIcon, UserIcon } from "lucide-react"
-import { ROLES, type Role } from "@/lib/auth/roles"
+import { ROLES, type Role } from "@/db/types/roles"
 import { cn } from "@/lib/utils"
 
 const ROLE_STYLES: Record<string, string> = {

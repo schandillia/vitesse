@@ -1,6 +1,6 @@
 import { unauthorized, notFound } from "next/navigation"
 import { getServerSession } from "@/lib/auth/get-server-session"
-import { ROLES } from "@/lib/auth/roles"
+import { ROLES } from "@/db/types/roles"
 import { getPostById } from "@/actions/get-post-by-id"
 import { TiptapEditor } from "@/components/editor/tiptap-editor"
 import { canEditPost } from "@/lib/blog-utils"

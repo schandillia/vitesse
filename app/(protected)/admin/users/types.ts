@@ -1,4 +1,4 @@
-import { type Role } from "@/lib/auth/roles"
+import { type Role } from "@/db/types/roles"
 
 export type UserRow = {
   id: string
