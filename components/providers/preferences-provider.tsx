@@ -18,20 +18,22 @@ export async function PreferencesProvider({
       enableSystem
       disableTransitionOnChange
     >
-      <style>{`
-  html { font-size: ${preferredFontSize}px; }
-${
-  reduceMotion
-    ? `
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-`
-    : ""
-}
-`}</style>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        html { font-size: ${preferredFontSize}px; }
+        ${
+          reduceMotion
+            ? `*, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+              }`
+            : ""
+        }
+      `,
+        }}
+      />
       {children}
     </ThemeProvider>
   )
