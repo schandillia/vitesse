@@ -37,6 +37,7 @@ export function ReduceMotionToggle({ initialValue }: ReduceMotionToggleProps) {
           id="reduce-motion"
           checked={reduceMotion}
           onCheckedChange={handleChange}
+          className="cursor-pointer"
         />
       </div>
     </div>

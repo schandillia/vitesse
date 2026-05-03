@@ -10,6 +10,7 @@ import { CookieBanner } from "@/components/cookies/cookie-banner"
 import { siteConfig } from "@/config/site"
 import { JsonLd } from "@/app/json-ld"
 import { PreferencesProvider } from "@/components/providers/preferences-provider"
+import Script from "next/script"
 
 export const metadata: Metadata = baseMetadata
 
@@ -20,22 +21,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-(function() {
-  var cookie = document.cookie.split('; ').find(function(r) { return r.startsWith('preferred-mode=') });
-  if (cookie) {
-    var mode = cookie.split('=')[1];
-    localStorage.setItem('theme', mode);
-  }
-})();
-`,
-          }}
-        />
-      </head>
       <body className="min-h-full flex flex-col">
+        <Script id="theme-sync" strategy="beforeInteractive">
+          {`
+    (function() {
+      var cookie = document.cookie.split('; ').find(function(r) { return r.startsWith('preferred-mode=') });
+      if (cookie) {
+        var mode = cookie.split('=')[1];
+        localStorage.setItem('theme', mode);
+      }
+    })();
+  `}
+        </Script>
         <JsonLd />
         <ConsentProvider>
           <PostHogProvider>
