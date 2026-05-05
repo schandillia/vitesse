@@ -13,93 +13,149 @@ interface LocationFieldProps {
 }
 
 export function LocationField({ value, onSave, onError }: LocationFieldProps) {
-  const [editing, setEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [current, setCurrent] = useState(value)
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Sync local state when the server/parent value changes
+  // Sync external value
   useEffect(() => {
     setCurrent(value)
   }, [value])
 
+  // Cleanup debounce on unmount
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
+
+  // Click outside → reset
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
       ) {
+        setCurrent(value)
         setOpen(false)
-        setEditing(false)
-        setCurrent(value) // Revert to confirmed value
+        setSuggestions([])
+        setSelectedIndex(-1)
+        setIsEditing(false)
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [value])
 
-  async function handleChange(val: string) {
+  // Debounced search
+  const handleChange = (val: string) => {
     setCurrent(val)
-    setOpen(false)
-    setSuggestions([])
 
     if (debounceRef.current) clearTimeout(debounceRef.current)
 
-    if (val.trim().length < 2) return
+    if (val.trim().length < 2) {
+      setSuggestions([])
+      setOpen(false)
+      return
+    }
 
     debounceRef.current = setTimeout(async () => {
       setLoading(true)
       const result = await getPlacesSuggestions(val)
       setLoading(false)
+
       if (result.success && result.suggestions.length > 0) {
         setSuggestions(result.suggestions)
         setOpen(true)
+        setSelectedIndex(-1)
+      } else {
+        setOpen(false)
       }
     }, 350)
   }
 
-  async function handleSelect(suggestion: PlaceSuggestion) {
-    setCurrent(suggestion.description)
+  const handleSelect = async (suggestion: PlaceSuggestion) => {
+    const newValue = suggestion.description
+
+    setCurrent(newValue)
     setOpen(false)
     setSuggestions([])
-    setEditing(false)
+    setIsEditing(false)
 
-    if (suggestion.description === value) return
+    if (newValue === value) return
 
-    const success = await onSave(suggestion.description)
-    if (!success) {
-      setCurrent(value) // Revert on failure
-    }
+    const success = await onSave(newValue)
+    if (!success) setCurrent(value)
   }
 
-  async function handleSave() {
+  const handleSave = async () => {
     const cleaned = current.trim()
     setOpen(false)
 
     if (!cleaned) {
-      setEditing(false)
-      if (cleaned === value) return
+      setIsEditing(false)
 
-      const success = await onSave("")
-      if (!success) setCurrent(value) // Revert on failure
+      if (cleaned !== value) {
+        const success = await onSave("")
+        if (!success) setCurrent(value)
+      }
       return
     }
 
     if (!LOCATION_REGEX.test(cleaned)) {
-      // Pass the error up to the parent instead of handling it locally
-      onError("Only letters, spaces, commas, and hyphens are allowed.")
+      onError(
+        "Only letters, spaces, commas, hyphens, apostrophes and periods are allowed."
+      )
       return
     }
 
-    setEditing(false)
+    setIsEditing(false)
+
     if (cleaned === value) return
 
     const success = await onSave(cleaned)
-    if (!success) {
-      setCurrent(value) // Revert on failure
+    if (!success) setCurrent(value)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") {
+      setCurrent(value)
+      setOpen(false)
+      setSuggestions([])
+      setSelectedIndex(-1)
+      setIsEditing(false)
+      return
+    }
+
+    if (open && suggestions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault()
+        setSelectedIndex((prev) => Math.min(prev + 1, suggestions.length - 1))
+        return
+      }
+
+      if (e.key === "ArrowUp") {
+        e.preventDefault()
+        setSelectedIndex((prev) => Math.max(prev - 1, -1))
+        return
+      }
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault()
+
+      if (open && selectedIndex >= 0) {
+        handleSelect(suggestions[selectedIndex])
+      } else {
+        handleSave()
+      }
     }
   }
 
@@ -113,32 +169,34 @@ export function LocationField({ value, onSave, onError }: LocationFieldProps) {
           Location
         </span>
 
-        {editing ? (
+        {isEditing ? (
           <div className="flex flex-1 items-center gap-2">
             <input
               autoFocus
               value={current}
               onChange={(e) => handleChange(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSave()
-                if (e.key === "Escape") {
-                  setCurrent(value) // Revert on escape
-                  setOpen(false)
-                  setEditing(false)
-                }
-              }}
+              onKeyDown={handleKeyDown}
+              role="combobox"
+              aria-expanded={open}
+              aria-controls="places-listbox"
+              aria-autocomplete="list"
+              aria-activedescendant={
+                selectedIndex >= 0 && suggestions[selectedIndex]
+                  ? `place-${suggestions[selectedIndex].placeId}`
+                  : undefined
+              }
               className="flex-1 text-sm bg-transparent border-0 p-0 focus-visible:ring-0 focus-visible:outline-none text-foreground placeholder:text-muted-foreground/50"
               placeholder="e.g. Mumbai, India"
             />
             {loading && (
-              <LoaderCircleIcon className="size-3 shrink-0 animate-spin text-muted-foreground/50" />
+              <LoaderCircleIcon className="size-3 animate-spin text-muted-foreground/50" />
             )}
           </div>
         ) : (
           <button
             type="button"
-            onClick={() => setEditing(true)}
-            className="cursor-text group flex flex-1 items-center justify-between gap-4 rounded-sm outline-none text-left"
+            onClick={() => setIsEditing(true)}
+            className="group flex flex-1 items-center justify-between gap-4 rounded-sm outline-none text-left cursor-text"
             aria-label="Edit Location"
           >
             <span className="text-sm text-muted-foreground flex-1">
@@ -148,29 +206,41 @@ export function LocationField({ value, onSave, onError }: LocationFieldProps) {
                 </span>
               )}
             </span>
-            <PencilIcon
-              className="size-3 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground opacity-30"
-              aria-hidden="true"
-            />
+            <PencilIcon className="size-3 text-muted-foreground opacity-30 group-hover:opacity-100 transition-opacity" />
           </button>
         )}
       </div>
 
       {open && suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-md border border-muted/60 bg-popover shadow-md overflow-hidden">
-          {suggestions.map((s) => (
-            <button
-              key={s.placeId}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => handleSelect(s)}
-              className="flex w-full items-center gap-2 px-3 py-2 text-sm text-left text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-colors"
-            >
-              <MapPinIcon className="size-3 shrink-0 opacity-50" />
-              {s.description}
-            </button>
-          ))}
-        </div>
+        <ul
+          id="places-listbox"
+          role="listbox"
+          className="absolute left-0 right-0 top-full z-50 mt-1 rounded-md border border-muted/60 bg-popover shadow-md overflow-hidden"
+        >
+          {suggestions.map((suggestion, index) => {
+            const isSelected = selectedIndex === index
+
+            return (
+              <li
+                key={suggestion.placeId}
+                id={`place-${suggestion.placeId}`}
+                role="option"
+                aria-selected={isSelected}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => handleSelect(suggestion)}
+                onMouseEnter={() => setSelectedIndex(index)}
+                className={`flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
+                  isSelected
+                    ? "bg-muted/40 text-foreground"
+                    : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+                }`}
+              >
+                <MapPinIcon className="size-3 opacity-50" />
+                {suggestion.description}
+              </li>
+            )
+          })}
+        </ul>
       )}
     </div>
   )
