@@ -18,7 +18,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ChevronsUpDownIcon } from "lucide-react"
+import { EllipsisVerticalIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { UserDropdownContent } from "@/components/auth/user-dropdown-content"
@@ -131,7 +131,7 @@ export function AppSidebar({ user, navItems }: AppSidebarProps) {
                         user={user}
                         className="flex flex-col min-w-0 text-left leading-tight"
                       />
-                      <ChevronsUpDownIcon className="ml-auto size-4 shrink-0" />
+                      <EllipsisVerticalIcon className="ml-auto size-4 shrink-0" />
                     </SidebarMenuButton>
                   </DropdownMenuTrigger>
                   <UserDropdownContent
