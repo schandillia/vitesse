@@ -5,42 +5,48 @@ import { Card, CardContent } from "@/components/ui/card"
 import { authClient } from "@/lib/auth/auth-client"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
-import { PencilIcon } from "lucide-react"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 import { User } from "@/lib/auth/auth"
 import { BirthdayField } from "@/app/(protected)/profile/personal/components/birthday-field"
 import { LocationField } from "@/app/(protected)/profile/personal/components/location-field"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface PersonalInfoCardProps {
   user: User
 }
 
-interface FieldRowProps {
-  label: string
+/* -------------------- Locale Field -------------------- */
+
+const LOCALES = [
+  { value: "en-US", label: "English (United States)" },
+  { value: "en-IN", label: "English (India)" },
+  { value: "hi-IN", label: "Hindi (India)" },
+]
+
+interface LocaleFieldProps {
   value: string
-  placeholder: string
   onSave: (val: string) => Promise<boolean>
 }
 
-function FieldRow({ label, value, placeholder, onSave }: FieldRowProps) {
-  const [editing, setEditing] = useState(false)
+function LocaleField({ value, onSave }: LocaleFieldProps) {
   const [current, setCurrent] = useState(value)
 
-  // Sync local state when the server/parent value changes
   useEffect(() => {
     setCurrent(value)
   }, [value])
 
-  async function handleSave() {
-    const cleaned = current.trim()
-    if (cleaned === value) {
-      setEditing(false)
-      return
-    }
-    setEditing(false)
+  async function handleChange(val: string) {
+    setCurrent(val)
 
-    // Check if save was successful, revert if not
-    const success = await onSave(cleaned)
+    if (val === value) return
+
+    const success = await onSave(val)
     if (!success) {
       setCurrent(value)
     }
@@ -48,46 +54,31 @@ function FieldRow({ label, value, placeholder, onSave }: FieldRowProps) {
 
   return (
     <div className="flex items-center justify-between gap-4 py-3 border-b border-muted/40 last:border-0">
-      <span className="text-xs text-muted-foreground uppercase tracking-wide w-28 shrink-0">
-        {label}
+      <span
+        id="locale-label"
+        className="text-xs text-muted-foreground uppercase tracking-wide w-28 shrink-0"
+      >
+        Locale
       </span>
-      {editing ? (
-        <input
-          autoFocus
-          value={current}
-          onChange={(e) => setCurrent(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSave()
-            if (e.key === "Escape") {
-              setCurrent(value) // Revert on escape
-              setEditing(false)
-            }
-          }}
-          className="flex-1 text-sm bg-transparent border-0 p-0 focus-visible:ring-0 focus-visible:outline-none text-foreground placeholder:text-muted-foreground/50"
-          placeholder={placeholder}
-        />
-      ) : (
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          className="cursor-text group flex flex-1 items-center justify-between gap-4 rounded-sm outline-none text-left"
-          aria-label={`Edit ${label}`}
-        >
-          <span className="text-sm text-muted-foreground flex-1">
-            {current || (
-              <span className="text-muted-foreground/40">{placeholder}</span>
-            )}
-          </span>
-          <PencilIcon
-            className="size-3 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground opacity-30"
-            aria-hidden="true"
-          />
-        </button>
-      )}
+
+      <Select value={current} onValueChange={handleChange}>
+        <SelectTrigger aria-labelledby="locale-label" className="flex-1">
+          <SelectValue placeholder="Select locale" />
+        </SelectTrigger>
+
+        <SelectContent>
+          {LOCALES.map((l) => (
+            <SelectItem key={l.value} value={l.value}>
+              {l.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }
+
+/* -------------------- Main Component -------------------- */
 
 export function PersonalInfoCard({ user }: PersonalInfoCardProps) {
   const router = useRouter()
@@ -102,12 +93,12 @@ export function PersonalInfoCard({ user }: PersonalInfoCardProps) {
 
     if (error) {
       toast.error(error.message || `Failed to update ${field}`)
-      return false // Tell the child the update failed
+      return false
     }
 
     toast.success("Profile updated!")
     router.refresh()
-    return true // Tell the child the update succeeded
+    return true
   }
 
   const dobValue = user.dateOfBirth
@@ -117,21 +108,22 @@ export function PersonalInfoCard({ user }: PersonalInfoCardProps) {
   return (
     <div className="space-y-2">
       <GatedPageSubheading text="Personal" />
+
       <Card className="max-w-2xl border-muted/60 shadow-xs overflow-visible">
         <CardContent className="px-6 py-2">
           <BirthdayField
             value={dobValue}
             onSave={(val) => handleUpdate("dateOfBirth", val)}
           />
+
           <LocationField
             value={user.location ?? ""}
             onSave={(val) => handleUpdate("location", val)}
             onError={(msg) => toast.error(msg)}
           />
-          <FieldRow
-            label="Locale"
+
+          <LocaleField
             value={user.locale ?? "en-US"}
-            placeholder="e.g. en-US"
             onSave={(val) => handleUpdate("locale", val)}
           />
         </CardContent>
