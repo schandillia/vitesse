@@ -66,12 +66,12 @@ async function getOverviewData() {
 
 export default async function AdminOverviewPage() {
   const session = await getServerSession()
-  const user = session?.user
+  const currentUser = session?.user
 
-  if (!session || !user) {
+  if (!session || !currentUser) {
     redirect("/login")
   }
-  if (user.role !== ROLES.ADMIN) {
+  if (currentUser.role !== ROLES.ADMIN) {
     unauthorized()
   }
 
