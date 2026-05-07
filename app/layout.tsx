@@ -14,6 +14,7 @@ import { JsonLd } from "@/app/json-ld"
 import { PreferencesProvider } from "@/components/providers/preferences-provider"
 import Script from "next/script"
 import { ThemeFlashGuard } from "@/components/layout/theme-flash-guard"
+import { themeSyncScript } from "@/lib/scripts/theme-sync"
 
 export const metadata: Metadata = baseMetadata
 
@@ -30,15 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Script id="theme-sync" strategy="beforeInteractive">
-          {`
-    (function() {
-      var cookie = document.cookie.split('; ').find(function(r) { return r.startsWith('preferred-mode=') });
-      if (cookie) {
-        var mode = cookie.split('=')[1];
-        localStorage.setItem('theme', mode);
-      }
-    })();
-  `}
+          {themeSyncScript}
         </Script>
         <JsonLd />
         <ConsentProvider>
