@@ -17,14 +17,14 @@ export default async function DraftsPage() {
   }
 
   return (
-    <section className="mx-auto max-w-4xl px-4 pb-10">
-      <header className="mb-8 space-y-1">
-        <h1 className="text-3xl font-bold">My Drafts</h1>
-        <p className="text-muted-foreground">
+    <section className="flex flex-col gap-20 mx-auto max-w-6xl px-4 md:px-8 py-10">
+      <header className="font-bold text-foreground text-center space-y-4">
+        <h1 className="text-4xl/tight md:text-6xl">My Drafts</h1>
+        <h2 className="text-2xl/tight md:text-4xl text-muted-foreground/60">
           {result.drafts.length === 0
             ? "You have no drafts."
             : `${result.drafts.length} unpublished ${result.drafts.length === 1 ? "post" : "posts"}`}
-        </p>
+        </h2>
       </header>
 
       <DraftsList drafts={result.drafts} />

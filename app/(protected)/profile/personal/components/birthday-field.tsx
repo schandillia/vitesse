@@ -79,9 +79,9 @@ export function BirthdayField({ value, onSave }: BirthdayFieldProps) {
             onSelect={handleSelect}
             defaultMonth={selected ?? new Date(1990, 0)}
             captionLayout="dropdown"
-            fromYear={1900}
-            toYear={new Date().getFullYear()}
-            initialFocus
+            startMonth={new Date(1900, 0)}
+            endMonth={new Date(new Date().getFullYear(), 11)}
+            autoFocus
           />
         </PopoverContent>
       </Popover>
