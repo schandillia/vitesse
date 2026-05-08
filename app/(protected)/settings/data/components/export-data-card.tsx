@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useTransition } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 import { Button } from "@/components/ui/button"

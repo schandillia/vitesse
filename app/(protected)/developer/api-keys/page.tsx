@@ -4,7 +4,7 @@ import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { fetchApiKeys } from "@/actions/fetch-api-keys"
-import { ApiKeysCard } from "./components/api-keys-card"
+import { ApiKeysCard } from "@/app/(protected)/developer/api-keys/components/api-keys-card"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.developer.apiKeys.title,

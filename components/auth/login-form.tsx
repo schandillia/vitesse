@@ -57,15 +57,14 @@ export function LoginForm({
     setError(err?.message ?? "Something went wrong. Please try again.")
   }
 
-  function handleOneClickLogin(provider: "google" | "apple") {
-    return () =>
-      withLoading("other", async () => {
-        const { error } = await authClient.signIn.social({
-          provider,
-          callbackURL,
-        })
-        if (error) handleError(error)
+  async function handleOneClickLogin(provider: "google" | "apple") {
+    await withLoading("other", async () => {
+      const { error } = await authClient.signIn.social({
+        provider,
+        callbackURL,
       })
+      if (error) handleError(error)
+    })
   }
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
@@ -81,12 +80,12 @@ export function LoginForm({
     {
       icon: <FaApple className="size-6" />,
       label: "Continue with Apple",
-      onClick: handleOneClickLogin("apple"),
+      onClick: () => handleOneClickLogin("apple"),
     },
     {
       icon: <FaGoogle className="size-5" />,
       label: "Continue with Google",
-      onClick: handleOneClickLogin("google"),
+      onClick: () => handleOneClickLogin("google"),
     },
   ]
 

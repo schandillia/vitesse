@@ -23,7 +23,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
     notFound()
   }
 
-  const canEdit = await canEditPost(post.authorId)
+  const canEdit = await canEditPost(post.authorId ?? "")
 
   if (!canEdit) {
     unauthorized()

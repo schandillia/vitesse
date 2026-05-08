@@ -98,7 +98,7 @@ export function CreateKeyDialog() {
             <DialogHeader>
               <DialogTitle>Key Created</DialogTitle>
               <DialogDescription>
-                Copy your API key now. You won't be able to see it again.
+                Copy your API key now. You won’t be able to see it again.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">

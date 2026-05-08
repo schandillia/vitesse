@@ -8,9 +8,9 @@ import {
   CardDescription,
 } from "@/components/ui/card"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
-import { CreateKeyDialog } from "./create-key-dialog"
-import { KeyRow } from "./key-row"
 import type { ApiKeyItem } from "@/actions/fetch-api-keys"
+import { CreateKeyDialog } from "@/app/(protected)/developer/api-keys/components/create-key-dialog"
+import { KeyRow } from "@/app/(protected)/developer/api-keys/components/key-row"
 
 interface ApiKeysCardProps {
   apiKeys: ApiKeyItem[]

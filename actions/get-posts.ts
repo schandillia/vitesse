@@ -11,7 +11,7 @@ export type Category = InferSelectModel<typeof category>
 export type User = InferSelectModel<typeof user>
 
 export type PostWithRelations = Post & {
-  author: User
+  author: User | null
   category: Category | null
 }
 

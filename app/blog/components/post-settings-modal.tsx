@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -58,11 +58,14 @@ export function PostSettingsModal({
   onPublish,
   isPublishing,
 }: PostSettingsModalProps) {
+  // Track previous prop to sync state during render (React 18 approved pattern)
+  const [prevSlug, setPrevSlug] = useState(slug)
   const [localSlug, setLocalSlug] = useState(slug)
 
-  useEffect(() => {
+  if (slug !== prevSlug) {
+    setPrevSlug(slug)
     setLocalSlug(slug)
-  }, [slug])
+  }
 
   const handlePublish = () => {
     if (!slug.trim()) {

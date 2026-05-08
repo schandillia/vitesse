@@ -23,11 +23,6 @@ export function LocationField({ value, onSave, onError }: LocationFieldProps) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Sync external value
-  useEffect(() => {
-    setCurrent(value)
-  }, [value])
-
   // Cleanup debounce on unmount
   useEffect(() => {
     return () => {

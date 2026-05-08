@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { authClient } from "@/lib/auth/auth-client"
 import { useRouter } from "next/navigation"
@@ -35,11 +35,14 @@ interface LocaleFieldProps {
 }
 
 function LocaleField({ value, onSave }: LocaleFieldProps) {
+  const [prevValue, setPrevValue] = useState(value)
   const [current, setCurrent] = useState(value)
 
-  useEffect(() => {
+  // The React-approved way to sync props to state without useEffect
+  if (value !== prevValue) {
+    setPrevValue(value)
     setCurrent(value)
-  }, [value])
+  }
 
   async function handleChange(val: string) {
     setCurrent(val)

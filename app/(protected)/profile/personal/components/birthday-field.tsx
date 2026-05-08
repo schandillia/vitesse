@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { format, parseISO, isValid } from "date-fns"
 import { formatDate } from "@/lib/date"
 import { CalendarIcon } from "lucide-react"
@@ -19,33 +19,16 @@ interface BirthdayFieldProps {
 
 export function BirthdayField({ value, onSave }: BirthdayFieldProps) {
   const [open, setOpen] = useState(false)
-  const [current, setCurrent] = useState(value) // Local state for optimistic updates
 
-  // Keep local state in sync if the parent value changes (e.g., via router.refresh)
-  useEffect(() => {
-    setCurrent(value)
-  }, [value])
-
-  const parsed = current ? parseISO(current) : undefined
+  const parsed = value ? parseISO(value) : undefined
   const selected = parsed && isValid(parsed) ? parsed : undefined
 
   async function handleSelect(day: Date | undefined) {
     setOpen(false)
     if (!day) return
-
     const iso = format(day, "yyyy-MM-dd")
-    if (iso === current) return
-
-    // Optimistically update the UI so the user sees their selection immediately
-    setCurrent(iso)
-
-    // Attempt to save to the database
-    const success = await onSave(iso)
-
-    // If the database update fails, revert to the last known good value from props
-    if (!success) {
-      setCurrent(value)
-    }
+    if (iso === value) return
+    await onSave(iso)
   }
 
   const currentYear = new Date().getFullYear()
@@ -59,7 +42,7 @@ export function BirthdayField({ value, onSave }: BirthdayFieldProps) {
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="cursor-pointer group flex flex-1 items-center justify-between gap-4 rounded-sm outline-none focus-visible:ring-0  text-left"
+            className="cursor-pointer group flex flex-1 items-center justify-between gap-4 rounded-sm outline-none focus-visible:ring-0 text-left"
             aria-label="Edit Date of Birth"
           >
             <span className="text-sm text-muted-foreground flex-1">
