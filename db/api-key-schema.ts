@@ -16,7 +16,9 @@ export const apiKey = pgTable(
     configId: text("config_id").default("default").notNull(),
     name: text("name"),
     start: text("start"),
-    referenceId: text("reference_id").notNull(),
+    referenceId: text("reference_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
     prefix: text("prefix"),
     key: text("key").notNull(),
     refillInterval: integer("refill_interval"),

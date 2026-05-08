@@ -34,7 +34,7 @@ export default async function SettingsAccountPage() {
         accounts={accounts}
         emailVerified={user.emailVerified}
       />
-      <DeleteAccountCard />
+      <DeleteAccountCard username={user.username} />
     </div>
   )
 }

@@ -15,7 +15,7 @@ export async function deleteOwnAccount(confirmationText: string) {
   const { error, user: currentUser } = await guardAction()
   if (error) return { success: false, error } as const
 
-  if (confirmationText !== "delete my account") {
+  if (confirmationText !== `delete ${currentUser.username}`) {
     return {
       success: false,
       error: "Confirmation text does not match.",

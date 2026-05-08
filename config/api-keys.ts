@@ -29,7 +29,7 @@ export const API_KEY_SCOPE_DESCRIPTIONS: Record<ApiKeyScope, string> = {
  * Maximum number of API keys a single user can hold at once.
  * Adjust to match your abuse-prevention or plan-gating needs.
  */
-export const API_KEY_MAX_PER_USER = 2
+export const API_KEY_MAX_PER_USER = 20
 
 /**
  * Available expiry options shown in the create key dialog.

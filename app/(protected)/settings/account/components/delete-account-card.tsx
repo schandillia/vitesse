@@ -10,7 +10,7 @@ import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 
-export function DeleteAccountCard() {
+export function DeleteAccountCard({ username }: { username: string }) {
   const [step, setStep] = useState<"idle" | "confirm">("idle")
   const [confirmationText, setConfirmationText] = useState("")
   const [isPending, startTransition] = useTransition()
@@ -47,13 +47,13 @@ export function DeleteAccountCard() {
             <div className="space-y-3">
               <p className="text-sm">
                 Type{" "}
-                <span className="font-mono font-bold">delete my account</span>{" "}
+                <span className="font-mono font-bold">delete {username}</span>{" "}
                 to confirm.
               </p>
               <Input
                 value={confirmationText}
                 onChange={(e) => setConfirmationText(e.target.value)}
-                placeholder="delete my account"
+                placeholder={`delete ${username}`}
                 disabled={isPending}
               />
               <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ export function DeleteAccountCard() {
                   variant="destructive"
                   onClick={handleDelete}
                   disabled={
-                    isPending || confirmationText !== "delete my account"
+                    isPending || confirmationText !== `delete ${username}`
                   }
                 >
                   <LoadingSwap isLoading={isPending}>
