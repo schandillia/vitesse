@@ -4,31 +4,8 @@ import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { randomUUID } from "crypto"
 import { env } from "@/env"
 import { avatarSchema } from "@/lib/validations/avatar-schema"
-import { s3Client, getPublicUrl } from "@/lib/s3"
+import { s3Client, getPublicUrl, extractS3Key } from "@/lib/s3"
 import { guardAction } from "@/lib/guard-action"
-
-function extractS3Key(imageUrl: string): string | null {
-  try {
-    const url = new URL(imageUrl)
-    if (
-      url.hostname.includes("cloudfront.net") ||
-      url.hostname.includes("amazonaws.com")
-    ) {
-      return url.pathname.slice(1)
-    }
-    return null
-  } catch {
-    try {
-      if (imageUrl.includes("amazonaws.com")) {
-        return imageUrl.split(".com/")[1] || null
-      }
-      const lastSlash = imageUrl.lastIndexOf("/")
-      return lastSlash !== -1 ? imageUrl.slice(lastSlash + 1) : null
-    } catch {
-      return null
-    }
-  }
-}
 
 export async function uploadAvatarAction(formData: FormData) {
   try {

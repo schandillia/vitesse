@@ -1,6 +1,9 @@
 import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
+import { ConnectedAccountsCard } from "@/app/(protected)/settings/account/components/connected-accounts-card"
+import { DeleteAccountCard } from "@/app/(protected)/settings/account/components/delete-account-card"
 import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
+import { getConnectedAccounts } from "@/actions/get-connected-accounts"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
@@ -18,15 +21,20 @@ export default async function SettingsAccountPage() {
     redirect("/login")
   }
 
-  // const passkeys = await auth.api.listPasskeys({ headers: await headers() })
+  const result = await getConnectedAccounts()
+  const accounts = result.success ? result.accounts : []
 
   return (
     <div className="container space-y-8">
       <GatedPageTitle
         title="Account"
-        description="Manage your email, connected accounts, and account deletion"
+        description="Manage your sign-in methods and account deletion"
       />
-      <p>TBD</p>
+      <ConnectedAccountsCard
+        accounts={accounts}
+        emailVerified={user.emailVerified}
+      />
+      <DeleteAccountCard />
     </div>
   )
 }

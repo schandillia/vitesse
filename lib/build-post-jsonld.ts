@@ -8,7 +8,7 @@ export function buildPostJsonLd(
     coverImage?: string | null
     createdAt: Date
     updatedAt?: Date | null
-    author: { name: string }
+    author?: { name: string } | null
     slug: string
   },
   siteUrl: string
@@ -23,7 +23,7 @@ export function buildPostJsonLd(
     image: post.coverImage ? [post.coverImage] : [],
     author: {
       "@type": "Person",
-      name: post.author.name,
+      name: post.author?.name ?? "Deleted User",
     },
     publisher: {
       "@type": "Organization",

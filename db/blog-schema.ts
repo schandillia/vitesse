@@ -20,9 +20,9 @@ export const post = pgTable(
     excerpt: text("excerpt"),
     coverImage: text("cover_image"),
     published: boolean("published").default(false).notNull(),
-    authorId: text("author_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+    authorId: text("author_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
     categoryId: text("category_id").references(() => category.id, {
       onDelete: "set null",
     }),

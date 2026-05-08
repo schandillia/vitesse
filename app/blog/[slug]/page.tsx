@@ -36,7 +36,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
-  const canEdit = await canEditPost(post.authorId)
+  const canEdit = post.authorId ? await canEditPost(post.authorId) : false
 
   const isUpdated =
     post.updatedAt && formatDate(post.updatedAt) !== formatDate(post.createdAt)
@@ -109,21 +109,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="flex flex-col gap-2 text-white/70 pt-2 md:flex-row md:items-center md:justify-between md:gap-3">
               <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
                 <span className="flex items-center gap-2">
-                  {post.author.image && (
+                  {post.author?.image && (
                     <Image
                       src={post.author.image}
-                      alt={post.author.name}
+                      alt={post.author?.name ?? "Deleted User"}
                       width={24}
                       height={24}
                       className="rounded-full object-cover w-6! h-6! shrink-0"
                     />
                   )}
-                  <Link
-                    href={`/blog/author/${post.author.username}`}
-                    className="hover:text-white transition-colors"
-                  >
-                    {post.author.name}
-                  </Link>
+                  {post.author ? (
+                    <Link
+                      href={`/blog/author/${post.author.username}`}
+                      className="hover:text-white transition-colors"
+                    >
+                      {post.author.name}
+                    </Link>
+                  ) : (
+                    <span>Deleted User</span>
+                  )}
                 </span>
                 <span className="text-white/40 hidden md:inline">|</span>
                 <span className="space-x-1">

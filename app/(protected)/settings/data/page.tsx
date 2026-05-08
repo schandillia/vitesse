@@ -3,6 +3,8 @@ import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
+import { ExportDataCard } from "@/app/(protected)/settings/data/components/export-data-card"
+import { DataRightsCard } from "@/app/(protected)/settings/data/components/data-rights-card"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.settings.data.title,
@@ -24,7 +26,8 @@ export default async function SettingsDataPage() {
         title="Data"
         description="Export your data and manage your data rights"
       />
-      <p>TBD</p>
+      <ExportDataCard username={user.username} />
+      <DataRightsCard />
     </div>
   )
 }

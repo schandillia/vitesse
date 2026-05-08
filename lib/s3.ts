@@ -15,3 +15,26 @@ export function getPublicUrl(key: string): string {
     ? `${cdnBase}/${key}`
     : `https://${env.AWS_S3_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${key}`
 }
+
+export function extractS3Key(imageUrl: string): string | null {
+  try {
+    const url = new URL(imageUrl)
+    if (
+      url.hostname.includes("cloudfront.net") ||
+      url.hostname.includes("amazonaws.com")
+    ) {
+      return url.pathname.slice(1)
+    }
+    return null
+  } catch {
+    try {
+      if (imageUrl.includes("amazonaws.com")) {
+        return imageUrl.split(".com/")[1] || null
+      }
+      const lastSlash = imageUrl.lastIndexOf("/")
+      return lastSlash !== -1 ? imageUrl.slice(lastSlash + 1) : null
+    } catch {
+      return null
+    }
+  }
+}
