@@ -3,18 +3,18 @@
 import { db } from "@/db/drizzle"
 import { post } from "@/db/blog-schema"
 import { eq } from "drizzle-orm"
-import { requireAdmin } from "@/lib/blog-utils"
+import { guardAction } from "@/lib/guard-action"
 import { revalidatePath } from "next/cache"
+import { ROLES } from "@/db/types/roles"
 
 type DeletePostResult = { success: true } | { success: false; error: string }
 
-export async function deletePostAction(
-  postId: string
-): Promise<DeletePostResult> {
+export async function deletePost(postId: string): Promise<DeletePostResult> {
   try {
-    const { authorized, user } = await requireAdmin()
+    const { error, user } = await guardAction()
+    if (error) return { success: false, error }
 
-    if (!authorized || !user) {
+    if (user.role !== ROLES.ADMIN) {
       return { success: false, error: "Unauthorized" }
     }
 
@@ -59,7 +59,6 @@ export async function deletePostAction(
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to delete post"
-
     return { success: false, error: message }
   }
 }

@@ -3,7 +3,7 @@
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { ConfirmModal } from "@/components/confirm-modal"
-import { deletePostAction } from "@/actions/delete-post"
+import { deletePost } from "@/actions/delete-post"
 
 interface DeletePostModalProps {
   open: boolean
@@ -21,7 +21,7 @@ export function DeletePostModal({
 
   const handleDelete = () => {
     startTransition(async () => {
-      const res = await deletePostAction(postId)
+      const res = await deletePost(postId)
 
       if (res.success) {
         onOpenChange(false)

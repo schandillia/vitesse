@@ -3,7 +3,8 @@
 import { db } from "@/db/drizzle"
 import { post } from "@/db/blog-schema"
 import { eq, and } from "drizzle-orm"
-import { requireAdmin } from "@/lib/blog-utils"
+import { guardAction } from "@/lib/guard-action"
+import { ROLES } from "@/db/types/roles"
 
 export type DraftPost = {
   id: string
@@ -19,13 +20,14 @@ export type DraftPost = {
 
 type GetDraftsResult =
   | { success: true; drafts: DraftPost[] }
-  | { success: false; error: string }
+  | { success: false; error: string; code?: "RATE_LIMITED" | "UNAUTHORIZED" }
 
 export async function getDrafts(): Promise<GetDraftsResult> {
   try {
-    const { authorized, user } = await requireAdmin()
+    const { error, code, user } = await guardAction({ type: "read" })
+    if (error) return { success: false, error, code }
 
-    if (!authorized || !user) {
+    if (user.role !== ROLES.ADMIN) {
       return { success: false, error: "Unauthorized" }
     }
 

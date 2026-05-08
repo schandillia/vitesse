@@ -3,12 +3,10 @@
 import { db } from "@/db/drizzle"
 import { post, category } from "@/db/blog-schema"
 import { eq } from "drizzle-orm"
-import {
-  isDuplicateKeyError,
-  requireAdmin,
-  resolveExcerpt,
-} from "@/lib/blog-utils"
+import { isDuplicateKeyError, resolveExcerpt } from "@/lib/blog-utils"
+import { guardAction } from "@/lib/guard-action"
 import { revalidatePath } from "next/cache"
+import { ROLES } from "@/db/types/roles"
 
 type UpdatePostInput = {
   id: string
@@ -30,8 +28,10 @@ export async function updatePost(
   input: UpdatePostInput
 ): Promise<UpdatePostResult> {
   try {
-    const { authorized, user } = await requireAdmin()
-    if (!authorized || !user) {
+    const { error, user } = await guardAction({ type: "autosave" })
+    if (error) return { success: false, error }
+
+    if (user.role !== ROLES.ADMIN) {
       return { success: false, error: "Unauthorized" }
     }
 

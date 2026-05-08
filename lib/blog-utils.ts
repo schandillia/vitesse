@@ -2,18 +2,6 @@ import { auth } from "@/lib/auth/auth"
 import { headers } from "next/headers"
 import { ROLES } from "@/db/types/roles"
 
-export async function requireAdmin() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
-
-  if (!session?.user || session.user.role !== ROLES.ADMIN) {
-    return { authorized: false as const }
-  }
-
-  return { authorized: true as const, user: session.user }
-}
-
 export function resolveExcerpt(
   excerpt?: string,
   logline?: string,

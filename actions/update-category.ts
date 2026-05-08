@@ -3,13 +3,11 @@
 import { db } from "@/db/drizzle"
 import { category } from "@/db/blog-schema"
 import { eq } from "drizzle-orm"
-import {
-  getDuplicateKeyField,
-  isDuplicateKeyError,
-  requireAdmin,
-} from "@/lib/blog-utils"
+import { getDuplicateKeyField, isDuplicateKeyError } from "@/lib/blog-utils"
+import { guardAction } from "@/lib/guard-action"
 import { revalidatePath } from "next/cache"
 import { categorySchema } from "@/lib/validations/blog-schema"
+import { ROLES } from "@/db/types/roles"
 
 type UpdateCategoryInput = {
   id: string
@@ -26,8 +24,12 @@ export async function updateCategory(
   input: UpdateCategoryInput
 ): Promise<UpdateCategoryResult> {
   try {
-    const { authorized } = await requireAdmin()
-    if (!authorized) return { success: false, error: "Unauthorized" }
+    const { error, user } = await guardAction()
+    if (error) return { success: false, error }
+
+    if (user.role !== ROLES.ADMIN) {
+      return { success: false, error: "Unauthorized" }
+    }
 
     const existing = await db.query.category.findFirst({
       where: eq(category.id, input.id),

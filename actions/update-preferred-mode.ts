@@ -4,13 +4,13 @@ import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
 import { cookies } from "next/headers"
-import { getServerSession } from "@/lib/auth/get-server-session"
+import { guardAction } from "@/lib/guard-action"
 import { MODES, type Mode } from "@/db/types/modes"
 import { siteConfig } from "@/config/site"
 
 export async function updatePreferredMode(mode: Mode) {
-  const session = await getServerSession()
-  if (!session?.user) return { success: false }
+  const { error, user: currentUser } = await guardAction()
+  if (error) return { success: false }
 
   const validModes = [MODES.LIGHT, MODES.DARK, MODES.SYSTEM]
   if (!validModes.includes(mode)) return { success: false }
@@ -18,7 +18,7 @@ export async function updatePreferredMode(mode: Mode) {
   await db
     .update(user)
     .set({ preferredMode: mode })
-    .where(eq(user.id, session.user.id))
+    .where(eq(user.id, currentUser.id))
 
   const cookieStore = await cookies()
   cookieStore.set("preferred-mode", mode, {

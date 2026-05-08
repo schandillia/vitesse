@@ -1,12 +1,11 @@
 "use server"
 
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"
-import { auth } from "@/lib/auth/auth"
 import { randomUUID } from "crypto"
-import { headers } from "next/headers"
 import { env } from "@/env"
 import { avatarSchema } from "@/lib/validations/avatar-schema"
 import { s3Client, getPublicUrl } from "@/lib/s3"
+import { guardAction } from "@/lib/guard-action"
 
 function extractS3Key(imageUrl: string): string | null {
   try {
@@ -33,20 +32,12 @@ function extractS3Key(imageUrl: string): string | null {
 
 export async function uploadAvatarAction(formData: FormData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
-
-    if (!session?.user) {
-      throw new Error("Unauthorized")
-    }
+    const { error, user } = await guardAction()
+    if (error) return { success: false, error } as const
 
     const file = formData.get("file") as File | null
-    if (!file) {
-      throw new Error("No file provided")
-    }
+    if (!file) return { success: false, error: "No file provided" } as const
 
-    // Zod Validation
     const validation = avatarSchema.safeParse({ file })
     if (!validation.success) {
       return {
@@ -56,16 +47,12 @@ export async function uploadAvatarAction(formData: FormData) {
     }
 
     const validatedFile = validation.data.file
-
-    // Upload preparation
     const arrayBuffer = await validatedFile.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
-
     const extension =
       validatedFile.name.split(".").pop()?.toLowerCase() || "jpg"
     const uniqueFileName = `avatars/${randomUUID()}.${extension}`
 
-    // Upload to S3
     await s3Client.send(
       new PutObjectCommand({
         Bucket: env.AWS_S3_BUCKET_NAME!,
@@ -76,8 +63,7 @@ export async function uploadAvatarAction(formData: FormData) {
       })
     )
 
-    // Silent cleanup of old avatar
-    const oldImageUrl = session.user.image
+    const oldImageUrl = user.image
     if (oldImageUrl) {
       const oldKey = extractS3Key(oldImageUrl)
       if (oldKey) {
@@ -94,19 +80,12 @@ export async function uploadAvatarAction(formData: FormData) {
       }
     }
 
-    return {
-      success: true,
-      url: getPublicUrl(uniqueFileName),
-    } as const
+    return { success: true, url: getPublicUrl(uniqueFileName) } as const
   } catch (error) {
     const errorMessage =
       error instanceof Error
         ? error.message
         : "Failed to upload image. Please try again."
-
-    return {
-      success: false,
-      error: errorMessage,
-    } as const
+    return { success: false, error: errorMessage } as const
   }
 }

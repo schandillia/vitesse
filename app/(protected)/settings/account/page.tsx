@@ -1,9 +1,7 @@
 import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { siteConfig } from "@/config/site"
-import { auth } from "@/lib/auth/auth"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
-import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
@@ -20,7 +18,7 @@ export default async function SettingsAccountPage() {
     redirect("/login")
   }
 
-  const passkeys = await auth.api.listPasskeys({ headers: await headers() })
+  // const passkeys = await auth.api.listPasskeys({ headers: await headers() })
 
   return (
     <div className="container space-y-8">

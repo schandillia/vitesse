@@ -4,20 +4,21 @@ import { db } from "@/db/drizzle"
 import { user, auditLog } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
 import { ROLES, type Role } from "@/db/types/roles"
-import { getServerSession } from "@/lib/auth/get-server-session"
+import { guardAction } from "@/lib/guard-action"
 import { revalidatePath } from "next/cache"
 import { siteConfig } from "@/config/site"
 
 const VALID_ROLES = Object.values(ROLES) as Role[]
 
 export async function changeRole(userId: string, newRole: Role) {
-  const session = await getServerSession()
+  const { error, user: currentUser } = await guardAction()
+  if (error) return { success: false, error }
 
-  if (!session?.user || session.user.role !== ROLES.ADMIN) {
+  if (currentUser.role !== ROLES.ADMIN) {
     return { success: false, error: "Unauthorized" }
   }
 
-  if (session.user.id === userId) {
+  if (currentUser.id === userId) {
     return { success: false, error: "You cannot change your own role." }
   }
 
@@ -41,7 +42,7 @@ export async function changeRole(userId: string, newRole: Role) {
 
     await db.insert(auditLog).values({
       id: crypto.randomUUID(),
-      userId: session.user.id,
+      userId: currentUser.id,
       event: "role_change",
       metadata: {
         targetUserId: userId,

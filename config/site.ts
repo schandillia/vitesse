@@ -93,8 +93,15 @@ export const siteConfig = {
           interval: "15m",
         },
         serverActions: {
-          max: 20,
-          interval: "1m",
+          write: {
+            max: 2,
+            interval: "1m",
+          },
+          read: {
+            max: 2,
+            interval: "1m",
+          },
+          autosave: { max: 60, interval: "1m" },
         },
       },
     },

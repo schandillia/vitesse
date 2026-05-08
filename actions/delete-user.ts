@@ -4,19 +4,23 @@ import { db } from "@/db/drizzle"
 import { user, auditLog } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
 import { ROLES } from "@/db/types/roles"
-import { getServerSession } from "@/lib/auth/get-server-session"
+import { guardAction } from "@/lib/guard-action"
 import { revalidatePath } from "next/cache"
 import { siteConfig } from "@/config/site"
 
 export async function deleteUser(userId: string) {
-  const session = await getServerSession()
+  const { error, user: currentUser } = await guardAction()
+  if (error) return { success: false, error }
 
-  if (!session?.user || session.user.role !== ROLES.ADMIN) {
+  if (currentUser.role !== ROLES.ADMIN) {
     return { success: false, error: "Unauthorized" }
   }
 
-  if (session.user.id === userId) {
-    return { success: false, error: "You cannot delete your own account." }
+  if (currentUser.id === userId) {
+    return {
+      success: false,
+      error: "You cannot delete your own account from this page.",
+    }
   }
 
   try {
@@ -31,7 +35,7 @@ export async function deleteUser(userId: string) {
 
     await db.insert(auditLog).values({
       id: crypto.randomUUID(),
-      userId: session.user.id,
+      userId: currentUser.id,
       event: "user_deleted",
       metadata: {
         deletedUserId: userId,

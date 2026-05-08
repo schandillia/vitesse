@@ -1,4 +1,5 @@
-import { requireAdmin } from "@/lib/blog-utils"
+import { getServerSession } from "@/lib/auth/get-server-session"
+import { ROLES } from "@/db/types/roles"
 import { getCategories } from "@/actions/get-categories"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
@@ -9,11 +10,11 @@ export const metadata: Metadata = {
   robots: { index: false },
 }
 
-export const revalidate = 0 // Always fresh — admin only
+export const revalidate = 0
 
 export default async function CategoriesPage() {
-  const { authorized } = await requireAdmin()
-  if (!authorized) notFound()
+  const session = await getServerSession()
+  if (!session?.user || session.user.role !== ROLES.ADMIN) notFound()
 
   const categories = await getCategories()
 
@@ -25,7 +26,6 @@ export default async function CategoriesPage() {
           Create, edit, and delete post categories.
         </h2>
       </header>
-
       <CategoryManagerClient initialCategories={categories} />
     </section>
   )

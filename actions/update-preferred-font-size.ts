@@ -4,13 +4,13 @@ import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
 import { eq } from "drizzle-orm"
 import { cookies } from "next/headers"
-import { getServerSession } from "@/lib/auth/get-server-session"
+import { guardAction } from "@/lib/guard-action"
 import { FONT_SIZE_VALUES, FontSize } from "@/lib/auth/font-sizes"
 import { siteConfig } from "@/config/site"
 
 export async function updatePreferredFontSize(size: string) {
-  const session = await getServerSession()
-  if (!session?.user) return { success: false }
+  const { error, user: currentUser } = await guardAction()
+  if (error) return { success: false }
 
   if (
     !FONT_SIZE_VALUES.includes(
@@ -23,7 +23,7 @@ export async function updatePreferredFontSize(size: string) {
   await db
     .update(user)
     .set({ preferredFontSize: size as FontSize })
-    .where(eq(user.id, session.user.id))
+    .where(eq(user.id, currentUser.id))
 
   const cookieStore = await cookies()
   cookieStore.set("preferred-font-size", size, {

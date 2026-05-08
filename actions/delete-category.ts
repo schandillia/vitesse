@@ -3,8 +3,9 @@
 import { db } from "@/db/drizzle"
 import { category } from "@/db/blog-schema"
 import { eq } from "drizzle-orm"
-import { requireAdmin } from "@/lib/blog-utils"
+import { guardAction } from "@/lib/guard-action"
 import { revalidatePath } from "next/cache"
+import { ROLES } from "@/db/types/roles"
 
 type DeleteCategoryResult =
   | { success: true }
@@ -14,8 +15,12 @@ export async function deleteCategory(
   categoryId: string
 ): Promise<DeleteCategoryResult> {
   try {
-    const { authorized } = await requireAdmin()
-    if (!authorized) return { success: false, error: "Unauthorized" }
+    const { error, user } = await guardAction()
+    if (error) return { success: false, error }
+
+    if (user.role !== ROLES.ADMIN) {
+      return { success: false, error: "Unauthorized" }
+    }
 
     const existing = await db.query.category.findFirst({
       where: eq(category.id, categoryId),

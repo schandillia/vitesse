@@ -1,8 +1,12 @@
 import { db } from "@/db/drizzle"
 import { redis } from "@/lib/redis"
 import { sql } from "drizzle-orm"
-import { requireAdmin } from "@/lib/blog-utils"
-import { NextResponse } from "next/server"
+import { getServerSession } from "@/lib/auth/get-server-session"
+import { ajAuth } from "@/lib/arcjet"
+import { slidingWindow } from "@arcjet/next"
+import { ROLES } from "@/db/types/roles"
+import { NextRequest, NextResponse } from "next/server"
+import { env } from "@/env"
 
 async function checkDatabase() {
   try {
@@ -35,13 +39,28 @@ async function checkRedis() {
   }
 }
 
-export async function GET() {
-  const { authorized } = await requireAdmin()
-  if (!authorized) {
+export async function GET(req: NextRequest) {
+  const session = await getServerSession()
+
+  if (!session?.user || session.user.role !== ROLES.ADMIN) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const [db, cache] = await Promise.all([checkDatabase(), checkRedis()])
+  if (env.ARCJET_KEY) {
+    const decision = await ajAuth
+      .withRule(slidingWindow({ mode: "LIVE", interval: 60, max: 30 }))
+      .protect(req, { userIdOrIp: session.user.id })
 
-  return NextResponse.json({ db, cache, checkedAt: new Date().toISOString() })
+    if (decision.isDenied()) {
+      return NextResponse.json({ error: "Too many requests." }, { status: 429 })
+    }
+  }
+
+  const [dbHealth, cache] = await Promise.all([checkDatabase(), checkRedis()])
+
+  return NextResponse.json({
+    db: dbHealth,
+    cache,
+    checkedAt: new Date().toISOString(),
+  })
 }

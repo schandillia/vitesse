@@ -3,13 +3,11 @@
 import { db } from "@/db/drizzle"
 import { category } from "@/db/blog-schema"
 import { randomUUID } from "crypto"
-import {
-  getDuplicateKeyField,
-  isDuplicateKeyError,
-  requireAdmin,
-} from "@/lib/blog-utils"
+import { getDuplicateKeyField, isDuplicateKeyError } from "@/lib/blog-utils"
+import { guardAction } from "@/lib/guard-action"
 import { revalidatePath } from "next/cache"
 import { categorySchema } from "@/lib/validations/blog-schema"
+import { ROLES } from "@/db/types/roles"
 
 type CreateCategoryInput = {
   name: string
@@ -25,8 +23,12 @@ export async function createCategory(
   input: CreateCategoryInput
 ): Promise<CreateCategoryResult> {
   try {
-    const { authorized } = await requireAdmin()
-    if (!authorized) return { success: false, error: "Unauthorized" }
+    const { error, user } = await guardAction()
+    if (error) return { success: false, error }
+
+    if (user.role !== ROLES.ADMIN) {
+      return { success: false, error: "Unauthorized" }
+    }
 
     const name = input.name.trim()
     const slug = input.slug.trim().toLowerCase()

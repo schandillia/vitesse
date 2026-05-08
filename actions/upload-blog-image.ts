@@ -2,25 +2,22 @@
 
 import { PutObjectCommand } from "@aws-sdk/client-s3"
 import { getPublicUrl, s3Client } from "@/lib/s3"
-import { auth } from "@/lib/auth/auth"
 import { randomUUID } from "crypto"
-import { headers } from "next/headers"
 import { env } from "@/env"
+import { guardAction } from "@/lib/guard-action"
+import { ROLES } from "@/db/types/roles"
 
 export async function uploadBlogImageAction(formData: FormData) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
+    const { error, user } = await guardAction()
+    if (error) return { success: false, error } as const
 
-    if (!session?.user) {
+    if (user.role !== ROLES.ADMIN) {
       return { success: false, error: "Unauthorized" } as const
     }
 
     const file = formData.get("file") as File | null
-    if (!file) {
-      return { success: false, error: "No file provided" } as const
-    }
+    if (!file) return { success: false, error: "No file provided" } as const
 
     if (!file.type.startsWith("image/")) {
       return { success: false, error: "File must be an image" } as const
@@ -45,9 +42,7 @@ export async function uploadBlogImageAction(formData: FormData) {
       })
     )
 
-    const publicUrl = getPublicUrl(uniqueFileName)
-
-    return { success: true, url: publicUrl } as const
+    return { success: true, url: getPublicUrl(uniqueFileName) } as const
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Failed to upload image"
