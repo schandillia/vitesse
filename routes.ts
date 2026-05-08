@@ -47,6 +47,7 @@ export const routeRedirects: Record<string, string> = {
   "/preferences": "/preferences/display",
   "/security": "/security/authentication",
   "/settings": "/settings/account",
+  "/developer": "/developer/api-keys",
   "/dashboard": "/dashboard/general",
 }
 

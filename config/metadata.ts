@@ -116,6 +116,13 @@ export const metaData = {
     title: "Grievance",
     description: "Learn more about our grievance redressal policy.",
   },
+  developer: {
+    apiKeys: {
+      title: "API | Developer",
+      description: "Manage your API keys and access credentials.",
+      robots: { index: false, follow: false },
+    },
+  },
   admin: {
     overview: {
       title: "Overview | Admin",

@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth"
+import { apiKey } from "@better-auth/api-key"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { db, schema } from "@/db/drizzle"
 import { magicLink } from "better-auth/plugins"
@@ -14,6 +15,7 @@ import { auditLog, user } from "@/db/auth-schema"
 import { onFailedLogin } from "@/lib/auth/hooks/failed-login"
 import { MODES } from "@/db/types/modes"
 import { eq } from "drizzle-orm"
+import { API_KEY_PREFIX } from "@/config/api-keys"
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -253,6 +255,10 @@ export const auth = betterAuth({
   },
   plugins: [
     nextCookies(),
+    apiKey({
+      defaultPrefix: API_KEY_PREFIX,
+      enableMetadata: true,
+    }),
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         await sendEmail({

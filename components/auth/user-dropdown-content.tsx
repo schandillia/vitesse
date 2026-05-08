@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 import {
+  CodeXmlIcon,
   GlobeLockIcon,
   LayoutDashboardIcon,
   LogOutIcon,
@@ -35,6 +36,7 @@ const menuItems = [
   { href: "/preferences", label: "Preferences", icon: SlidersHorizontalIcon },
   { href: "/settings", label: "Settings", icon: SettingsIcon },
   { href: "/security", label: "Security", icon: GlobeLockIcon },
+  { href: "/developer", label: "Developer", icon: CodeXmlIcon },
 ]
 
 const baseItemClass = "rounded-md cursor-pointer py-1"

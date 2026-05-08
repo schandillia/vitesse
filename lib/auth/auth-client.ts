@@ -4,6 +4,7 @@ import {
   inferAdditionalFields,
 } from "better-auth/client/plugins"
 import { passkeyClient } from "@better-auth/passkey/client"
+import { apiKeyClient } from "@better-auth/api-key/client"
 import type { auth } from "@/lib/auth/auth"
 import { env } from "@/env"
 
@@ -12,6 +13,7 @@ export const authClient = createAuthClient({
   plugins: [
     magicLinkClient(),
     passkeyClient(),
+    apiKeyClient(),
     inferAdditionalFields<typeof auth>(),
   ],
 })

@@ -7,6 +7,7 @@ import { relations } from "drizzle-orm"
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
 import * as t from "drizzle-orm/pg-core"
 import { NotificationPreferences } from "@/db/types/notification-preferences"
+import { apiKey } from "@/db/api-key-schema"
 
 export const themeModeEnum = t.pgEnum("theme_mode", [
   MODES.LIGHT,
@@ -152,6 +153,7 @@ export const userRelations = relations(user, ({ many }) => ({
   passkeys: many(passkey),
   posts: many(post),
   auditLogs: many(auditLog),
+  apiKeys: many(apiKey),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({
