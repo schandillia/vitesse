@@ -52,7 +52,7 @@ export async function createApiKey(
       headers: h,
     })
 
-    // Store unique preview in metadata since `start` only contains the prefix
+    // Store unique preview in metadata since 'start' only contains the prefix
     const prefix = created.prefix ?? ""
     const uniquePart = created.key.slice(prefix.length, prefix.length + 6)
     await auth.api.updateApiKey({
