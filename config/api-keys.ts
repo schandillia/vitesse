@@ -1,5 +1,5 @@
 /**
- * API key configuration for Oolway.
+ * API key configuration.
  *
  * This is the single place where you define the scopes available to your
  * users' API keys. Edit this file to match your product's access model —

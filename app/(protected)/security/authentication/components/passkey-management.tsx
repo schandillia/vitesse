@@ -34,6 +34,7 @@ import { formatDate } from "@/lib/date"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
 import { useTheme } from "next-themes"
 import { getAaguidIcon } from "@/lib/auth/aaguid"
+import { siteConfig } from "@/config/site"
 
 const passkeySchema = z.object({
   name: z.string().min(1, "Please name your device (e.g., 'Work Laptop')"),
@@ -103,7 +104,7 @@ export function PasskeyManagement({
               <DialogTitle>Add New Passkey</DialogTitle>
               <DialogDescription>
                 Use biometrics or hardware keys for secure, passwordless access
-                to Oolway.
+                to {siteConfig.brand.name}.
               </DialogDescription>
             </DialogHeader>
 
