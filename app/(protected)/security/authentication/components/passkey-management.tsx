@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast"
 import { Trash2, Fingerprint, Plus } from "lucide-react"
 
 import { authClient } from "@/lib/auth/auth-client"
-import { Passkey } from "@better-auth/passkey"
+import type { Passkey } from "@better-auth/passkey"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -32,6 +32,8 @@ import {
 import { DestructiveActionButton } from "@/components/auth/destructive-action-button"
 import { formatDate } from "@/lib/date"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
+import { useTheme } from "next-themes"
+import { getAaguidIcon } from "@/lib/auth/aaguid"
 
 const passkeySchema = z.object({
   name: z.string().min(1, "Please name your device (e.g., 'Work Laptop')"),
@@ -39,9 +41,22 @@ const passkeySchema = z.object({
 
 type PasskeyForm = z.infer<typeof passkeySchema>
 
-export function PasskeyManagement({ passkeys }: { passkeys: Passkey[] }) {
+type AaguidEntry = {
+  name: string
+  icon_dark?: string
+  icon_light?: string
+}
+
+type EnrichedPasskey = Passkey & { authenticator: AaguidEntry | null }
+
+export function PasskeyManagement({
+  passkeys,
+}: {
+  passkeys: EnrichedPasskey[]
+}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const router = useRouter()
+  const { resolvedTheme } = useTheme()
 
   const form = useForm<PasskeyForm>({
     resolver: zodResolver(passkeySchema),
@@ -106,7 +121,7 @@ export function PasskeyManagement({ passkeys }: { passkeys: Passkey[] }) {
                       {...field}
                       id={field.name}
                       aria-invalid={fieldState.invalid}
-                      placeholder="e.g., Einstein’s MacBook Pro"
+                      placeholder="e.g., Einstein's MacBook Pro"
                     />
                     {fieldState.error && (
                       <FieldError errors={[fieldState.error]} />
@@ -137,42 +152,71 @@ export function PasskeyManagement({ passkeys }: { passkeys: Passkey[] }) {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {passkeys.map((passkey) => (
-            <Card key={passkey.id} className="shadow-none">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-full text-primary">
-                    <Fingerprint className="h-4 w-4" />
+          {passkeys.map((passkey) => {
+            const icon = getAaguidIcon(passkey.authenticator, resolvedTheme)
+
+            return (
+              <Card key={passkey.id} className="shadow-none">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-full text-primary">
+                      {icon ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={icon}
+                          alt={passkey.authenticator?.name}
+                          width={16}
+                          height={16}
+                          loading="lazy"
+                          decoding="async"
+                          className="size-4 md:size-6"
+                        />
+                      ) : (
+                        <Fingerprint className="size-4" />
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <CardTitle className="text-sm font-medium">
+                        {passkey.name}
+                      </CardTitle>
+                      <CardDescription className="text-xs">
+                        {passkey.authenticator?.name && (
+                          <span className="block">
+                            {passkey.authenticator.name}
+                          </span>
+                        )}
+                        Added {formatDate(passkey.createdAt)}
+                        {passkey.counter > 0 && (
+                          <>
+                            {" "}
+                            · Used {passkey.counter}{" "}
+                            {passkey.counter === 1 ? "time" : "times"}
+                          </>
+                        )}
+                      </CardDescription>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <CardTitle className="text-sm font-medium">
-                      {passkey.name}
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      Added {formatDate(passkey.createdAt)}
-                    </CardDescription>
-                  </div>
-                </div>
-                <DestructiveActionButton
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                  requireAreYouSure // This triggers the confirmation state
-                  successMessage="Passkey removed"
-                  action={async () => {
-                    const res = await authClient.passkey.deletePasskey({
-                      id: passkey.id,
-                    })
-                    if (res.error) return { error: res.error }
-                    router.refresh()
-                    return { error: null }
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </DestructiveActionButton>
-              </CardHeader>
-            </Card>
-          ))}
+                  <DestructiveActionButton
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    requireAreYouSure
+                    successMessage="Passkey removed"
+                    action={async () => {
+                      const res = await authClient.passkey.deletePasskey({
+                        id: passkey.id,
+                      })
+                      if (res.error) return { error: res.error }
+                      router.refresh()
+                      return { error: null }
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </DestructiveActionButton>
+                </CardHeader>
+              </Card>
+            )
+          })}
         </div>
       )}
     </div>

@@ -125,8 +125,9 @@ export const passkey = pgTable("passkey", {
   deviceType: t.text("device_type").notNull(),
   backedUp: t.boolean("backed_up").notNull(),
   transports: t.text("transports"),
-  createdAt: t.timestamp("created_at", { precision: 6, withTimezone: true }),
   aaguid: t.text("aaguid"),
+  lastUsedAt: t.timestamp("last_used_at"),
+  createdAt: t.timestamp("created_at", { precision: 6, withTimezone: true }),
 })
 
 export const auditLog = pgTable(

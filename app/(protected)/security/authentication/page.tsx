@@ -6,6 +6,7 @@ import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { getAaguidInfo } from "@/lib/auth/aaguid"
 
 export const metadata: Metadata = {
   title: siteConfig.seo.metaData.security.authentication.title,
@@ -21,7 +22,14 @@ export default async function SecurityAuthenticationPage() {
     redirect("/login")
   }
 
-  const passkeys = await auth.api.listPasskeys({ headers: await headers() })
+  const rawPasskeys = await auth.api.listPasskeys({ headers: await headers() })
+
+  const passkeys = await Promise.all(
+    rawPasskeys.map(async (p) => ({
+      ...p,
+      authenticator: await getAaguidInfo(p.aaguid),
+    }))
+  )
 
   return (
     <div className="container space-y-8">
