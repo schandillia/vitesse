@@ -21,13 +21,11 @@ export async function dispatchNormalizedEvent(
         await import("@/lib/payments/handlers/subscription-deleted")
       ).handle(event)
     case "payment.succeeded":
-      return (await import("@/lib/payments/handlers/payment-succeeded")).handle(
-        event
-      )
+      return (
+        await import("@/lib/payments/handlers/payment-succeeded")
+      ).handle()
     case "payment.failed":
-      return (await import("@/lib/payments/handlers/payment-failed")).handle(
-        event
-      )
+      return (await import("@/lib/payments/handlers/payment-failed")).handle()
     case "refund.created":
       return (await import("@/lib/payments/handlers/refund-created")).handle(
         event
