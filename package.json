@@ -28,6 +28,7 @@
     "@better-auth/api-key": "^1.6.9",
     "@better-auth/passkey": "^1.6.6",
     "@hookform/resolvers": "^5.2.2",
+    "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
     "@neondatabase/serverless": "^1.0.2",
     "@react-email/components": "^1.0.12",
     "@sentry/nextjs": "10",

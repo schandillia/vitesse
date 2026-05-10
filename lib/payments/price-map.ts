@@ -9,7 +9,6 @@ export type InternalPriceId =
   | "pro_yearly"
   | "business_monthly"
   | "business_yearly"
-  | "lifetime"
 
 type ProviderPriceMap = Record<ProviderName, string>
 type PriceMap = Record<InternalPriceId, ProviderPriceMap>
@@ -24,28 +23,23 @@ type PriceMap = Record<InternalPriceId, ProviderPriceMap>
 export const PRICE_MAP: PriceMap = {
   pro_monthly: {
     stripe: "price_REPLACE_ME",
-    lemonsqueezy: "REPLACE_ME",
+    lemonsqueezy: "1634972",
     razorpay: "plan_REPLACE_ME",
   },
   pro_yearly: {
     stripe: "price_REPLACE_ME",
-    lemonsqueezy: "REPLACE_ME",
+    lemonsqueezy: "1634976",
     razorpay: "plan_REPLACE_ME",
   },
   business_monthly: {
     stripe: "price_REPLACE_ME",
-    lemonsqueezy: "REPLACE_ME",
+    lemonsqueezy: "1634970",
     razorpay: "plan_REPLACE_ME",
   },
   business_yearly: {
     stripe: "price_REPLACE_ME",
-    lemonsqueezy: "REPLACE_ME",
+    lemonsqueezy: "1634984",
     razorpay: "plan_REPLACE_ME",
-  },
-  lifetime: {
-    stripe: "price_REPLACE_ME",
-    lemonsqueezy: "REPLACE_ME",
-    razorpay: "500000", // 5,000 INR in paise — fixed amount, not a plan ID
   },
 }
 

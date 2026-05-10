@@ -38,7 +38,7 @@ jobs:
       GOOGLE_CLIENT_SECRET: dummy
       GOOGLE_PLACES_API_KEY: dummy
       NEXT_PUBLIC_CLOUDFRONT_URL: "https://dummy.cloudfront.net"
-      PAYMENT_PROVIDER: stripe
+      PAYMENT_PROVIDER: lemonsqueezy
 
     steps:
       - uses: actions/checkout@v4
