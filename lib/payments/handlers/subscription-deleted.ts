@@ -12,10 +12,11 @@ type SubscriptionDeletedEvent = Extract<
 >
 
 export async function handle(event: SubscriptionDeletedEvent): Promise<void> {
+  const userId = event.customerId
   const [existingUser] = await db
     .select()
     .from(user)
-    .where(eq(user.providerCustomerId, event.customerId))
+    .where(eq(user.providerCustomerId, userId))
 
   if (!existingUser) {
     throw new Error(

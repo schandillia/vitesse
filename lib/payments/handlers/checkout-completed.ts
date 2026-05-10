@@ -11,10 +11,15 @@ type CheckoutCompletedEvent = Extract<
 >
 
 export async function handle(event: CheckoutCompletedEvent): Promise<void> {
+  const userId = event.metadata.user_id ?? event.metadata.userId
   const [existingUser] = await db
     .select()
     .from(user)
-    .where(eq(user.providerCustomerId, event.customerId))
+    .where(
+      userId
+        ? eq(user.id, userId)
+        : eq(user.providerCustomerId, event.customerId)
+    )
 
   if (!existingUser) {
     throw new Error(

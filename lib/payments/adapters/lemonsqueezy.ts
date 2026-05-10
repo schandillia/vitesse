@@ -258,12 +258,13 @@ export class LemonSqueezyAdapter implements PaymentProvider {
         const customerId = String(
           (attrs.customer_id as number | undefined) ?? ""
         )
+        const metaCustomData = (raw.meta as Record<string, unknown>)
+          ?.custom_data as Record<string, string> | undefined
         const normalized = this.normalizeSubscriptionFromAttrs(
           String(data?.id ?? ""),
-          attrs
+          attrs,
+          metaCustomData
         )
-        // LemonSqueezy emits no separate checkout.completed for subscriptions —
-        // emit both events from this single webhook per spec section 15.
         return {
           type: "subscription.created",
           customerId,
@@ -275,9 +276,12 @@ export class LemonSqueezyAdapter implements PaymentProvider {
         const customerId = String(
           (attrs.customer_id as number | undefined) ?? ""
         )
+        const metaCustomData = (raw.meta as Record<string, unknown>)
+          ?.custom_data as Record<string, string> | undefined
         const normalized = this.normalizeSubscriptionFromAttrs(
           String(data?.id ?? ""),
-          attrs
+          attrs,
+          metaCustomData
         )
         return {
           type: "subscription.updated",
@@ -349,7 +353,8 @@ export class LemonSqueezyAdapter implements PaymentProvider {
 
   private normalizeSubscriptionFromAttrs(
     id: string,
-    attrs: Record<string, unknown>
+    attrs: Record<string, unknown>,
+    metaCustomData?: Record<string, string>
   ): NormalizedSubscription {
     const variantId = String(attrs.variant_id ?? "")
     const internalPlanId =
@@ -373,7 +378,10 @@ export class LemonSqueezyAdapter implements PaymentProvider {
       trialEnd: attrs.trial_ends_at
         ? new Date(attrs.trial_ends_at as string)
         : null,
-      metadata: this.extractCustomData(attrs),
+      metadata: {
+        ...this.extractCustomData(attrs),
+        ...(metaCustomData ?? {}),
+      },
     }
   }
 

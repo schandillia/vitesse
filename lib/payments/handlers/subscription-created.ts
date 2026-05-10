@@ -15,10 +15,13 @@ type SubscriptionCreatedEvent = Extract<
 export async function handle(event: SubscriptionCreatedEvent): Promise<void> {
   const { subscription, customerId } = event
 
+  const userId = event.subscription.metadata.user_id
   const [existingUser] = await db
     .select()
     .from(user)
-    .where(eq(user.providerCustomerId, customerId))
+    .where(
+      userId ? eq(user.id, userId) : eq(user.providerCustomerId, customerId)
+    )
 
   if (!existingUser) {
     throw new Error(`No user found for provider customer ID: "${customerId}"`)
