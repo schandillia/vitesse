@@ -8,6 +8,9 @@ import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core"
 import * as t from "drizzle-orm/pg-core"
 import { NotificationPreferences } from "@/db/types/notification-preferences"
 import { apiKey } from "@/db/api-key-schema"
+import { type ProviderName } from "@/db/types/payment-provider"
+import { TIERS_KEYS, type TierKey } from "@/db/types/tier"
+import { subscriptions, orders } from "@/db/payments-schema"
 
 export const themeModeEnum = t.pgEnum("theme_mode", [
   MODES.LIGHT,
@@ -45,6 +48,9 @@ export const user = pgTable(
     dateOfBirth: t.date("date_of_birth", { mode: "date" }),
     locale: text("locale").default("en-US"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    paymentProvider: text("payment_provider").$type<ProviderName>(),
+    providerCustomerId: text("provider_customer_id"),
+    tier: text("tier").$type<TierKey>().default(TIERS_KEYS.STARTER).notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
       .$onUpdate(() => /* @__PURE__ */ new Date())
@@ -155,6 +161,8 @@ export const userRelations = relations(user, ({ many }) => ({
   posts: many(post),
   auditLogs: many(auditLog),
   apiKeys: many(apiKey),
+  subscriptions: many(subscriptions),
+  orders: many(orders),
 }))
 
 export const sessionRelations = relations(session, ({ one }) => ({

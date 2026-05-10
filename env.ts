@@ -3,7 +3,10 @@ import { z } from "zod"
 
 export const env = createEnv({
   onValidationError: (error) => {
-    console.error("❌ Invalid environment variables:", error)
+    console.error(
+      "❌ Invalid environment variables:",
+      JSON.stringify(error, null, 2)
+    )
     throw new Error("Invalid environment variables")
   },
   server: {
@@ -40,6 +43,22 @@ export const env = createEnv({
 
     // Sentry (optional — only needed if error monitoring is enabled)
     SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
+
+    // Payments
+    PAYMENT_PROVIDER: z.enum(["stripe", "lemonsqueezy", "razorpay"]).optional(),
+    // Stripe
+    STRIPE_SECRET_KEY: z.string().min(1).optional(),
+    STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
+
+    // LemonSqueezy
+    LEMONSQUEEZY_API_KEY: z.string().min(1).optional(),
+    LEMONSQUEEZY_STORE_ID: z.string().min(1).optional(),
+    LEMONSQUEEZY_WEBHOOK_SECRET: z.string().min(1).optional(),
+
+    // Razorpay
+    RAZORPAY_KEY_ID: z.string().min(1).optional(),
+    RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
+    RAZORPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
   },
 
   client: {
@@ -58,6 +77,10 @@ export const env = createEnv({
 
     // CloudFront
     NEXT_PUBLIC_CLOUDFRONT_URL: z.url().optional(),
+
+    // Payments
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1).optional(),
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().min(1).optional(),
   },
 
   runtimeEnv: {
@@ -81,6 +104,19 @@ export const env = createEnv({
       | "production"
       | undefined,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+    // Payments
+    PAYMENT_PROVIDER: process.env.PAYMENT_PROVIDER,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    LEMONSQUEEZY_API_KEY: process.env.LEMONSQUEEZY_API_KEY,
+    LEMONSQUEEZY_STORE_ID: process.env.LEMONSQUEEZY_STORE_ID,
+    LEMONSQUEEZY_WEBHOOK_SECRET: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+    RAZORPAY_WEBHOOK_SECRET: process.env.RAZORPAY_WEBHOOK_SECRET,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
 
     // Client
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
