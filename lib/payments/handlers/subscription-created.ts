@@ -27,10 +27,10 @@ export async function handle(event: SubscriptionCreatedEvent): Promise<void> {
     throw new Error(`No user found for provider customer ID: "${customerId}"`)
   }
 
+  const realCustomerId = String(customerId)
   const tierConfig = resolveTierFromInternalPriceId(
     subscription.planId as InternalPriceId
   )
-
   const provider = await providerPromise
 
   await db
@@ -49,9 +49,13 @@ export async function handle(event: SubscriptionCreatedEvent): Promise<void> {
     })
     .onConflictDoNothing()
 
-  // Update user tier to reflect new subscription
   await db
     .update(user)
-    .set({ tier: tierConfig.key })
+    .set({
+      tier: tierConfig.key,
+      ...(existingUser.providerCustomerId !== realCustomerId
+        ? { providerCustomerId: realCustomerId }
+        : {}),
+    })
     .where(eq(user.id, existingUser.id))
 }

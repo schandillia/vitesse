@@ -5,7 +5,8 @@ import { getServerSession } from "@/lib/auth/get-server-session"
 import { providerPromise } from "@/lib/payments"
 import { db } from "@/db/drizzle"
 import { user } from "@/db/auth-schema"
-import { eq } from "drizzle-orm"
+import { subscriptions } from "@/db/payments-schema"
+import { eq, desc } from "drizzle-orm"
 import { ajAuth } from "@/lib/arcjet"
 import { slidingWindow } from "@arcjet/next"
 import { env } from "@/env"
@@ -38,12 +39,25 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  // For LemonSqueezy, the billing portal URL comes from the subscription
+  // object, not the customer object. Look up the most recent active
+  // subscription and pass its provider ID to the adapter.
+  const [activeSubscription] = await db
+    .select()
+    .from(subscriptions)
+    .where(eq(subscriptions.userId, session.user.id))
+    .orderBy(desc(subscriptions.createdAt))
+    .limit(1)
+
+  const portalId =
+    activeSubscription?.providerSubscriptionId ?? currentUser.providerCustomerId
+
   const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
 
   try {
     const provider = await providerPromise
     const result = await provider.createBillingPortalSession(
-      currentUser.providerCustomerId,
+      portalId,
       `${appUrl}/dashboard/billing`
     )
     return NextResponse.json(result)
