@@ -44,6 +44,9 @@ export const env = createEnv({
     // Sentry (optional — only needed if error monitoring is enabled)
     SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
 
+    // Cron
+    CRON_SECRET: z.string().min(1).optional(),
+
     // Payments
     PAYMENT_PROVIDER: z.enum(["stripe", "lemonsqueezy", "razorpay"]).optional(),
     // Stripe
@@ -104,6 +107,9 @@ export const env = createEnv({
       | "production"
       | undefined,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+
+    CRON_SECRET: process.env.CRON_SECRET,
+
     // Payments
     PAYMENT_PROVIDER: process.env.PAYMENT_PROVIDER,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
