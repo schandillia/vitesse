@@ -70,8 +70,8 @@ export const TIERS: Record<TierKey, TierConfig> = {
       annual: "pro_yearly",
     },
     displayPrice: {
-      monthly: { amount: "29", period: "/month" },
-      annual: { amount: "23", period: "/month", saving: "Save 20%" },
+      monthly: { amount: "100", period: "/month" },
+      annual: { amount: "80", period: "/month", saving: "Save 20%" },
     },
     limits: { seats: 5, projects: 20, storageGb: 20, apiCallsPerMonth: 50000 },
     features: [
@@ -92,8 +92,8 @@ export const TIERS: Record<TierKey, TierConfig> = {
       annual: "business_yearly",
     },
     displayPrice: {
-      monthly: { amount: "79", period: "/month" },
-      annual: { amount: "63", period: "/month", saving: "Save 20%" },
+      monthly: { amount: "200", period: "/month" },
+      annual: { amount: "160", period: "/month", saving: "Save 20%" },
     },
     limits: { seats: 25, projects: -1, storageGb: 100, apiCallsPerMonth: -1 },
     features: [
@@ -118,22 +118,22 @@ export const PRICE_MAP = {
   pro_monthly: {
     stripe: "price_REPLACE_ME",
     lemonsqueezy: "1634972",
-    razorpay: "plan_REPLACE_ME",
+    razorpay: "plan_SnzGrSZLZkRYde",
   },
   pro_yearly: {
     stripe: "price_REPLACE_ME",
     lemonsqueezy: "1634976",
-    razorpay: "plan_REPLACE_ME",
+    razorpay: "plan_SnzJPIf4toJtFa",
   },
   business_monthly: {
     stripe: "price_REPLACE_ME",
     lemonsqueezy: "1634970",
-    razorpay: "plan_REPLACE_ME",
+    razorpay: "plan_SnzKhCPGgFt4Ou",
   },
   business_yearly: {
     stripe: "price_REPLACE_ME",
     lemonsqueezy: "1634984",
-    razorpay: "plan_REPLACE_ME",
+    razorpay: "plan_SnzKCn5fWDQgyC",
   },
 } satisfies Record<string, Record<ProviderName, string>>
 
