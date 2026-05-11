@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, Check } from "lucide-react"
+import { Check } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { TIERS, PRICING_CURRENCY } from "@/config/pricing"
@@ -229,10 +229,6 @@ export function PricingTable({ isLoggedIn, userTier }: PricingTableProps) {
                   >
                     <Link href={isLoggedIn ? "/dashboard" : "/login"}>
                       {isLoggedIn ? "Go to dashboard" : "Get started free"}
-                      <ArrowRight
-                        className="w-4 h-4 shrink-0"
-                        aria-hidden="true"
-                      />
                     </Link>
                   </Button>
                 )}
@@ -247,10 +243,6 @@ export function PricingTable({ isLoggedIn, userTier }: PricingTableProps) {
                     aria-label={`Subscribe to ${tier.name}, billed ${billing}`}
                   >
                     Get {tier.name}
-                    <ArrowRight
-                      className="w-4 h-4 shrink-0"
-                      aria-hidden="true"
-                    />
                   </CheckoutButton>
                 )}
 
@@ -264,10 +256,6 @@ export function PricingTable({ isLoggedIn, userTier }: PricingTableProps) {
                     aria-label={`Upgrade to ${tier.name}, billed ${billing}`}
                   >
                     Upgrade to {tier.name}
-                    <ArrowRight
-                      className="w-4 h-4 shrink-0"
-                      aria-hidden="true"
-                    />
                   </CheckoutButton>
                 )}
 
