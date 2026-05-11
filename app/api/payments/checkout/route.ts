@@ -70,7 +70,11 @@ export async function POST(req: NextRequest) {
     customerId,
     successUrl: `${appUrl}/${siteConfig.authAndSession.callbackAfterLogin}`,
     cancelUrl: `${appUrl}/pricing`,
-    metadata: { userId: currentUser.id },
+    metadata: {
+      userId: currentUser.id,
+      userEmail: currentUser.email,
+      userName: currentUser.name ?? "",
+    },
   })
 
   return NextResponse.json(result)

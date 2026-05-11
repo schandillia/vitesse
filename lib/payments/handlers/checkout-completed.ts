@@ -22,6 +22,11 @@ export async function handle(event: CheckoutCompletedEvent): Promise<void> {
     )
 
   if (!existingUser) {
+    // For LemonSqueezy subscriptions, order_created fires before
+    // subscription_created syncs the customer ID. If this is a subscription
+    // order (subscriptionId is set), skip silently — subscription.created
+    // handles everything. Only throw for one-time payment orders.
+    if (event.subscriptionId) return
     throw new Error(
       `No user found for provider customer ID: "${event.customerId}"`
     )

@@ -96,6 +96,7 @@ export class LemonSqueezyAdapter implements PaymentProvider {
       },
       checkoutData: {
         email: params.metadata?.userEmail,
+        name: params.metadata?.userName,
         custom: {
           userId: params.metadata?.userId ?? "",
         },
