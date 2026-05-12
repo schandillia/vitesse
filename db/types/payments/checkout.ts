@@ -26,6 +26,7 @@ export type CheckoutResult =
   | {
       mode: "modal"
       orderId: string
+      customerId?: string
       keyId: string
       amount: number
       currency: string

@@ -65,6 +65,7 @@ export function CheckoutButton({
         await new Promise<void>((resolve, reject) => {
           const rzp = new window.Razorpay({
             key: result.keyId,
+            ...(type === "one_time" ? { customer_id: result.customerId } : {}),
             subscription_id:
               type === "subscription" ? result.orderId : undefined,
             order_id: type === "one_time" ? result.orderId : undefined,

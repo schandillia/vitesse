@@ -206,6 +206,7 @@ export class RazorpayAdapter implements PaymentProvider {
       return {
         mode: "modal",
         orderId: subscription.id,
+        customerId: params.customerId,
         keyId: env.RAZORPAY_KEY_ID!,
         amount: 0,
         currency: "INR",
