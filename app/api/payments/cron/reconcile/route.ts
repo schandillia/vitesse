@@ -9,10 +9,10 @@ import { env } from "@/env"
 import { eq, and, gt } from "drizzle-orm"
 import * as Sentry from "@sentry/nextjs"
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   // Verify cron secret — reject unauthorized calls
-  const secret = req.headers.get("x-cron-secret")
-  if (!secret || secret !== env.CRON_SECRET) {
+  const authHeader = req.headers.get("authorization")
+  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
