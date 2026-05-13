@@ -19,12 +19,14 @@ import {
 import { usePathname } from "next/navigation"
 import { UserInfo } from "@/components/auth/user-info"
 import { ROLES } from "@/db/types/roles"
+import { TierBadge } from "@/components/layout/tier-badge"
 
 interface UserDropdownContentProps {
   user: {
     name?: string | null
     email?: string | null
     role?: string | null
+    tier?: string | null
   }
   onSignOut: () => void
   variant?: "navbar" | "sidebar"
@@ -61,8 +63,9 @@ export function UserDropdownContent({
       {/* Show only in navbar */}
       {!isSidebar && (
         <>
-          <div className="px-2 py-1.5">
+          <div className="px-2 py-1.5 flex flex-col gap-1.5">
             <UserInfo user={user} />
+            <TierBadge tier={user.tier} />
           </div>
           <DropdownMenuSeparator />
         </>

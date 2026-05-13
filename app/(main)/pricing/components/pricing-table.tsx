@@ -10,6 +10,7 @@ import { CheckoutButton } from "@/app/(main)/pricing/components/checkout-button"
 import { TIERS_KEYS } from "@/db/types/payments/tier"
 import type { TierKey } from "@/db/types/payments/tier"
 import { getSubscriptionStatus } from "@/lib/payments/client"
+import { formatDate } from "@/lib/date"
 
 type BillingPeriod = "monthly" | "annual"
 
@@ -201,11 +202,7 @@ export function PricingTable({ isLoggedIn, userTier }: PricingTableProps) {
                       <p className="text-xs text-center text-muted-foreground">
                         {cancelAtPeriodEnd ? "Expires" : "Renews"}{" "}
                         <time dateTime={periodEnd.toISOString()}>
-                          {periodEnd.toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
+                          {formatDate(periodEnd)}
                         </time>
                         {cancelAtPeriodEnd && (
                           <span className="block text-destructive mt-0.5">
