@@ -1,4 +1,6 @@
 import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
+import { BillingActionsCard } from "@/app/(protected)/settings/billing/components/billing-actions-card"
+import { CurrentPlanCard } from "@/app/(protected)/settings/billing/components/current-plan-card"
 import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
@@ -24,7 +26,27 @@ export default async function SettingsBillingPage() {
         title="Billing"
         description="Manage your subscription, invoices, and billing preferences"
       />
-      <div>TBD</div>
+      <CurrentPlanCard
+        planName="Pro"
+        status="active"
+        renewsAt={new Date("2026-06-14")}
+        cancelAtPeriodEnd={false}
+      />
+      <BillingActionsCard
+        canManageBilling
+        canCancel
+        canResume={false}
+        cancelAtPeriodEnd={false}
+        onManageBilling={async () => {
+          "use server"
+        }}
+        onCancel={async () => {
+          "use server"
+        }}
+        onResume={async () => {
+          "use server"
+        }}
+      />
     </div>
   )
 }
