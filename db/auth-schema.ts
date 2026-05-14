@@ -55,7 +55,10 @@ export const user = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("user_name_idx").on(table.name)]
+  (table) => [
+    index("user_name_idx").on(table.name),
+    index("user_providerCustomerId_idx").on(table.providerCustomerId),
+  ]
 )
 
 export const session = pgTable(
