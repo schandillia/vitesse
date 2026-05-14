@@ -19,6 +19,11 @@ export const emails = {
     fromEmail: "onboarding@resend.dev",
   },
 
+  subscriptions: {
+    sender: `${BRANDNAME} Billing`,
+    fromEmail: "onboarding@resend.dev",
+  },
+
   magicLink: {
     sender: `${BRANDNAME} Accounts`,
     fromEmail: "onboarding@resend.dev",

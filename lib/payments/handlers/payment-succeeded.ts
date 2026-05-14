@@ -9,5 +9,8 @@ export async function handle(event: PaymentSucceededEvent): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { customerId, amountPaid, currency, subscriptionId } = event
 
-  // Dunning email to customer
+  // record MRR event
+  // increment analytics
+  // unlock usage quota
+  // update entitlement cache
 }

@@ -6,6 +6,9 @@ import { eq, or, and, inArray, ne } from "drizzle-orm"
 import { resolveTierFromInternalPriceId } from "@/lib/payments/tier-utils"
 import type { InternalPriceId } from "@/config/pricing"
 import type { NormalizedEvent } from "@/db/types/payments/webhook-events"
+import { sendEmail } from "@/lib/send-email"
+import { renderSubscriptionCreatedEmail } from "@/emails/subscription-created"
+import { siteConfig } from "@/config/site"
 
 type SubscriptionCreatedEvent = Extract<
   NormalizedEvent,
@@ -104,4 +107,14 @@ export async function handle(event: SubscriptionCreatedEvent): Promise<void> {
         : {}),
     })
     .where(eq(user.id, existingUser.id))
+
+  await sendEmail({
+    to: existingUser.email,
+    from: `${siteConfig.emails.subscriptions.sender} <${siteConfig.emails.subscriptions.fromEmail}>`,
+    subject: `Your ${tierConfig.name} subscription is active`,
+    body: await renderSubscriptionCreatedEmail({
+      name: existingUser.name,
+      planName: tierConfig.name,
+    }),
+  })
 }

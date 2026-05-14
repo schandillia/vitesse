@@ -6,4 +6,9 @@ export async function handle(event: PaymentFailedEvent): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { customerId } = event
   // Dunning email to customer
+  // sendEmail(...)
+  // mark account past_due
+  // start grace-period timer
+  // enqueue retry notification
+  // notify analytics
 }
