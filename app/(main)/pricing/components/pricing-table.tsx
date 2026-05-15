@@ -244,19 +244,28 @@ export function PricingTable({ isLoggedIn, userTier }: PricingTableProps) {
                   </CheckoutButton>
                 )}
 
-                {action === "upgrade" && (
-                  <CheckoutButton
-                    priceId={activePriceId!}
-                    type="subscription"
-                    currentTier={userTier ?? undefined}
-                    variant="default"
-                    size="lg"
-                    className="w-full"
-                    aria-label={`Upgrade to ${tier.name}, billed ${billing}`}
-                  >
-                    Upgrade to {tier.name}
-                  </CheckoutButton>
-                )}
+                {action === "upgrade" &&
+                  (cancelAtPeriodEnd ? (
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="w-full text-muted-foreground"
+                      disabled
+                    >
+                      Resume current plan to upgrade
+                    </Button>
+                  ) : (
+                    <CheckoutButton
+                      priceId={activePriceId!}
+                      type="subscription"
+                      currentTier={userTier ?? undefined}
+                      variant="default"
+                      size="lg"
+                      className="w-full"
+                    >
+                      Upgrade to {tier.name}
+                    </CheckoutButton>
+                  ))}
 
                 {action === "downgrade" && (
                   <Button
