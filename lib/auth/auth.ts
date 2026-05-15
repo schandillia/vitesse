@@ -16,6 +16,7 @@ import { onFailedLogin } from "@/lib/auth/hooks/failed-login"
 import { MODES } from "@/db/types/modes"
 import { eq } from "drizzle-orm"
 import { API_KEY_PREFIX } from "@/config/api-keys"
+import * as Sentry from "@sentry/nextjs"
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -293,23 +294,48 @@ export const auth = betterAuth({
   ...(redis && {
     secondaryStorage: {
       get: async (key) => {
-        const value = await redis!.get(key)
-        // Upstash parses JSON automatically, but Better-Auth expects a string back
-        return value
-          ? typeof value === "string"
-            ? value
-            : JSON.stringify(value)
-          : null
+        try {
+          const value = await redis!.get(key)
+          // Upstash parses JSON automatically, but Better-Auth expects a string back
+          return value
+            ? typeof value === "string"
+              ? value
+              : JSON.stringify(value)
+            : null
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: { service: "redis", action: "get_session" },
+            extra: { key },
+          })
+          console.warn(`Redis get timeout. Falling back to DB for ${key}`)
+          return null
+        }
       },
       set: async (key, value, ttl) => {
-        if (ttl) {
-          await redis!.set(key, value, { ex: ttl })
-        } else {
-          await redis!.set(key, value)
+        try {
+          if (ttl) {
+            await redis!.set(key, value, { ex: ttl })
+          } else {
+            await redis!.set(key, value)
+          }
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: { service: "redis", action: "set_session" },
+            extra: { key, ttl },
+          })
+          console.warn(`Redis set timeout. Skipping cache for ${key}`)
         }
       },
       delete: async (key) => {
-        await redis!.del(key)
+        try {
+          await redis!.del(key)
+        } catch (error) {
+          Sentry.captureException(error, {
+            tags: { service: "redis", action: "delete" },
+            extra: { key },
+          })
+          console.warn(`Redis delete timeout for ${key}`)
+        }
       },
     },
   }),
