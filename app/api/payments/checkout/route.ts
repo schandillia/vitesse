@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
     await db
       .update(user)
       .set({
-        providerCustomerId: customer.id,
+        ...(customer.id ? { providerCustomerId: customer.id } : {}),
         paymentProvider: provider.name,
       })
       .where(eq(user.id, currentUser.id))

@@ -65,7 +65,7 @@ export class LemonSqueezyAdapter implements PaymentProvider {
 
   async createCustomer(params: CreateCustomerParams): Promise<Customer> {
     return {
-      id: params.email,
+      id: "",
       email: params.email,
       name: params.name,
     }

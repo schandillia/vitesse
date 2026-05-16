@@ -11,6 +11,7 @@ import { slidingWindow } from "@arcjet/next"
 import { env } from "@/env"
 import { z } from "zod"
 import { siteConfig } from "@/config/site"
+import { user } from "@/db/auth-schema"
 
 const bodySchema = z.object({
   subscriptionId: z.string().min(1),
@@ -79,6 +80,16 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date(),
     })
     .where(eq(subscriptions.id, existingSub.id))
+
+  if (result.status === "canceled") {
+    await db
+      .update(user)
+      .set({
+        tier: "starter",
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, session.user.id))
+  }
 
   return NextResponse.json(result)
 }
