@@ -2,14 +2,17 @@ import { GatedPageTitle } from "@/app/(protected)/components/gated-page-title"
 import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import type { Metadata } from "next"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 import {
-  Users,
-  DollarSign,
-  TrendingUp,
+  Bell,
+  CreditCard,
+  KeyRound,
+  Shield,
   Activity,
-  ArrowUpRight,
-  ArrowDownRight,
+  ArrowRight,
+  User,
+  Monitor,
 } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -18,116 +21,56 @@ export const metadata: Metadata = {
   robots: siteConfig.seo.metaData.dashboard.robots,
 }
 
-// ── Placeholder data — replace with real DB queries ──────────────────────────
-
-const stats = [
+const quickActions = [
   {
-    label: "Total Revenue",
-    value: "$24,563",
-    change: "+12.5%",
-    trend: "up",
-    icon: DollarSign,
-    // Replace with: await db.query.orders.aggregate(...)
+    title: "Account Settings",
+    description: "Manage your account and sign-in methods",
+    href: "/settings/account",
+    icon: User,
   },
   {
-    label: "Active Users",
-    value: "1,429",
-    change: "+8.2%",
-    trend: "up",
-    icon: Users,
-    // Replace with: await db.query.users.count(...)
+    title: "Security",
+    description: "Manage passkeys and active sessions",
+    href: "/security/authentication",
+    icon: Shield,
   },
   {
-    label: "Conversion Rate",
-    value: "3.24%",
-    change: "-0.4%",
-    trend: "down",
-    icon: TrendingUp,
-    // Replace with: derived from your analytics provider
+    title: "Billing",
+    description: "View your subscription and invoices",
+    href: "/settings/billing",
+    icon: CreditCard,
   },
   {
-    label: "Active Sessions",
-    value: "284",
-    change: "+19.1%",
-    trend: "up",
-    icon: Activity,
-    // Replace with: real-time data from your monitoring stack
+    title: "API Keys",
+    description: "Create and manage developer keys",
+    href: "/developer/api",
+    icon: KeyRound,
   },
-]
-
-const chartData = [
-  { month: "Aug", value: 40 },
-  { month: "Sep", value: 55 },
-  { month: "Oct", value: 47 },
-  { month: "Nov", value: 62 },
-  { month: "Dec", value: 58 },
-  { month: "Jan", value: 75 },
-  { month: "Feb", value: 68 },
-  { month: "Mar", value: 82 },
-  { month: "Apr", value: 79 },
-  { month: "May", value: 91 },
-  { month: "Jun", value: 88 },
-  { month: "Jul", value: 96 },
 ]
 
 const recentActivity = [
-  // Replace with: await db.query.activity.findMany({ limit: 5, orderBy: desc })
   {
     id: "1",
-    user: "Sarah Chen",
-    email: "sarah@example.com",
-    action: "Upgraded to Pro",
-    amount: "$49.00",
-    status: "completed",
-    date: "2 min ago",
+    label: "Signed in successfully",
+    description: "Desktop device · Edge browser",
+    time: "Today",
+    icon: Shield,
   },
   {
     id: "2",
-    user: "James Miller",
-    email: "james@example.com",
-    action: "New signup",
-    amount: "—",
-    status: "completed",
-    date: "14 min ago",
+    label: "Session created",
+    description: "New login detected on this device",
+    time: "Today",
+    icon: Monitor,
   },
   {
     id: "3",
-    user: "Priya Nair",
-    email: "priya@example.com",
-    action: "Payment failed",
-    amount: "$19.00",
-    status: "failed",
-    date: "1 hr ago",
-  },
-  {
-    id: "4",
-    user: "Tom Erikson",
-    email: "tom@example.com",
-    action: "Cancelled subscription",
-    amount: "—",
-    status: "cancelled",
-    date: "3 hr ago",
-  },
-  {
-    id: "5",
-    user: "Aiko Tanaka",
-    email: "aiko@example.com",
-    action: "Upgraded to Pro",
-    amount: "$49.00",
-    status: "completed",
-    date: "5 hr ago",
+    label: "Notifications updated",
+    description: "Product update preferences changed",
+    time: "Yesterday",
+    icon: Bell,
   },
 ]
-
-const maxChartValue = Math.max(...chartData.map((d) => d.value))
-
-const statusStyles: Record<string, string> = {
-  completed: "bg-green-500/10 text-green-600 dark:text-green-400",
-  failed: "bg-destructive/10 text-destructive",
-  cancelled: "bg-muted text-muted-foreground",
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 export default async function DashboardGeneralPage() {
   const session = await getServerSession()
@@ -140,162 +83,150 @@ export default async function DashboardGeneralPage() {
   const firstName = user.name?.split(" ")[0] ?? "there"
 
   return (
-    <div className="container space-y-5">
-      {/* Title + greeting */}
-      <div className="flex flex-col gap-1">
-        <GatedPageTitle
-          title="Dashboard"
-          description={`Welcome back, ${firstName}. Here’s what’s happening today`}
-        />
-      </div>
+    <div className="container space-y-6">
+      <GatedPageTitle
+        title="Home"
+        description={`Welcome back, ${firstName}. Here’s an overview of your account and workspace`}
+      />
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {stats.map((stat) => {
-          const Icon = stat.icon
-          const isUp = stat.trend === "up"
-          return (
-            <div
-              key={stat.label}
-              className="flex flex-col gap-3 p-5 rounded-xl border border-border bg-card"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground font-medium">
-                  {stat.label}
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-4 h-4 text-primary" />
-                </div>
-              </div>
-              <div className="flex items-end justify-between">
-                <span className="text-2xl font-bold text-foreground">
-                  {stat.value}
-                </span>
-                <span
-                  className={`flex items-center gap-0.5 text-xs font-semibold ${
-                    isUp
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-destructive"
-                  }`}
-                >
-                  {isUp ? (
-                    <ArrowUpRight className="w-3 h-3" />
-                  ) : (
-                    <ArrowDownRight className="w-3 h-3" />
-                  )}
-                  {stat.change}
-                </span>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Chart */}
-      <div className="flex flex-col gap-4 p-5 rounded-xl border border-border bg-card">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-semibold text-foreground text-sm">
-              Revenue over time
+      {/* Account Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              Account
             </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {/* Replace with real date range from your query */}
-              Last 12 months
+            <User className="h-4 w-4 text-primary" />
+          </div>
+
+          <div className="mt-4 space-y-1">
+            <p className="text-lg font-semibold text-foreground">
+              {user.name ?? "Unnamed User"}
+            </p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              Security
+            </h2>
+            <Shield className="h-4 w-4 text-primary" />
+          </div>
+
+          <div className="mt-4 space-y-1">
+            <p className="text-lg font-semibold text-foreground">Protected</p>
+            <p className="text-sm text-muted-foreground">
+              Manage sessions, passkeys, and sign-in activity
             </p>
           </div>
-          {/* Replace with a real date range picker */}
-          <span className="text-xs text-muted-foreground border border-border rounded-md px-2 py-1">
-            Monthly
-          </span>
         </div>
 
-        {/* Bar chart — replace with Recharts or your preferred charting library */}
-        <div className="flex items-end gap-1.5 h-40 w-full">
-          {chartData.map((bar) => (
-            <div
-              key={bar.month}
-              className="flex flex-col items-center gap-1 flex-1 h-full justify-end"
-            >
-              <div
-                className="w-full rounded-md bg-primary/80 hover:bg-primary transition-colors"
-                style={{ height: `${(bar.value / maxChartValue) * 100}%` }}
-              />
-              <span className="text-[10px] text-muted-foreground">
-                {bar.month}
-              </span>
-            </div>
-          ))}
+        <div className="rounded-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              Workspace Status
+            </h2>
+            <Activity className="h-4 w-4 text-primary" />
+          </div>
+
+          <div className="mt-4 space-y-1">
+            <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+              Operational
+            </p>
+            <p className="text-sm text-muted-foreground">
+              All systems are functioning normally
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Recent activity table */}
-      <div className="flex flex-col gap-4 p-5 rounded-xl border border-border bg-card">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-foreground text-sm">
-            Recent activity
+      {/* Quick Actions */}
+      <div className="rounded-xl border border-border bg-card p-5">
+        <div className="mb-5">
+          <h2 className="text-sm font-semibold text-foreground">
+            Quick Actions
           </h2>
-          {/* Replace with a link to your full activity log */}
-          <span className="text-xs text-primary cursor-pointer hover:underline underline-offset-4">
-            View all
-          </span>
+          <p className="text-xs text-muted-foreground mt-1">
+            Access your most commonly used settings and tools
+          </p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left text-xs text-muted-foreground font-medium pb-2 pr-4">
-                  User
-                </th>
-                <th className="text-left text-xs text-muted-foreground font-medium pb-2 pr-4">
-                  Action
-                </th>
-                <th className="text-left text-xs text-muted-foreground font-medium pb-2 pr-4">
-                  Amount
-                </th>
-                <th className="text-left text-xs text-muted-foreground font-medium pb-2 pr-4">
-                  Status
-                </th>
-                <th className="text-left text-xs text-muted-foreground font-medium pb-2">
-                  When
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {recentActivity.map((row) => (
-                <tr key={row.id}>
-                  <td className="py-3 pr-4">
-                    <div className="flex flex-col">
-                      <span className="font-medium text-foreground text-xs">
-                        {row.user}
-                      </span>
-                      <span className="text-muted-foreground text-xs">
-                        {row.email}
-                      </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {quickActions.map((item) => {
+            const Icon = item.icon
+
+            return (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="group rounded-xl border border-border bg-background/40 p-4 transition-colors hover:bg-muted/40"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Icon className="h-4 w-4 text-primary" />
+                      <h3 className="text-sm font-medium text-foreground">
+                        {item.title}
+                      </h3>
                     </div>
-                  </td>
-                  <td className="py-3 pr-4 text-xs text-muted-foreground">
-                    {row.action}
-                  </td>
-                  <td className="py-3 pr-4 text-xs text-foreground font-medium">
-                    {row.amount}
-                  </td>
-                  <td className="py-3 pr-4">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                        statusStyles[row.status]
-                      }`}
-                    >
-                      {row.status}
+
+                    <p className="text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="rounded-xl border border-border bg-card p-5">
+        <div className="mb-5">
+          <h2 className="text-sm font-semibold text-foreground">
+            Recent Activity
+          </h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Recent account and security events
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {recentActivity.map((item) => {
+            const Icon = item.icon
+
+            return (
+              <div
+                key={item.id}
+                className="flex items-start gap-4 rounded-lg border border-border bg-background/40 p-4"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                  <Icon className="h-4 w-4 text-primary" />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="text-sm font-medium text-foreground">
+                      {item.label}
+                    </p>
+
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {item.time}
                     </span>
-                  </td>
-                  <td className="py-3 text-xs text-muted-foreground">
-                    {row.date}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>
