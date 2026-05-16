@@ -422,8 +422,12 @@ export class RazorpayAdapter implements PaymentProvider {
 
       case "subscription.updated": {
         const sub = (
-          event.payload.subscription as { entity: RazorpaySubscription }
-        ).entity
+          event.payload.subscription as
+            | { entity: RazorpaySubscription }
+            | undefined
+        )?.entity
+
+        if (!sub) return null
         return {
           type: "subscription.updated",
           customerId: sub.customer_id,

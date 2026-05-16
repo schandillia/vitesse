@@ -240,7 +240,7 @@ export class LemonSqueezyAdapter implements PaymentProvider {
     const data = raw.data as Record<string, unknown> | undefined
     const attrs = data?.attributes as Record<string, unknown> | undefined
 
-    if (!attrs) return { type: "unknown", rawType: eventName }
+    if (!attrs) return null
 
     switch (eventName) {
       case "order_created": {
