@@ -46,12 +46,7 @@ export default async function SettingsBillingPage() {
         tier={subscription?.tier ?? "starter"}
         provider={subscription?.provider ?? null}
         cancelAtPeriodEnd={subscription?.cancelAtPeriodEnd ?? false}
-        onCancel={async () => {
-          "use server"
-        }}
-        onResume={async () => {
-          "use server"
-        }}
+        providerSubscriptionId={subscription?.providerSubscriptionId ?? ""}
       />
     </div>
   )

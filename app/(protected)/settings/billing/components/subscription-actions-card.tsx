@@ -1,27 +1,32 @@
 "use client"
 
-import { useTransition } from "react"
+import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { createBillingPortalSession } from "@/lib/payments/client"
 import { GatedPageSubheading } from "@/app/(protected)/components/gated-page-subheading"
+import { cancelSubscription, resumeSubscription } from "@/lib/payments/client"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
+import { LoadingSwap } from "@/components/ui/loading-swap"
 
 interface SubscriptionActionsCardProps {
   tier: string
   provider: string | null
   cancelAtPeriodEnd: boolean
-  onCancel: () => Promise<void>
-  onResume: () => Promise<void>
+  providerSubscriptionId: string
 }
 
 export function SubscriptionActionsCard({
   tier,
   provider,
   cancelAtPeriodEnd,
-  onCancel,
-  onResume,
+  providerSubscriptionId,
 }: SubscriptionActionsCardProps) {
-  const [isPending, startTransition] = useTransition()
+  const [loadingAction, setLoadingAction] = useState<
+    "billing" | "cancel" | "resume" | null
+  >(null)
+  const router = useRouter()
   const isFree = tier === "starter"
   const supportsBillingPortal =
     provider === "lemonsqueezy" || provider === "stripe"
@@ -53,16 +58,22 @@ export function SubscriptionActionsCard({
               <Button
                 variant="outline"
                 size="sm"
-                disabled={isPending}
-                onClick={() =>
-                  startTransition(async () => {
+                disabled={loadingAction !== null}
+                onClick={async () => {
+                  setLoadingAction("billing")
+                  try {
                     const result = await createBillingPortalSession()
+
                     window.location.href = result.url
-                  })
-                }
+                  } finally {
+                    setLoadingAction(null)
+                  }
+                }}
                 className="shrink-0"
               >
-                Manage billing
+                <LoadingSwap isLoading={loadingAction === "billing"}>
+                  Manage billing
+                </LoadingSwap>
               </Button>
             </div>
           )}
@@ -82,15 +93,29 @@ export function SubscriptionActionsCard({
               <Button
                 variant="outline"
                 size="sm"
-                disabled={isPending}
-                onClick={() =>
-                  startTransition(async () => {
-                    await onCancel()
-                  })
-                }
+                disabled={loadingAction !== null}
+                onClick={async () => {
+                  setLoadingAction("cancel")
+                  try {
+                    await cancelSubscription({
+                      subscriptionId: providerSubscriptionId,
+                      immediately: !supportsDelayedCancellation,
+                    })
+
+                    toast.success("Subscription canceled.")
+
+                    router.refresh()
+                  } catch {
+                    toast.error("Failed to cancel subscription.")
+                  } finally {
+                    setLoadingAction(null)
+                  }
+                }}
                 className="shrink-0"
               >
-                Cancel
+                <LoadingSwap isLoading={loadingAction === "cancel"}>
+                  Cancel
+                </LoadingSwap>
               </Button>
             </div>
           )}
@@ -109,15 +134,28 @@ export function SubscriptionActionsCard({
               <Button
                 variant="outline"
                 size="sm"
-                disabled={isPending}
-                onClick={() =>
-                  startTransition(async () => {
-                    await onResume()
-                  })
-                }
+                disabled={loadingAction !== null}
+                onClick={async () => {
+                  setLoadingAction("resume")
+                  try {
+                    await resumeSubscription({
+                      subscriptionId: providerSubscriptionId,
+                    })
+
+                    toast.success("Subscription resumed.")
+
+                    router.refresh()
+                  } catch {
+                    toast.error("Failed to resume subscription.")
+                  } finally {
+                    setLoadingAction(null)
+                  }
+                }}
                 className="shrink-0"
               >
-                Resume
+                <LoadingSwap isLoading={loadingAction === "resume"}>
+                  Resume
+                </LoadingSwap>
               </Button>
             </div>
           )}

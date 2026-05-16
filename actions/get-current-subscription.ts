@@ -14,6 +14,7 @@ export type CurrentSubscriptionResult =
         provider: string | null
         planId: string | null
         status: string | null
+        providerSubscriptionId: string | null
         currentPeriodEnd: Date | null
         cancelAtPeriodEnd: boolean
       } | null
@@ -44,6 +45,7 @@ export async function getCurrentSubscription(): Promise<CurrentSubscriptionResul
         provider: subscriptions.provider,
         planId: subscriptions.planId,
         status: subscriptions.status,
+        providerSubscriptionId: subscriptions.providerSubscriptionId,
         currentPeriodEnd: subscriptions.currentPeriodEnd,
         cancelAtPeriodEnd: subscriptions.cancelAtPeriodEnd,
       })
@@ -73,6 +75,7 @@ export async function getCurrentSubscription(): Promise<CurrentSubscriptionResul
             provider: result.provider,
             planId: result.planId,
             status: result.status,
+            providerSubscriptionId: result.providerSubscriptionId,
             currentPeriodEnd: result.currentPeriodEnd,
             cancelAtPeriodEnd: result.cancelAtPeriodEnd ?? false,
           }

@@ -72,9 +72,10 @@ export async function POST(req: NextRequest) {
   await db
     .update(subscriptions)
     .set({
-      ...(body.immediately
-        ? { status: "canceled", canceledAt: new Date() }
-        : { cancelAtPeriodEnd: true }),
+      status: result.status,
+      cancelAtPeriodEnd: result.cancelAtPeriodEnd,
+      currentPeriodEnd: result.currentPeriodEnd,
+      canceledAt: result.status === "canceled" ? new Date() : null,
       updatedAt: new Date(),
     })
     .where(eq(subscriptions.id, existingSub.id))
