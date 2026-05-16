@@ -1,6 +1,9 @@
 import { env } from "@/env"
 import { withSentryConfig } from "@sentry/nextjs"
 import type { NextConfig } from "next"
+import { createMDX } from "fumadocs-mdx/next"
+
+const withMDX = createMDX()
 
 // Read the host variable (fallback to US if missing)
 const posthogHost = env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com"
@@ -58,7 +61,7 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withSentryConfig(nextConfig, {
+export default withSentryConfig(withMDX(nextConfig), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 

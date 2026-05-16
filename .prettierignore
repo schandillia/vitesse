@@ -26,6 +26,7 @@ yarn.lock
 *.d.ts
 *.tsbuildinfo
 next-env.d.ts
+.source
 
 # CDK
 cdk.out
@@ -33,3 +34,4 @@ cdk.out
 # Misc
 .DS_Store
 coverage
+

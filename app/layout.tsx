@@ -15,6 +15,7 @@ import { PreferencesProvider } from "@/components/providers/preferences-provider
 import Script from "next/script"
 import { ThemeFlashGuard } from "@/components/layout/theme-flash-guard"
 import { themeSyncScript } from "@/lib/scripts/theme-sync"
+import { RootProvider } from "fumadocs-ui/provider/next"
 
 export const metadata: Metadata = baseMetadata
 
@@ -42,7 +43,7 @@ export default function RootLayout({
                 {siteConfig.authAndSession.enableSessionWatcher && (
                   <SessionWatcher />
                 )}
-                {children}
+                <RootProvider>{children}</RootProvider>
                 <Toaster position="top-right" />
                 <CookieBanner />
               </TooltipProvider>
