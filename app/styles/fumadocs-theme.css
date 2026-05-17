@@ -28,6 +28,7 @@
 
 /* Explicitly re-apply in dark mode — fumadocs' .dark selector can win on specificity */
 .dark .fd-wrapper {
+  --radius-full: 9999px;
   --color-fd-background: var(--background);
   --color-fd-foreground: var(--foreground);
   --color-fd-card: var(--card);
@@ -74,4 +75,111 @@
 
 .fd-wrapper a {
   color: var(--primary) !important;
+}
+
+/* Search modal renders in a portal outside .fd-wrapper — must target :root */
+:root {
+  --radius-full: 9999px;
+  --nav-hover-bg: oklch(0.82 0.115 88 / 0.2);
+  --color-fd-background: var(--background);
+  --color-fd-secondary: var(--secondary);
+  --color-fd-secondary-foreground: var(--secondary-foreground);
+  --color-fd-foreground: var(--foreground);
+  --color-fd-popover: var(--popover);
+  --color-fd-popover-foreground: var(--popover-foreground);
+  --color-fd-primary: var(--primary);
+  --color-fd-primary-foreground: var(--primary-foreground);
+  --color-fd-muted: var(--muted);
+  --color-fd-muted-foreground: var(--muted-foreground);
+  --color-fd-accent: var(--accent);
+  --color-fd-accent-foreground: var(--accent-foreground);
+  --color-fd-border: var(--border);
+  --color-fd-ring: var(--ring);
+}
+
+.dark {
+  --nav-hover-bg: oklch(0.395 0.06 60 / 0.2);
+  --color-fd-background: var(--background);
+  --color-fd-secondary: var(--secondary);
+  --color-fd-secondary-foreground: var(--secondary-foreground);
+  --color-fd-foreground: var(--foreground);
+  --color-fd-popover: var(--popover);
+  --color-fd-popover-foreground: var(--popover-foreground);
+  --color-fd-primary: var(--primary);
+  --color-fd-primary-foreground: var(--primary-foreground);
+  --color-fd-muted: var(--muted);
+  --color-fd-muted-foreground: var(--muted-foreground);
+  --color-fd-accent: var(--accent);
+  --color-fd-accent-foreground: var(--accent-foreground);
+  --color-fd-border: var(--border);
+  --color-fd-ring: var(--ring);
+}
+
+/* Theme toggle container at bottom of sidebar */
+#nd-sidebar div:has(> [data-theme-toggle]) {
+  background-color: var(--muted);
+  border-color: var(--border);
+  border-radius: 1.5rem; /* rounded-3xl */
+  color: var(--muted-foreground);
+}
+
+/* Active icon (moon/sun highlighted state) */
+#nd-sidebar [data-theme-toggle] svg.bg-fd-accent {
+  background-color: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+  border-radius: calc(1.5rem - 2px);
+}
+
+/* Replaced by custom ModeToggle */
+#nd-sidebar div:has(> [data-theme-toggle]) {
+  display: none;
+}
+
+/* The button wrapper itself */
+#nd-sidebar [data-theme-toggle] {
+  border-color: var(--border);
+}
+
+/* Cursor pointer for search and theme toggle */
+button[data-search-full],
+button[data-theme-toggle],
+[data-empty] button,
+[data-sidebar-panel] button,
+#nd-sidebar button {
+  cursor: pointer;
+}
+
+#nd-sidebar [data-active="true"] {
+  border-radius: var(--radius-full) !important;
+  background-color: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+}
+
+#nd-sidebar [data-active="false"] {
+  color: var(--foreground) !important;
+}
+
+#nd-sidebar [data-active="false"]:hover {
+  border-radius: var(--radius-full) !important;
+  background-color: var(--nav-hover-bg) !important;
+  color: var(--foreground) !important;
+}
+
+#nd-sidebar [data-active="true"],
+#nd-sidebar [data-active="false"] {
+  margin-bottom: 1rem;
+}
+
+/* Match brand name font weight */
+#nd-sidebar a[href="/"] span {
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+/* Search button style */
+button[data-search-full] {
+  border-radius: var(--radius-full) !important;
+  background-color: var(--secondary) !important;
+  border-color: var(--border) !important;
 }
