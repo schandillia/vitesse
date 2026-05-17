@@ -1,0 +1,103 @@
+---
+title: Core Concepts
+description: The mental model behind the platform. Read this once and everything else will make sense.
+---
+
+# Core Concepts
+
+Before diving into configuration and API calls, it helps to understand how the platform thinks. This page explains the core abstractions and the relationships between them. You don't need to memorize this — just read it once.
+
+---
+
+## [Primary resource]
+
+The primary resource is the central object in the platform. Everything else either belongs to a resource or operates on one. Think of it as [analogy that fits your product — e.g., "a project," "a pipeline," "a workspace"].
+
+A resource has:
+
+- A unique `id` (prefixed `res_`)
+- A `status` — one of `active`, `paused`, or `archived`
+- A set of [child objects or properties]
+- Timestamps for when it was created and last modified
+
+Resources are scoped to your workspace, which means they are not shared across accounts unless you explicitly configure sharing.
+
+---
+
+## [Secondary resource]
+
+[Secondary resources] belong to a [primary resource]. They represent [what they represent]. A single [primary resource] can have many [secondary resources], but each [secondary resource] belongs to exactly one [primary resource].
+
+You'll interact with [secondary resources] most often when [most common use case].
+
+---
+
+## The request lifecycle
+
+Understanding what happens between sending a request and receiving a response helps you debug problems faster and design more resilient integrations.
+
+1. **Authentication** — every request is authenticated using your API key. Requests without a valid key are rejected immediately with a `401`.
+2. **Validation** — the request body is validated against the expected schema. Missing required fields return a `422` with a description of what's wrong.
+3. **Processing** — the platform processes your request. For most operations this is synchronous. For [long-running operations], the platform returns immediately with a `job_id` and processes asynchronously.
+4. **Response** — a structured JSON object is returned. Successful responses always include an `id` and a `status`.
+
+---
+
+## Synchronous vs. asynchronous operations
+
+Most operations on the platform are **synchronous** — you send a request and get a result immediately.
+
+Some operations are **asynchronous** — they return a `job_id` right away and complete in the background. You can poll for the result using the [Jobs endpoint](/docs/api-reference#jobs) or subscribe to a webhook.
+
+| Operation type | How to know                             | How to get the result                 |
+| -------------- | --------------------------------------- | ------------------------------------- |
+| Synchronous    | Response includes the resource directly | You already have it                   |
+| Asynchronous   | Response includes `job_id`              | Poll `/jobs/{job_id}` or use webhooks |
+
+---
+
+## Webhooks
+
+Webhooks let the platform notify your server when something happens — a resource changes status, a job completes, a payment is processed. Instead of polling, your server receives a `POST` request with the event payload.
+
+All webhook payloads share a common envelope:
+
+```json
+{
+  "id": "evt_xxxxxxxxxxxx",
+  "type": "resource.updated",
+  "createdAt": "2025-01-01T00:00:00.000Z",
+  "data": { ... }
+}
+```
+
+Configure your webhook endpoint in **Settings → Webhooks**.
+
+---
+
+## Rate limits
+
+The API is rate-limited per workspace. Limits vary by plan:
+
+| Plan     | Requests per minute |
+| -------- | ------------------- |
+| Starter  | 60                  |
+| Pro      | 600                 |
+| Business | 6,000               |
+
+When you exceed your limit, the API returns a `429 Too Many Requests` response with a `Retry-After` header indicating how many seconds to wait.
+
+---
+
+## Idempotency
+
+For operations that create or modify data, you can supply an `Idempotency-Key` header. If the same key is sent twice within 24 hours, the second request returns the result of the first without re-executing the operation. This protects against accidental duplicates caused by network retries.
+
+```bash
+curl -X POST https://api.yourdomain.com/v1/resources \
+  -H "Idempotency-Key: a-unique-key-you-generate" \
+  -H "Authorization: Bearer $YOUR_PRODUCT_API_KEY" \
+  -d '{ "name": "My resource" }'
+```
+
+Use a UUID or a hash of the request contents as your idempotency key.

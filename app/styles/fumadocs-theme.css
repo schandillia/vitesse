@@ -180,6 +180,33 @@ button[data-theme-toggle],
 /* Search button style */
 button[data-search-full] {
   border-radius: var(--radius-full) !important;
-  background-color: var(--secondary) !important;
+  background-color: rgb(from var(--secondary) r g b / 0.3) !important;
   border-color: var(--border) !important;
+}
+
+.fd-wrapper .shiki {
+  background-color: var(--shiki-light-bg) !important;
+  box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.15);
+}
+
+.dark .fd-wrapper .shiki {
+  background-color: var(--shiki-dark-bg) !important;
+  box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.15);
+}
+
+/* Fix missing left padding on first table column */
+.fd-wrapper table td:first-child,
+.fd-wrapper table th:first-child {
+  padding-left: 1rem;
+}
+
+/* Inline code visibility in dark mode */
+.dark .fd-wrapper :not(pre) > code {
+  background-color: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+
+/* Bold text visibility in dark mode */
+.dark .fd-wrapper strong {
+  color: var(--foreground) !important;
 }

@@ -1,4 +1,14 @@
 {
   "title": "Documentation",
-  "pages": ["index", "getting-started", "faq"]
+  "pages": [
+    "index",
+    "getting-started",
+    "core-concepts",
+    "configuration",
+    "api-reference",
+    "integrations",
+    "troubleshooting",
+    "faq",
+    "changelog"
+  ]
 }

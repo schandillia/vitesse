@@ -1,36 +1,99 @@
 ---
 title: Getting Started
-description: Learn how to get started with the platform.
+description: Set up your account and make your first request in under ten minutes.
 ---
 
-## Introduction
+# Getting Started
 
-This is the getting started guide. Scroll down to see the progress indicator fill up.
+Set up your account and make your first request in under ten minutes.
 
-## Step 1 — Install
+> **In a hurry?** Install with `npm install @your-org/sdk`, set `YOUR_PRODUCT_API_KEY` in your environment, then call `client.resource.create({ name: "Hello" })`. That's it.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+---
 
-## Step 2 — Configure
+## Step 1 — Create your account
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+If you haven't already, [create an account](/sign-up). Once you've verified your email, you'll land on your dashboard.
 
-## Step 3 — Run
+From the dashboard, navigate to **Settings → API** and copy your API key. You'll need it in the next step.
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+> **Warning:** Keep your API key private. Do not commit it to source control or expose it in client-side code. Use environment variables instead.
 
-## Step 4 — Deploy
+---
 
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+## Step 2 — Install the SDK
 
-## Step 5 — Monitor
+The platform ships with an official SDK for [Language A] and [Language B]. You can also use the REST API directly if you prefer.
 
-At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.
+```bash
+# npm
+npm install @your-org/sdk
 
-## Step 6 — Scale
+# yarn
+yarn add @your-org/sdk
 
-Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
+# pnpm
+pnpm add @your-org/sdk
+```
 
-## Step 7 — Done
+If you're working without a package manager, you can load the SDK via CDN:
 
-Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
+```html
+<script src="https://cdn.yourdomain.com/sdk/v1/sdk.min.js"></script>
+```
+
+---
+
+## Step 3 — Authenticate
+
+Set your API key as an environment variable so it's available to your application:
+
+```bash
+# .env.local
+YOUR_PRODUCT_API_KEY=your_api_key_here
+```
+
+Then initialize the SDK:
+
+```ts
+import { Client } from "@your-org/sdk"
+
+const client = new Client({
+  apiKey: process.env.YOUR_PRODUCT_API_KEY,
+})
+```
+
+The client will throw a `MissingApiKeyError` at initialization time if the key is absent, so you'll catch misconfigurations early.
+
+---
+
+## Step 4 — Make your first call
+
+With the client initialized, you're ready to make your first request:
+
+```ts
+const result = await client.resource.create({
+  name: "My first resource",
+  description: "Created via the getting started guide.",
+})
+
+console.log(result.id) // res_xxxxxxxxxxxx
+```
+
+A successful response returns a resource object with a unique `id`. Hold onto this — you'll use it to fetch, update, and delete the resource later.
+
+---
+
+## Step 5 — Verify in the dashboard
+
+Head back to your dashboard. You should see the resource you just created listed under **[Section name]**. From here you can inspect it, edit it, or delete it without touching code.
+
+---
+
+## What's next?
+
+Now that everything is working:
+
+- Read [Core Concepts](/docs/core-concepts) to understand the mental model
+- Explore [Configuration](/docs/configuration) to tailor the platform to your stack
+- Browse the [API Reference](/docs/api-reference) for the full list of available operations

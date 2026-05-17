@@ -1,0 +1,110 @@
+---
+title: Configuration
+description: Every environment variable, setting, and option — with guidance on what to change and what to leave alone.
+---
+
+# Configuration
+
+The platform is configured through a combination of environment variables (for secrets and infrastructure settings) and the dashboard (for product-level settings). This page covers both.
+
+---
+
+## Environment variables
+
+Set these in your `.env.local` file for local development, and in your hosting platform's environment settings for production.
+
+### Required
+
+| Variable                      | Description                                          | Example                        |
+| ----------------------------- | ---------------------------------------------------- | ------------------------------ |
+| `YOUR_PRODUCT_API_KEY`        | Your secret API key. Found under **Settings → API**. | `sk_live_xxxxxxxxxxxx`         |
+| `YOUR_PRODUCT_WEBHOOK_SECRET` | Used to verify incoming webhook signatures.          | `whsec_xxxxxxxxxxxx`           |
+| `DATABASE_URL`                | Connection string for your database.                 | `postgres://user:pass@host/db` |
+
+### Optional
+
+| Variable                  | Description                                                      | Default                      |
+| ------------------------- | ---------------------------------------------------------------- | ---------------------------- |
+| `YOUR_PRODUCT_API_URL`    | Base URL for API requests. Override for self-hosted deployments. | `https://api.yourdomain.com` |
+| `YOUR_PRODUCT_TIMEOUT_MS` | Request timeout in milliseconds.                                 | `10000`                      |
+| `YOUR_PRODUCT_LOG_LEVEL`  | Logging verbosity. One of `error`, `warn`, `info`, `debug`.      | `warn`                       |
+| `YOUR_PRODUCT_ENV`        | Environment identifier. Affects logging and error reporting.     | `production`                 |
+
+<Callout type="info">
+  Never expose secret keys in client-side code or commit them to source control.
+  Use a secrets manager or your hosting platform's environment variable UI for
+  production values.
+</Callout>
+
+---
+
+## SDK configuration
+
+When initializing the SDK, you can pass configuration options directly:
+
+```ts
+import { Client } from "@your-org/sdk"
+
+const client = new Client({
+  apiKey: process.env.YOUR_PRODUCT_API_KEY,
+
+  // Optional overrides
+  baseUrl: "https://api.yourdomain.com", // default
+  timeout: 10_000, // milliseconds
+  retries: 3, // automatic retry on 5xx
+  logLevel: "warn", // "error" | "warn" | "info" | "debug"
+})
+```
+
+Options passed to the constructor take precedence over environment variables.
+
+---
+
+## Dashboard settings
+
+Some settings are managed through the dashboard rather than environment variables. Navigate to **Settings** to find:
+
+### General
+
+- **Workspace name** — shown in the dashboard and in email notifications
+- **Timezone** — used for date display and scheduled operations
+- **Logo** — displayed in the dashboard header and in customer-facing emails
+
+### API
+
+- **API keys** — create, rotate, and revoke keys. Each key can be scoped to specific permissions.
+- **Allowed origins** — for browser-based integrations, restrict which origins can make requests
+
+### Webhooks
+
+- **Endpoint URL** — the URL on your server that receives webhook payloads
+- **Events** — select which event types trigger a webhook delivery
+- **Signing secret** — use this to verify webhook signatures (see [Core Concepts](/docs/core-concepts#webhooks))
+
+### Notifications
+
+- **Email alerts** — configure which events trigger email notifications and who receives them
+- **Slack integration** — post notifications to a Slack channel (see [Integrations](/docs/integrations))
+
+---
+
+## Feature flags
+
+Some features are behind flags and need to be explicitly enabled per workspace. To enable a flag, go to **Settings → Features** or contact support.
+
+| Flag              | Description                              | Available on  |
+| ----------------- | ---------------------------------------- | ------------- |
+| `[feature_alpha]` | [Short description of what this enables] | Pro, Business |
+| `[feature_beta]`  | [Short description of what this enables] | Business      |
+
+---
+
+## Configuration for production
+
+Before going live, verify the following:
+
+- [ ] `YOUR_PRODUCT_API_KEY` is a **live** key, not a test key
+- [ ] `YOUR_PRODUCT_WEBHOOK_SECRET` is set and your server is verifying signatures
+- [ ] `YOUR_PRODUCT_LOG_LEVEL` is set to `warn` or `error` (not `debug`)
+- [ ] Your webhook endpoint is reachable from the public internet
+- [ ] Rate limits on your plan match your expected traffic (see [Core Concepts](/docs/core-concepts#rate-limits))

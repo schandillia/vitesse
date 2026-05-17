@@ -11,7 +11,10 @@ export default function Layout({ children }: { children: ReactNode }) {
         tree={source.pageTree}
         nav={{
           title: (
-            <div className="flex items-center gap-2 mb-5 text-foreground">
+            <div
+              className="flex items-center gap-2 mb-5 text-foreground"
+              key="nav-title"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/brand-logo.svg"
@@ -28,7 +31,10 @@ export default function Layout({ children }: { children: ReactNode }) {
           defaultOpenLevel: 1,
           tabs: false,
           footer: (
-            <div className="flex w-full justify-center pb-2">
+            <div
+              className="flex w-full justify-center pb-2"
+              key="sidebar-footer"
+            >
               <ModeToggle expanded={true} />
             </div>
           ),

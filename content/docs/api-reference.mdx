@@ -1,0 +1,254 @@
+---
+title: API Reference
+description: Every endpoint, parameter, and response shape. The complete reference for building on the platform.
+---
+
+# API Reference
+
+The platform exposes a REST API over HTTPS. All requests and responses use JSON. The base URL for all endpoints is:
+
+```
+https://api.yourdomain.com/v1
+```
+
+---
+
+## Authentication
+
+Every request must include your API key in the `Authorization` header:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+Requests without a valid key return `401 Unauthorized`. Keys are workspace-scoped — a key cannot access resources belonging to a different workspace.
+
+---
+
+## Response format
+
+All successful responses follow a consistent shape:
+
+```json
+{
+  "id": "res_xxxxxxxxxxxx",
+  "object": "resource",
+  "createdAt": "2025-01-01T00:00:00.000Z",
+  "updatedAt": "2025-01-01T00:00:00.000Z"
+}
+```
+
+All error responses follow this shape:
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "The 'name' field is required.",
+    "param": "name"
+  }
+}
+```
+
+---
+
+## HTTP status codes
+
+| Code                        | Meaning                                                |
+| --------------------------- | ------------------------------------------------------ |
+| `200 OK`                    | Request succeeded                                      |
+| `201 Created`               | Resource was created                                   |
+| `204 No Content`            | Request succeeded with no response body (e.g., DELETE) |
+| `400 Bad Request`           | Malformed request syntax                               |
+| `401 Unauthorized`          | Missing or invalid API key                             |
+| `403 Forbidden`             | Valid key but insufficient permissions                 |
+| `404 Not Found`             | Resource does not exist                                |
+| `422 Unprocessable Entity`  | Validation failed — check the `error.param` field      |
+| `429 Too Many Requests`     | Rate limit exceeded — check the `Retry-After` header   |
+| `500 Internal Server Error` | Something went wrong on our end                        |
+
+---
+
+## Resources
+
+### Create a resource
+
+```
+POST /v1/resources
+```
+
+**Request body**
+
+| Field         | Type   | Required | Description                                                            |
+| ------------- | ------ | -------- | ---------------------------------------------------------------------- |
+| `name`        | string | ✅       | A human-readable label for this resource                               |
+| `description` | string |          | Optional description                                                   |
+| `metadata`    | object |          | Key-value pairs for your own use. Values must be strings. Max 20 keys. |
+
+**Example request**
+
+```bash
+curl -X POST https://api.yourdomain.com/v1/resources \
+  -H "Authorization: Bearer $YOUR_PRODUCT_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My resource",
+    "description": "Created via the API.",
+    "metadata": { "internal_id": "abc123" }
+  }'
+```
+
+**Example response**
+
+```json
+{
+  "id": "res_xxxxxxxxxxxx",
+  "object": "resource",
+  "name": "My resource",
+  "description": "Created via the API.",
+  "status": "active",
+  "metadata": { "internal_id": "abc123" },
+  "createdAt": "2025-01-01T00:00:00.000Z",
+  "updatedAt": "2025-01-01T00:00:00.000Z"
+}
+```
+
+---
+
+### Retrieve a resource
+
+```
+GET /v1/resources/{id}
+```
+
+**Path parameters**
+
+| Parameter | Description                        |
+| --------- | ---------------------------------- |
+| `id`      | The ID of the resource to retrieve |
+
+**Example request**
+
+```bash
+curl https://api.yourdomain.com/v1/resources/res_xxxxxxxxxxxx \
+  -H "Authorization: Bearer $YOUR_PRODUCT_API_KEY"
+```
+
+---
+
+### List resources
+
+```
+GET /v1/resources
+```
+
+**Query parameters**
+
+| Parameter | Type   | Default | Description                                         |
+| --------- | ------ | ------- | --------------------------------------------------- |
+| `limit`   | number | `20`    | Number of results to return. Max `100`.             |
+| `cursor`  | string |         | Pagination cursor from the previous response        |
+| `status`  | string |         | Filter by status: `active`, `paused`, or `archived` |
+
+**Example response**
+
+```json
+{
+  "object": "list",
+  "data": [
+    { "id": "res_xxxxxxxxxxxx", "name": "My resource", "status": "active", ... }
+  ],
+  "hasMore": false,
+  "nextCursor": null
+}
+```
+
+The API uses cursor-based pagination. If `hasMore` is `true`, pass the `nextCursor` value as the `cursor` parameter in your next request.
+
+---
+
+### Update a resource
+
+```
+PATCH /v1/resources/{id}
+```
+
+Only include the fields you want to change. Omitted fields are left unchanged.
+
+**Request body**
+
+| Field         | Type   | Description                                   |
+| ------------- | ------ | --------------------------------------------- |
+| `name`        | string | New name                                      |
+| `description` | string | New description                               |
+| `status`      | string | New status: `active`, `paused`, or `archived` |
+| `metadata`    | object | Replaces the entire metadata object           |
+
+---
+
+### Delete a resource
+
+```
+DELETE /v1/resources/{id}
+```
+
+Returns `204 No Content` on success. Deletion is permanent and cannot be undone.
+
+---
+
+## Jobs
+
+Long-running operations return a `job_id` instead of the result directly. Use the Jobs endpoint to check progress.
+
+### Retrieve a job
+
+```
+GET /v1/jobs/{id}
+```
+
+**Example response**
+
+```json
+{
+  "id": "job_xxxxxxxxxxxx",
+  "object": "job",
+  "status": "completed",
+  "result": { ... },
+  "error": null,
+  "createdAt": "2025-01-01T00:00:00.000Z",
+  "completedAt": "2025-01-01T00:00:05.000Z"
+}
+```
+
+**Job statuses**
+
+| Status      | Meaning                                           |
+| ----------- | ------------------------------------------------- |
+| `pending`   | Job is queued and not yet started                 |
+| `running`   | Job is actively processing                        |
+| `completed` | Job finished successfully — `result` is populated |
+| `failed`    | Job failed — `error` describes what went wrong    |
+
+---
+
+## Pagination
+
+All list endpoints use cursor-based pagination. To iterate through all results:
+
+```ts
+let cursor: string | null = null
+
+do {
+  const response = await client.resources.list({ limit: 100, cursor })
+  process(response.data)
+  cursor = response.nextCursor
+} while (response.hasMore)
+```
+
+Do not attempt to paginate using `offset` — it is not supported.
+
+---
+
+## Idempotency
+
+Supply an `Idempotency-Key` header on any `POST` request to safely retry without creating duplicates. See [Core Concepts](/docs/core-concepts#idempotency) for details.

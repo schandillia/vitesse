@@ -1,0 +1,101 @@
+---
+title: Changelog
+description: What's new, what changed, and what was fixed — in reverse chronological order.
+---
+
+# Changelog
+
+All notable changes to the platform and API are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Versions follow [Semantic Versioning](https://semver.org/).
+
+---
+
+## [Unreleased]
+
+Changes that are in progress but not yet shipped:
+
+- [Feature or fix in progress]
+
+---
+
+## v1.2.0 — January 15, 2025
+
+### Added
+
+- **[New feature name]** — Brief description of what was added and why it matters. Link to the relevant docs section if applicable.
+- **Cursor-based pagination** on all list endpoints. Offset pagination is deprecated and will be removed in v2.0. See the [API Reference](/docs/api-reference#pagination).
+- **`metadata` field** on resources — attach up to 20 custom key-value pairs to any resource for your own internal reference.
+
+### Changed
+
+- **Rate limit headers** — responses now include `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` on every request, not just when limits are exceeded.
+- **Webhook retry logic** — failed deliveries are now retried up to five times (previously three) with exponential backoff.
+
+### Fixed
+
+- Fixed an issue where `GET /v1/resources` returned incorrect `hasMore` values when filtering by `status`.
+- Fixed a race condition in job processing that occasionally caused duplicate completion events.
+
+---
+
+## v1.1.0 — December 3, 2024
+
+### Added
+
+- **Slack integration** — connect your workspace to Slack and receive real-time notifications for any event type. Configure under **Settings → Integrations → Slack**.
+- **Annual billing** — all paid plans now support annual billing with a [X]% discount.
+- **`archived` status** — resources can now be archived instead of deleted. Archived resources are excluded from list responses by default but can be retrieved with `?status=archived`.
+
+### Changed
+
+- The `description` field on resources now supports up to 2,000 characters (previously 500).
+
+### Deprecated
+
+- `GET /v1/resources?offset={n}` — use cursor-based pagination instead. Offset support will be removed in v2.0.
+
+### Fixed
+
+- Fixed webhook deliveries occasionally omitting the `X-Signature` header on retried requests.
+- Fixed `PATCH /v1/resources/{id}` returning `500` when `metadata` was set to an empty object.
+
+---
+
+## v1.0.0 — November 1, 2024
+
+### Initial release
+
+The platform is now generally available.
+
+**What's included in v1.0:**
+
+- Full resource CRUD via REST API
+- Cursor-based list pagination
+- Webhook delivery with HMAC-SHA256 signature verification
+- Idempotency key support on all `POST` endpoints
+- API key management with permission scoping
+- Starter, Pro, and Business plans
+- Official TypeScript SDK
+
+---
+
+## Migration guides
+
+### Migrating from offset to cursor pagination (v1.1 → v1.2)
+
+Replace any calls using `?offset=` with the cursor-based pattern:
+
+```ts
+// Before (deprecated)
+const page1 = await client.resources.list({ limit: 20, offset: 0 })
+const page2 = await client.resources.list({ limit: 20, offset: 20 })
+
+// After
+let cursor: string | null = null
+do {
+  const response = await client.resources.list({ limit: 20, cursor })
+  process(response.data)
+  cursor = response.nextCursor
+} while (response.hasMore)
+```
+
+Offset pagination will continue to work until v2.0, at which point requests using `offset` will return a `400` error.

@@ -1,8 +1,117 @@
 ---
 title: FAQ
-description: Frequently asked questions.
+description: Quick answers to the questions that come up most often.
 ---
 
 # FAQ
 
-Common questions and answers.
+---
+
+## General
+
+### What is [Your Product]?
+
+[Your Product] is [one-sentence description of what your product does and who it's for]. Replace this answer with a crisp, jargon-free explanation. Assume the reader has never heard of you.
+
+### Who is this built for?
+
+[Your Product] is designed for [target persona — e.g., "developers building data pipelines," "small teams managing client projects," "founders who need X without hiring Y"]. If your product serves multiple personas, list them and note how each uses it differently.
+
+### Is there a free plan?
+
+Yes. The Starter plan is free forever and includes [list what's included]. No credit card is required to sign up. See the [pricing page](/pricing) for a full comparison.
+
+### Can I try it before paying?
+
+Every paid plan includes a [X]-day free trial. You can start a trial without entering payment information. At the end of the trial, you'll be prompted to choose a plan or automatically move to the free Starter tier.
+
+---
+
+## Account & billing
+
+### How do I change my plan?
+
+Go to **Settings → Billing → Change plan**. Upgrades take effect immediately and are prorated to your billing cycle. Downgrades take effect at the end of the current billing period.
+
+### Can I cancel at any time?
+
+Yes. Go to **Settings → Billing → Cancel subscription**. You'll retain access to your current plan's features until the end of the billing period. Your data is preserved for 30 days after cancellation in case you change your mind.
+
+### Do you offer annual billing?
+
+Yes. Annual billing is available on all paid plans and saves you [X]% compared to monthly billing. Switch to annual under **Settings → Billing**.
+
+### I need a receipt or invoice for my records.
+
+Receipts are emailed automatically after every charge. You can also download invoices for any period from **Settings → Billing → Invoice history**.
+
+### Do you offer discounts for startups, students, or non-profits?
+
+Yes, in some cases. Contact support at **support@yourdomain.com** with details about your organization and intended use.
+
+---
+
+## Technical
+
+### What regions is the API hosted in?
+
+The API is hosted in [region — e.g., "US East (Virginia) and EU West (Dublin)"]. Requests are routed to the nearest region automatically. Data residency controls are available on the Business plan.
+
+### How do I handle API errors in production?
+
+A few principles that make production integrations resilient:
+
+- **Always check the HTTP status code** before reading the response body
+- **Implement retries with exponential backoff** for `429` and `5xx` responses
+- **Use idempotency keys** on `POST` requests so retries don't create duplicates
+- **Log the `X-Request-Id` header** — this is what support needs to trace a specific request
+
+See [Troubleshooting](/docs/troubleshooting) for common error scenarios.
+
+### Does the API support pagination?
+
+Yes. All list endpoints use cursor-based pagination. See the [API Reference](/docs/api-reference#pagination) for details and a code example.
+
+### Is there an OpenAPI / Swagger spec?
+
+Yes. The spec is available at `https://api.yourdomain.com/openapi.json` and can be imported into Postman, Insomnia, or any OpenAPI-compatible tool.
+
+### How do I test webhooks locally?
+
+Use [ngrok](https://ngrok.com) to expose your local server:
+
+```bash
+ngrok http 3000
+```
+
+Then register the ngrok URL as your webhook endpoint in **Settings → Webhooks**. See [Troubleshooting](/docs/troubleshooting#webhook-issues) for more detail.
+
+### Where are my API keys?
+
+Under **Settings → API**. You can create multiple keys with different permission scopes, rotate them without downtime, and revoke them instantly.
+
+---
+
+## Security & privacy
+
+### How is my data stored?
+
+Data is stored in [database type, e.g., "PostgreSQL"] hosted on [provider, e.g., "AWS"]. Data at rest is encrypted using AES-256. Data in transit is encrypted using TLS 1.2 or higher. Replace this with your actual data handling details.
+
+### Can I delete my data?
+
+Yes. You can delete individual resources through the dashboard or API. To delete your entire account and all associated data, go to **Settings → General → Delete workspace**. Deletion is permanent and cannot be undone.
+
+### Do you comply with GDPR?
+
+Yes. [Your Product] is GDPR-compliant. You can request a Data Processing Agreement (DPA) by contacting **support@yourdomain.com**. Replace this with your actual compliance posture.
+
+### Do you have a status page?
+
+Yes. Real-time system status and incident history are available at **status.yourdomain.com**.
+
+---
+
+## Still have questions?
+
+Contact support at **support@yourdomain.com** — typical response time is under [X] business hours.

@@ -1,0 +1,110 @@
+---
+title: Integrations
+description: Connect the platform to the tools your team already uses.
+---
+
+# Integrations
+
+The platform connects to a range of third-party tools. Some integrations are configured in the dashboard. Others are built by sending data to our API from your own workflows.
+
+---
+
+## Slack
+
+Post notifications to a Slack channel when events occur — a resource changes status, a job completes, a payment fails.
+
+**To set up:**
+
+1. Go to **Settings → Integrations → Slack**
+2. Click **Connect to Slack** and authorize the app
+3. Choose a default channel for notifications
+4. Select which event types should post to Slack
+
+You can override the channel per event type. For example, send payment failure alerts to `#billing` and resource updates to `#ops`.
+
+---
+
+## Zapier
+
+Connect to thousands of apps through Zapier without writing code. Use the [Your Product] Zapier app to trigger Zaps from platform events or perform platform actions from other tools.
+
+**Supported triggers:**
+
+- Resource created
+- Resource updated
+- Resource archived
+- Job completed
+- Payment received
+
+**Supported actions:**
+
+- Create a resource
+- Update a resource
+- Retrieve a resource by ID
+
+To connect, visit the [[Your Product] Zapier app](https://zapier.com) and follow the setup flow.
+
+---
+
+## Webhooks
+
+For custom integrations, use webhooks to receive real-time event notifications directly on your server.
+
+**Setup:**
+
+1. Go to **Settings → Webhooks**
+2. Click **Add endpoint** and enter your server URL
+3. Select the events you want to receive
+4. Copy the signing secret and store it as `YOUR_PRODUCT_WEBHOOK_SECRET`
+
+**Verifying signatures:**
+
+Every webhook payload is signed. Always verify the signature before processing the payload:
+
+```ts
+import crypto from "crypto"
+
+function verifyWebhookSignature(
+  rawBody: Buffer,
+  signature: string,
+  secret: string
+): boolean {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(rawBody)
+    .digest("hex")
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+}
+```
+
+Return a `200` response as quickly as possible. If processing takes more than a few seconds, acknowledge the webhook immediately and handle the logic asynchronously.
+
+---
+
+## REST API
+
+Any tool that can make HTTP requests can integrate with the platform via the REST API. Common patterns:
+
+- **Postman / Insomnia** — import the [OpenAPI spec](/openapi.json) for a ready-made collection
+- **Make (formerly Integromat)** — use the HTTP module with your API key
+- **n8n** — use the HTTP Request node; the API follows standard REST conventions
+
+See the [API Reference](/docs/api-reference) for the full endpoint list.
+
+---
+
+## Building your own integration
+
+If you're building a custom integration on top of the platform — for a client, a marketplace listing, or an internal tool — the pattern is the same as direct API usage, with one addition: use **OAuth** instead of API keys so your integration can act on behalf of multiple users.
+
+OAuth setup is available on the **Business** plan. Contact support to enable it for your workspace.
+
+---
+
+## Missing an integration?
+
+If you need an integration that isn't listed here:
+
+- Vote for it on the [public roadmap](https://roadmap.yourdomain.com)
+- Build it yourself using the [API](/docs/api-reference) and [webhooks](#webhooks)
+- Contact support — popular requests get prioritized

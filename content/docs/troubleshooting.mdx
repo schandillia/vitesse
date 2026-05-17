@@ -1,0 +1,142 @@
+---
+title: Troubleshooting
+description: Solutions to the most common problems. If something isn't working, start here.
+---
+
+# Troubleshooting
+
+Most problems have a small set of common causes. Work through the relevant section below before reaching out to support — you'll likely find the answer faster.
+
+---
+
+## Authentication errors
+
+### `401 Unauthorized`
+
+The most common cause is a missing or malformed `Authorization` header. Check that:
+
+- The header is formatted correctly: `Authorization: Bearer YOUR_API_KEY`
+- You're using the correct key for the environment — test keys (`sk_test_...`) do not work in production and live keys (`sk_live_...`) do not work against the sandbox
+- The key hasn't been revoked — check **Settings → API** in the dashboard
+
+### `403 Forbidden`
+
+Your key is valid but lacks the permissions needed for this operation. API keys can be scoped to specific permissions. Check **Settings → API → [your key]** and verify the key has the required scope.
+
+---
+
+## Validation errors
+
+### `422 Unprocessable Entity`
+
+The request body failed validation. The response body will tell you exactly what's wrong:
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "The 'name' field is required.",
+    "param": "name"
+  }
+}
+```
+
+Check the `param` field to identify which field caused the error, then refer to the [API Reference](/docs/api-reference) for the correct type and constraints.
+
+---
+
+## Webhook issues
+
+### My webhook endpoint isn't receiving events
+
+1. **Check the URL is publicly reachable.** Webhooks are sent from our servers — `localhost` URLs will not work. Use [ngrok](https://ngrok.com) or a similar tool during local development.
+2. **Check the endpoint returns a `2xx` response.** If your endpoint returns a non-2xx status, we'll retry delivery up to five times with exponential backoff. Check your server logs for errors.
+3. **Check the event type is selected.** In **Settings → Webhooks → [your endpoint]**, confirm the event type is enabled.
+4. **Check for delivery failures.** The dashboard shows a delivery log for each endpoint — look for failed attempts and their error codes.
+
+### Webhook signature verification is failing
+
+- Make sure you're reading the **raw request body bytes**, not the parsed JSON. Parsing and re-serializing the body changes the byte sequence and invalidates the signature.
+- Verify you're using the correct signing secret from **Settings → Webhooks → [your endpoint]**. Secrets are unique per endpoint, not per workspace.
+- The signature is sent in the `X-Signature` header as a hex-encoded HMAC-SHA256.
+
+---
+
+## Rate limiting
+
+### `429 Too Many Requests`
+
+You've exceeded your plan's rate limit. The response includes a `Retry-After` header with the number of seconds to wait before retrying.
+
+To avoid hitting limits:
+
+- **Cache responses** where the data doesn't change frequently
+- **Batch operations** where the API supports it
+- **Add exponential backoff** to your retry logic:
+
+```ts
+async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3): Promise<T> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      return await fn()
+    } catch (err) {
+      if (err.status !== 429 || attempt === maxAttempts - 1) throw err
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.pow(2, attempt) * 1000)
+      )
+    }
+  }
+  throw new Error("Max retries exceeded")
+}
+```
+
+If you're consistently hitting limits, consider upgrading your plan or contacting support about higher limits.
+
+---
+
+## SDK issues
+
+### The SDK throws `MissingApiKeyError` on initialization
+
+The SDK cannot find your API key. Make sure:
+
+- `YOUR_PRODUCT_API_KEY` is set in your environment (`.env.local` for local development)
+- The environment variable is loaded before the SDK is initialized
+- You're not accidentally checking for the variable in client-side code where environment variables aren't available
+
+### TypeScript errors after upgrading the SDK
+
+Breaking changes are documented in the [Changelog](/docs/changelog). After upgrading, check the changelog entry for the new version and follow any migration instructions.
+
+---
+
+## Unexpected results
+
+### A resource I created isn't appearing in list responses
+
+List endpoints return results in reverse chronological order by default. If your resource was created recently, it should appear at the top. If it doesn't:
+
+- Confirm the `POST` request returned `201 Created` (not an error)
+- Check whether a `status` filter is active — archived resources are excluded by default
+- Retrieve the resource directly by ID to confirm it exists
+
+### A webhook fired but my database wasn't updated
+
+Webhooks are delivered at least once but may occasionally arrive out of order or more than once. Make sure your handler is:
+
+- **Idempotent** — processing the same event twice should produce the same result
+- **Checking the event type** before acting — do not assume the payload matches the event type you registered for
+- **Returning `200` quickly** — if your handler times out, we'll retry delivery, which may cause double-processing
+
+---
+
+## Getting more help
+
+If none of the above resolves your issue:
+
+1. Check the [FAQ](/docs/faq) for quick answers to common questions
+2. Search the docs using the bar at the top of this page
+3. Contact support at **support@yourdomain.com** with:
+   - Your workspace ID (found in **Settings → General**)
+   - The request ID from the response headers (`X-Request-Id`)
+   - A description of what you expected vs. what happened
