@@ -88,8 +88,11 @@ export default function SupportPage() {
             <p className="text-sm font-medium text-foreground">Documentation</p>
 
             <p className="mt-1 text-sm text-muted-foreground">
-              Self-serve documentation is available 24/7 through the docs
-              portal.
+              Self-serve documentation is available 24/7 through the{" "}
+              <Link className="underline underline-offset-4" href="/docs">
+                docs portal
+              </Link>
+              .
             </p>
           </div>
         </div>
