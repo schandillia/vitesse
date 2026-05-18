@@ -11,7 +11,12 @@ export async function getPostsByAuthor(
   username: string,
   cursor?: string
 ): Promise<
-  GetPostsResult & { authorName: string | null; authorBio: string | null }
+  GetPostsResult & {
+    authorName: string | null
+    authorBio: string | null
+    authorImage: string | null
+    authorTwitter: string | null
+  }
 > {
   try {
     const author = await db.query.user.findFirst({
@@ -25,6 +30,8 @@ export async function getPostsByAuthor(
         hasMore: false,
         authorName: null,
         authorBio: null,
+        authorImage: null,
+        authorTwitter: null,
       }
 
     const posts = await db.query.post.findMany({
@@ -45,6 +52,8 @@ export async function getPostsByAuthor(
       hasMore,
       authorName: author.name,
       authorBio: author.bio ?? null,
+      authorImage: author.image ?? null,
+      authorTwitter: author.socials?.twitter ?? null,
     }
   } catch {
     return {
@@ -54,6 +63,8 @@ export async function getPostsByAuthor(
       error: true,
       authorName: null,
       authorBio: null,
+      authorImage: null,
+      authorTwitter: null,
     }
   }
 }

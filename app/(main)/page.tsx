@@ -1,12 +1,14 @@
 import Link from "next/link"
 import { siteConfig } from "@/config/site"
-import type { Metadata } from "next"
 import { ArrowRight, Zap, Shield, BarChart3, CreditCard } from "lucide-react"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.home.title,
   description: siteConfig.seo.metaData.home.description,
-}
+  canonical: siteConfig.brand.url,
+  absoluteTitle: true,
+})
 
 const highlights = [
   {

@@ -1,12 +1,13 @@
 import { siteConfig } from "@/config/site"
-import { Metadata } from "next"
 import { MarkdownRenderer } from "@/components/markdown/markdown-renderer"
 import { getLegalContent } from "@/lib/legal-pages/get-legal-content"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.terms.title,
   description: siteConfig.seo.metaData.terms.description,
-}
+  canonical: `${siteConfig.brand.url}/terms`,
+})
 
 export default async function TermsPage() {
   const content = await getLegalContent("terms")

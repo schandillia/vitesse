@@ -1,12 +1,13 @@
 import { siteConfig } from "@/config/site"
-import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.about.title,
   description: siteConfig.seo.metaData.about.description,
-}
+  canonical: `${siteConfig.brand.url}/about`,
+})
 
 const values = [
   {

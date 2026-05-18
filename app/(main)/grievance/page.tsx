@@ -1,12 +1,13 @@
 import { siteConfig } from "@/config/site"
-import { Metadata } from "next"
 import { MarkdownRenderer } from "@/components/markdown/markdown-renderer"
 import { getLegalContent } from "@/lib/legal-pages/get-legal-content"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.grievance.title,
   description: siteConfig.seo.metaData.grievance.description,
-}
+  canonical: `${siteConfig.brand.url}/grievance`,
+})
 
 export default async function GrievancePage() {
   const content = await getLegalContent("grievance")

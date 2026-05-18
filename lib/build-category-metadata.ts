@@ -16,6 +16,7 @@ export function buildCategoryMetadata({
 }: BuildCategoryMetadataInput): Metadata {
   const url = `${siteUrl}/blog/category/${categorySlug}`
   const title = `${categoryName} | Blog`
+  const socialTitle = `${title} | ${siteConfig.brand.name}`
   const desc = description ?? `Posts in ${categoryName}.`
 
   return {
@@ -29,15 +30,25 @@ export function buildCategoryMetadata({
     openGraph: {
       type: "website",
       url,
-      title,
+      title: socialTitle,
       description: desc,
       siteName: siteConfig.brand.name,
+      images: [
+        {
+          url: `${siteConfig.brand.url}/opengraph-image.png`,
+          width: 1200,
+          height: 630,
+          alt: categoryName,
+        },
+      ],
     },
 
     twitter: {
-      card: "summary",
-      title,
+      card: "summary_large_image",
+      title: socialTitle,
       description: desc,
+      images: [`${siteConfig.brand.url}/opengraph-image.png`],
+      creator: siteConfig.brand.socials.twitter,
     },
   }
 }

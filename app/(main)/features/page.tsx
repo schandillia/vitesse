@@ -1,5 +1,4 @@
 import { siteConfig } from "@/config/site"
-import type { Metadata } from "next"
 import Link from "next/link"
 import {
   ArrowRight,
@@ -12,11 +11,13 @@ import {
   Globe,
   Puzzle,
 } from "lucide-react"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.features.title,
   description: siteConfig.seo.metaData.features.description,
-}
+  canonical: `${siteConfig.brand.url}/features`,
+})
 
 // Replace these feature groups with your actual product features
 const featureGroups = [

@@ -1,12 +1,13 @@
 import { siteConfig } from "@/config/site"
-import type { Metadata } from "next"
 import { MessageForm } from "@/app/(main)/contact/components/message-form"
 import { getServerSession } from "@/lib/auth/get-server-session"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.contact.title,
   description: siteConfig.seo.metaData.contact.description,
-}
+  canonical: `${siteConfig.brand.url}/contact`,
+})
 
 export default async function ContactPage() {
   const session = await getServerSession()

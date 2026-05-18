@@ -16,7 +16,8 @@ export async function generateMetadata({
   params,
 }: AuthorPageProps): Promise<Metadata> {
   const { username } = await params
-  const { authorName } = await getPostsByAuthor(username)
+  const { authorName, authorImage, authorTwitter } =
+    await getPostsByAuthor(username)
 
   if (!authorName) return {}
 
@@ -24,6 +25,8 @@ export async function generateMetadata({
     authorName,
     username,
     siteUrl: siteConfig.brand.url,
+    authorImage,
+    twitterHandle: authorTwitter,
   })
 }
 

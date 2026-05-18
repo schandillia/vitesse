@@ -5,15 +5,16 @@ import { siteConfig } from "@/config/site"
 import { getServerSession } from "@/lib/auth/get-server-session"
 import { ROLES } from "@/db/types/roles"
 import { FileTextIcon, FolderIcon, PlusIcon } from "lucide-react"
-import type { Metadata } from "next"
 import { createPost } from "@/actions/create-post"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.blog.title,
   description: siteConfig.seo.metaData.blog.description,
-}
+  canonical: `${siteConfig.brand.url}/blog`,
+})
 
 export const revalidate = 3600
 

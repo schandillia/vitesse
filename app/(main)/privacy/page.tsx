@@ -1,12 +1,13 @@
 import { siteConfig } from "@/config/site"
-import type { Metadata } from "next"
 import { MarkdownRenderer } from "@/components/markdown/markdown-renderer"
 import { getLegalContent } from "@/lib/legal-pages/get-legal-content"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.privacy.title,
   description: siteConfig.seo.metaData.privacy.description,
-}
+  canonical: `${siteConfig.brand.url}/privacy`,
+})
 
 export default async function PrivacyPage() {
   const content = await getLegalContent("privacy")

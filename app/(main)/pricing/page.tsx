@@ -3,14 +3,15 @@ import { getUserAccessLevel } from "@/lib/payments/subscription-state"
 import type { TierKey } from "@/db/types/payments/tier"
 import { PricingTable } from "@/app/(main)/pricing/components/pricing-table"
 import { siteConfig } from "@/config/site"
-import type { Metadata } from "next"
 import { PricingFaq } from "@/app/(main)/pricing/components/pricing-faq"
 import { CheckoutListener } from "@/app/(main)/pricing/components/checkout-listener"
+import { buildPageMetadata } from "@/lib/build-page-metadata"
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.pricing.title,
   description: siteConfig.seo.metaData.pricing.description,
-}
+  canonical: `${siteConfig.brand.url}/pricing`,
+})
 
 export default async function PricingPage() {
   const session = await getServerSession()

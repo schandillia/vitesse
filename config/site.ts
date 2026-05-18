@@ -14,6 +14,9 @@ export const siteConfig = {
       defaultBranch: "master",
       docsPath: "content/docs",
     },
+    socials: {
+      twitter: "@oolvayHQ",
+    },
   },
 
   authAndSession: {

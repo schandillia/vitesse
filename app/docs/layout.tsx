@@ -3,7 +3,14 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs"
 import { siteConfig } from "@/config/site"
 import { source } from "@/lib/source"
 import { ModeToggle } from "@/components/layout/mode-toggle"
+import type { Metadata } from "next"
 
+export const metadata: Metadata = {
+  title: {
+    template: `%s | Docs | ${siteConfig.brand.name}`,
+    default: "Docs",
+  },
+}
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="fd-wrapper">

@@ -73,10 +73,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         }}
       />
 
-      <BlogBreadcrumbs
-        categoryName={categoryName}
-        className="px-4 md:px-8 pt-6 max-w-6xl mx-auto mb-0"
-      />
+      <BlogBreadcrumbs categoryName={categoryName} />
       <section className="flex flex-col gap-20 mx-auto max-w-6xl px-4 md:px-8 py-10">
         <header className="font-bold text-foreground text-center space-y-4">
           <h1 className="text-4xl/tight md:text-6xl">{categoryName}</h1>
