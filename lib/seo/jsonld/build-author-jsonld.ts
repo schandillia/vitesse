@@ -31,11 +31,7 @@ export function buildAuthorJsonLd(
 
     publisher: {
       "@type": "Organization",
-      name: siteConfig.brand.name,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteConfig.brand.url}/opengraph-image.png`,
-      },
+      "@id": `${siteConfig.brand.url}/#organization`,
     },
     url,
     mainEntityOfPage: {

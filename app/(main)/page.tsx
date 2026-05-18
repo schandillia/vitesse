@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { ArrowRight, Zap, Shield, BarChart3, CreditCard } from "lucide-react"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
 
 export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.home.title,

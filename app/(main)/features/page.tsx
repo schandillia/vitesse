@@ -11,7 +11,7 @@ import {
   Globe,
   Puzzle,
 } from "lucide-react"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
 
 export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.features.title,

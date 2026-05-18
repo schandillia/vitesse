@@ -23,17 +23,12 @@ export function buildDocsJsonLd({
 
     author: {
       "@type": "Organization",
-      name: siteConfig.brand.name,
-      url: siteConfig.brand.url,
+      "@id": `${siteConfig.brand.url}/#organization`,
     },
 
     publisher: {
       "@type": "Organization",
-      name: siteConfig.brand.name,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteConfig.brand.url}/opengraph-image.png`,
-      },
+      "@id": `${siteConfig.brand.url}/#organization`,
     },
 
     mainEntityOfPage: {

@@ -1,12 +1,12 @@
-import { buildAuthorMetadata } from "@/lib/build-author-metadata"
-import { buildAuthorJsonLd } from "@/lib/build-author-jsonld"
+import { buildAuthorMetadata } from "@/lib/seo/metadata/build-author-metadata"
+import { buildAuthorJsonLd } from "@/lib/seo/jsonld/build-author-jsonld"
 import { siteConfig } from "@/config/site"
 import { getPostsByAuthor } from "@/actions/get-posts-by-author"
 import { BlogBreadcrumbs } from "@/app/blog/components/blog-breadcrumbs"
 import { BlogFeed } from "@/app/blog/components/blog-feed"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { buildBreadcrumbJsonLd } from "@/lib/build-breadcrumb-jsonld"
+import { buildBreadcrumbJsonLd } from "@/lib/seo/jsonld/build-breadcrumb-jsonld"
 
 interface AuthorPageProps {
   params: Promise<{ username: string }>

@@ -2,7 +2,7 @@ import { siteConfig } from "@/config/site"
 import { CookiePreferences } from "@/app/(main)/cookies/components/cookie-preferences"
 import { MarkdownRenderer } from "@/components/markdown/markdown-renderer"
 import { getLegalContent } from "@/lib/legal-pages/get-legal-content"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
 
 export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.cookies.title,

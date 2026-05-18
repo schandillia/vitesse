@@ -1,4 +1,4 @@
-import { buildPostJsonLd } from "@/lib/build-post-jsonld"
+import { buildPostJsonLd } from "@/lib/seo/jsonld/build-post-jsonld"
 import { siteConfig } from "@/config/site"
 import { getPostBySlug } from "@/actions/get-post-by-slug"
 import { formatDate } from "@/lib/date"
@@ -12,8 +12,8 @@ import { canEditPost } from "@/lib/blog-utils"
 import { PencilIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { UnpublishButton } from "@/app/blog/components/unpublish-button"
-import { buildPostMetadata } from "@/lib/build-post-metadata"
-import { buildBreadcrumbJsonLd } from "@/lib/build-breadcrumb-jsonld"
+import { buildPostMetadata } from "@/lib/seo/metadata/build-post-metadata"
+import { buildBreadcrumbJsonLd } from "@/lib/seo/jsonld/build-breadcrumb-jsonld"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>

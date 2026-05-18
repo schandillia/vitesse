@@ -32,11 +32,7 @@ export function buildPostJsonLd(
     },
     publisher: {
       "@type": "Organization",
-      name: siteConfig.brand.name,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteConfig.brand.url}/opengraph-image.png`,
-      },
+      "@id": `${siteConfig.brand.url}/#organization`,
     },
     datePublished: post.createdAt.toISOString(),
     dateModified: (post.updatedAt || post.createdAt).toISOString(),

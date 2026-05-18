@@ -5,8 +5,8 @@ import { PricingTable } from "@/app/(main)/pricing/components/pricing-table"
 import { siteConfig } from "@/config/site"
 import { PricingFaq } from "@/app/(main)/pricing/components/pricing-faq"
 import { CheckoutListener } from "@/app/(main)/pricing/components/checkout-listener"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
-import { buildPricingJsonLd } from "@/lib/build-pricing-jsonld"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
+import { buildPricingJsonLd } from "@/lib/seo/jsonld/build-pricing-jsonld"
 
 export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.pricing.title,

@@ -6,10 +6,10 @@ import { getDocMarkdown } from "@/lib/docs/get-doc-markdown"
 import { DocsActions } from "@/app/docs/components/docs-actions"
 import { Callout } from "fumadocs-ui/components/callout"
 import { siteConfig } from "@/config/site"
-import { buildBreadcrumbJsonLd } from "@/lib/build-breadcrumb-jsonld"
+import { buildBreadcrumbJsonLd } from "@/lib/seo/jsonld/build-breadcrumb-jsonld"
 import type { Metadata } from "next"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
-import { buildDocsJsonLd } from "@/lib/build-docs-jsonld"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
+import { buildDocsJsonLd } from "@/lib/seo/jsonld/build-docs-jsonld"
 
 type PageProps = {
   params: Promise<{

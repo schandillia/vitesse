@@ -8,7 +8,7 @@ import { FileTextIcon, FolderIcon, PlusIcon } from "lucide-react"
 import { createPost } from "@/actions/create-post"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
 
 export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.blog.title,

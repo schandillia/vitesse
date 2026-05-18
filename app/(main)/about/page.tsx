@@ -1,8 +1,8 @@
 import { siteConfig } from "@/config/site"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
-import { buildAboutJsonLd } from "@/lib/build-about-jsonld"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
+import { buildAboutJsonLd } from "@/lib/seo/jsonld/build-about-jsonld"
 
 export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.about.title,

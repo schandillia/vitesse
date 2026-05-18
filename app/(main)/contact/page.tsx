@@ -1,7 +1,7 @@
 import { siteConfig } from "@/config/site"
 import { MessageForm } from "@/app/(main)/contact/components/message-form"
 import { getServerSession } from "@/lib/auth/get-server-session"
-import { buildPageMetadata } from "@/lib/build-page-metadata"
+import { buildPageMetadata } from "@/lib/seo/metadata/build-page-metadata"
 
 export const metadata = buildPageMetadata({
   title: siteConfig.seo.metaData.contact.title,
